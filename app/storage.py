@@ -1,9 +1,9 @@
 """The storage seam for Matches.
 
-ADR 0001 puts game state in an in-memory map "behind a small storage interface"
-so SQLite or Redis can slot in later without touching game logic. Game code
-depends on :class:`MatchStore`; :class:`InMemoryMatchStore` is the only
-implementation for v1.
+ADR 0001 puts Match state in an in-memory map "behind a small storage interface"
+so SQLite or Redis can slot in later without touching game logic. Callers depend
+on :class:`MatchStore`; :class:`InMemoryMatchStore` is the only implementation
+for v1.
 """
 
 from __future__ import annotations
@@ -14,7 +14,7 @@ from app.domain import Match
 
 
 class MatchStore(ABC):
-    """Persistence interface for Matches, keyed by game id."""
+    """Persistence interface for Matches, keyed by match id."""
 
     @abstractmethod
     def add(self, match: Match) -> None:
@@ -22,11 +22,11 @@ class MatchStore(ABC):
 
     @abstractmethod
     def get(self, match_id: str) -> Match | None:
-        """Return the Match with this game id, or ``None`` if there is none."""
+        """Return the Match with this match id, or ``None`` if there is none."""
 
 
 class InMemoryMatchStore(MatchStore):
-    """A plain ``dict`` keyed by game id. Contents are lost on process restart
+    """A plain ``dict`` keyed by match id. Contents are lost on process restart
     and are not safe to share across multiple server workers (ADR 0001)."""
 
     def __init__(self) -> None:

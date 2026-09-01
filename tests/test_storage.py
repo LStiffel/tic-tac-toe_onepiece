@@ -19,7 +19,7 @@ def test_get_unknown_id_returns_none() -> None:
     assert InMemoryMatchStore().get("nope") is None
 
 
-def test_add_is_keyed_by_game_id() -> None:
+def test_add_is_keyed_by_match_id() -> None:
     store = InMemoryMatchStore()
     store.add(new_match(match_id="one", first_player=Player.P1))
     store.add(new_match(match_id="two", first_player=Player.P2))

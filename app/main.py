@@ -20,14 +20,9 @@ def create_app(store: MatchStore | None = None) -> FastAPI:
 
     app = FastAPI(title="One Piece Trivia Tic-Tac-Toe")
     match_store: MatchStore = store or InMemoryMatchStore()
-    app.state.match_store = match_store
 
     def get_store() -> MatchStore:
         return match_store
-
-    @app.get("/health")
-    def health() -> dict[str, str]:
-        return {"status": "ok"}
 
     @app.post(
         "/matches",

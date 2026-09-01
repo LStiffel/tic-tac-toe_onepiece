@@ -24,12 +24,10 @@ class Player(str, Enum):
 
 
 class MatchStatus(str, Enum):
-    """Lifecycle of a Match. Only ``IN_PROGRESS`` is reachable in this ticket."""
+    """Lifecycle of a Match. The won/draw states arrive with the state machine
+    in a later ticket; a Match is only ever ``IN_PROGRESS`` here."""
 
     IN_PROGRESS = "in-progress"
-    WON_BY_P1 = "won-by-p1"
-    WON_BY_P2 = "won-by-p2"
-    DRAW = "draw"
 
 
 class CategoryGroup(str, Enum):
@@ -82,15 +80,12 @@ class Cell:
 
 @dataclass(frozen=True)
 class Grid:
-    """The 3x3 board for a Match: three row Categories, three column Categories,
+    """The 3x3 Grid for a Match: three row Categories, three column Categories,
     and the nine Cells they form (stored row-major)."""
 
     row_categories: tuple[Category, Category, Category]
     column_categories: tuple[Category, Category, Category]
     cells: tuple[Cell, ...]
-
-    def cell(self, row: int, column: int) -> Cell:
-        return self.cells[row * 3 + column]
 
 
 @dataclass(frozen=True)
@@ -105,8 +100,9 @@ class Match:
 
 # --- Stub Grid -------------------------------------------------------------
 #
-# A hardcoded set of six Category ids (real ids/labels from categories.json),
-# one per Category Group, standing in until Grid generation is implemented.
+# A hardcoded set of six Category ids, one per Category Group, standing in
+# until Grid generation is implemented. The ids and labels are copied verbatim
+# from the repo's ``categories.json`` so they line up with real data later.
 
 STUB_ROW_CATEGORIES: tuple[Category, Category, Category] = (
     Category("bounty_100000000", "Bounty ≥ 100,000,000", CategoryGroup.BOUNTY),
@@ -140,7 +136,7 @@ def new_match(
 ) -> Match:
     """Create a fresh in-progress Match on the stub Grid.
 
-    A game id and the first Player are generated when not supplied; tests pass
+    A match id and the first Player are generated when not supplied; tests pass
     them explicitly to get a deterministic Match.
     """
 

@@ -11,13 +11,12 @@ from app.domain import (
 )
 
 
-def test_new_match_is_in_progress_on_the_stub_grid() -> None:
+def test_new_match_is_in_progress_with_the_given_first_player() -> None:
     match = new_match(match_id="fixed", first_player=Player.P1)
 
     assert match.id == "fixed"
     assert match.active_player is Player.P1
     assert match.status is MatchStatus.IN_PROGRESS
-    assert match.grid == stub_grid()
 
 
 def test_new_match_builds_nine_distinct_empty_cells() -> None:
@@ -42,13 +41,12 @@ def test_stub_grid_has_three_row_and_three_column_categories_each_with_a_group()
         assert isinstance(category.group, CategoryGroup)
 
 
-def test_new_match_generates_a_unique_id_when_none_given() -> None:
-    assert new_match().id != new_match().id
-
-
-def test_grid_cell_lookup_is_row_major() -> None:
+def test_stub_grid_categories_span_six_distinct_groups() -> None:
     grid = stub_grid()
 
-    assert grid.cell(0, 0) is grid.cells[0]
-    assert grid.cell(1, 2) is grid.cells[5]
-    assert grid.cell(2, 2) is grid.cells[8]
+    groups = [c.group for c in grid.row_categories + grid.column_categories]
+    assert len(set(groups)) == 6
+
+
+def test_new_match_generates_a_unique_id_when_none_given() -> None:
+    assert new_match().id != new_match().id

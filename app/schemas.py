@@ -1,14 +1,15 @@
 """Pydantic models for the HTTP surface.
 
 These are the wire shapes only; each carries a ``from_domain`` mapper so the
-domain dataclasses never leak FastAPI concerns and vice versa.
+domain dataclasses never leak FastAPI concerns and vice versa. The nesting
+mirrors the domain: a Match has a Grid, a Grid has Categories and Cells.
 """
 
 from __future__ import annotations
 
 from pydantic import BaseModel
 
-from app.domain import Category, Cell, Match
+from app.domain import Category, Cell, Grid, Match
 
 
 class CategoryOut(BaseModel):
@@ -17,7 +18,7 @@ class CategoryOut(BaseModel):
     group: str
 
     @classmethod
-    def from_domain(cls, category: Category) -> "CategoryOut":
+    def from_domain(cls, category: Category) -> CategoryOut:
         return cls(id=category.id, label=category.label, group=category.group.value)
 
 
@@ -28,7 +29,7 @@ class CellOut(BaseModel):
     character: str | None = None
 
     @classmethod
-    def from_domain(cls, cell: Cell) -> "CellOut":
+    def from_domain(cls, cell: Cell) -> CellOut:
         return cls(
             row=cell.row,
             column=cell.column,
@@ -37,24 +38,33 @@ class CellOut(BaseModel):
         )
 
 
-class MatchOut(BaseModel):
-    id: str
+class GridOut(BaseModel):
     row_categories: list[CategoryOut]
     column_categories: list[CategoryOut]
     cells: list[CellOut]
-    active_player: str
-    status: str
 
     @classmethod
-    def from_domain(cls, match: Match) -> "MatchOut":
-        grid = match.grid
+    def from_domain(cls, grid: Grid) -> GridOut:
         return cls(
-            id=match.id,
             row_categories=[CategoryOut.from_domain(c) for c in grid.row_categories],
             column_categories=[
                 CategoryOut.from_domain(c) for c in grid.column_categories
             ],
             cells=[CellOut.from_domain(c) for c in grid.cells],
+        )
+
+
+class MatchOut(BaseModel):
+    id: str
+    grid: GridOut
+    active_player: str
+    status: str
+
+    @classmethod
+    def from_domain(cls, match: Match) -> MatchOut:
+        return cls(
+            id=match.id,
+            grid=GridOut.from_domain(match.grid),
             active_player=match.active_player.value,
             status=match.status.value,
         )

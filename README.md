@@ -33,11 +33,10 @@ The API is then at <http://127.0.0.1:8000> (interactive docs at `/docs`):
 
 | Method & path            | Purpose                                              |
 | ------------------------ | --------------------------------------------------- |
-| `POST /matches`          | Create a Match; returns the game id, the stub Grid, the Active player, and status `in-progress`. |
-| `GET /matches/{id}`      | Fetch a Match: its Grid, the nine (empty) Cells, the Active player, and status. `404` if the id is unknown. |
-| `GET /health`            | Liveness check.                                     |
+| `POST /matches`          | Create a Match; returns the match id, the stub Grid (3 row + 3 column Categories, nine Cells), the Active player, and status `in-progress`. |
+| `GET /matches/{id}`      | Fetch a Match: its `grid` (Categories + the nine empty Cells), the Active player, and status. `404` if the id is unknown. |
 
-Match state lives in an in-memory map keyed by game id, reached only through the
+Match state lives in an in-memory map keyed by match id, reached only through the
 `MatchStore` interface (`app/storage.py`), so a database can replace it later
 without touching game logic. State is lost when the server stops.
 
