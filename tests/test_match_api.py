@@ -72,3 +72,58 @@ def test_matches_are_isolated_by_id(client: TestClient) -> None:
     second = client.post("/matches").json()
 
     assert first["id"] != second["id"]
+
+
+def _grid_category_ids(grid: dict) -> list[str]:
+    return [c["id"] for c in grid["row_categories"] + grid["column_categories"]]
+
+
+def test_same_seed_returns_the_same_grid(client: TestClient) -> None:
+    first = client.post("/matches", json={"seed": 20260901})
+    second = client.post("/matches", json={"seed": 20260901})
+
+    assert first.status_code == 201
+    assert first.json()["grid"] == second.json()["grid"]
+
+
+def test_explicit_category_ids_force_that_exact_grid(client: TestClient) -> None:
+    # Take a known-good six from a seeded Grid, then pin it explicitly.
+    seeded = client.post("/matches", json={"seed": 42}).json()["grid"]
+    forced_ids = _grid_category_ids(seeded)
+
+    response = client.post("/matches", json={"category_ids": forced_ids})
+
+    assert response.status_code == 201
+    assert _grid_category_ids(response.json()["grid"]) == forced_ids
+
+
+def test_unsolvable_forced_grid_is_rejected_with_422(client: TestClient) -> None:
+    # "Bounty >= 1,000,000,000" against "Bounty below 100,000,000": no Character
+    # can sit in that Cell.
+    forced_ids = [
+        "bounty_1000000000",
+        "haki_arm",
+        "origin_East Blue",
+        "bounty_under_100m",
+        "df_Zoan",
+        "age_60_plus",
+    ]
+
+    response = client.post("/matches", json={"category_ids": forced_ids})
+
+    assert response.status_code == 422
+
+
+def test_unknown_forced_category_id_is_rejected_with_422(client: TestClient) -> None:
+    forced_ids = [
+        "bounty_100000000",
+        "haki_arm",
+        "origin_East Blue",
+        "df_Zoan",
+        "age_60_plus",
+        "not_a_real_category",
+    ]
+
+    response = client.post("/matches", json={"category_ids": forced_ids})
+
+    assert response.status_code == 422

@@ -4,14 +4,12 @@ The vocabulary here is CONTEXT.md's: a **Match** is played on a **Grid** of nine
 **Cells**, where every row and every column is a **Category** belonging to one
 **Category Group**.
 
-This ticket is a skeleton: the Grid is a fixed stub and no Cell is ever claimed.
-Real Grid generation and the claim/Pass state machine land in later tickets.
+These are pure data types. Real Grid generation lives in :mod:`app.gridgen`; the
+claim/Pass state machine lands in a later ticket, so no Cell is ever claimed yet.
 """
 
 from __future__ import annotations
 
-import random
-import uuid
 from dataclasses import dataclass
 from enum import Enum
 
@@ -96,53 +94,3 @@ class Match:
     grid: Grid
     active_player: Player
     status: MatchStatus
-
-
-# --- Stub Grid -------------------------------------------------------------
-#
-# A hardcoded set of six Category ids, one per Category Group, standing in
-# until Grid generation is implemented. The ids and labels are copied verbatim
-# from the repo's ``categories.json`` so they line up with real data later.
-
-STUB_ROW_CATEGORIES: tuple[Category, Category, Category] = (
-    Category("bounty_100000000", "Bounty ≥ 100,000,000", CategoryGroup.BOUNTY),
-    Category("haki_arm", "Can use Armament Haki", CategoryGroup.HAKI),
-    Category("origin_East Blue", "Origin: East Blue", CategoryGroup.ORIGIN_SEA),
-)
-
-STUB_COLUMN_CATEGORIES: tuple[Category, Category, Category] = (
-    Category("df_Zoan", "Devil Fruit type: Zoan", CategoryGroup.DEVIL_FRUIT),
-    Category("height_giant", "Height over 500 cm", CategoryGroup.HEIGHT),
-    Category("age_60_plus", "Age 60 or older", CategoryGroup.AGE),
-)
-
-
-def _empty_cells() -> tuple[Cell, ...]:
-    return tuple(Cell(row=r, column=c) for r in range(3) for c in range(3))
-
-
-def stub_grid() -> Grid:
-    """The fixed placeholder Grid used until real Grid generation lands."""
-
-    return Grid(
-        row_categories=STUB_ROW_CATEGORIES,
-        column_categories=STUB_COLUMN_CATEGORIES,
-        cells=_empty_cells(),
-    )
-
-
-def new_match(
-    *, match_id: str | None = None, first_player: Player | None = None
-) -> Match:
-    """Create a fresh in-progress Match on the stub Grid.
-
-    A match id and the first Player are generated when not supplied; tests pass
-    them explicitly to get a deterministic Match.
-    """
-
-    return Match(
-        id=match_id or uuid.uuid4().hex,
-        grid=stub_grid(),
-        active_player=first_player or random.choice((Player.P1, Player.P2)),
-        status=MatchStatus.IN_PROGRESS,
-    )

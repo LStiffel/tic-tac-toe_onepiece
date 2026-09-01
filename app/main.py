@@ -14,8 +14,8 @@ from contextlib import asynccontextmanager
 from fastapi import Depends, FastAPI, HTTPException, status
 
 from app.dataset import GameData, default_game_data, log_data_quality
-from app.domain import new_match
-from app.schemas import DataQualityReportOut, MatchOut
+from app.gridgen import GridGenerationError, InvalidForcedGridError, new_match
+from app.schemas import DataQualityReportOut, MatchCreate, MatchOut
 from app.storage import InMemoryMatchStore, MatchStore
 
 
@@ -45,8 +45,24 @@ def create_app(
         response_model=MatchOut,
         status_code=status.HTTP_201_CREATED,
     )
-    def create_match(store: MatchStore = Depends(get_store)) -> MatchOut:
-        match = new_match()
+    def create_match(
+        body: MatchCreate | None = None,
+        store: MatchStore = Depends(get_store),
+    ) -> MatchOut:
+        params = body or MatchCreate()
+        try:
+            match = new_match(
+                data, seed=params.seed, category_ids=params.category_ids
+            )
+        except InvalidForcedGridError as exc:
+            raise HTTPException(
+                status_code=status.HTTP_422_UNPROCESSABLE_CONTENT, detail=str(exc)
+            ) from exc
+        except GridGenerationError as exc:  # pragma: no cover - pool too thin
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=str(exc),
+            ) from exc
         store.add(match)
         return MatchOut.from_domain(match)
 

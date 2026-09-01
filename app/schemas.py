@@ -13,6 +13,18 @@ from app.dataset import DataQualityReport
 from app.domain import Category, Cell, Grid, Match
 
 
+class MatchCreate(BaseModel):
+    """Optional knobs on ``POST /matches``.
+
+    ``seed`` makes Grid generation reproducible. ``category_ids`` forces a
+    specific Grid: exactly six Category ids, three rows then three columns; the
+    request is rejected if that Grid is unsolvable.
+    """
+
+    seed: int | str | None = None
+    category_ids: list[str] | None = None
+
+
 class CategoryOut(BaseModel):
     id: str
     label: str
