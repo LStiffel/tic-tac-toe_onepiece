@@ -1,0 +1,1301 @@
+[
+  {
+    "name": "Dawn Island",
+    "image": "/images/islands/dawn.webp",
+    "location": "East Blue",
+    "description": "Island where the World Government affiliated <strong>Goa Kingdom</strong> is located. Home island of Luffy, Dragon and Garp. Adopted home of Ace",
+    "notable_locations": ["Goa Kingdom", "Foosha Village", "Mt. Colubo", "Gray Terminal", "Midway Forest"],
+    "current_ruler": "Sterry (Goa Kingdom)",
+    "notable_members": ["Makino", "Woop Slap", "Sterry", "Curly Dadan", "Outlook III"]
+  },
+  {
+    "name": "Goat Island",
+    "image": "/images/islands/Goat_Island.webp",
+    "location": "East Blue",
+    "description": "Island where Luffy first met Koby and Alvida. Only appeared in the manga",
+    "current_ruler": "Unknown"
+  },
+  {
+    "name": "Yotsuba Island",
+    "image": "/images/islands/Shells_Town.webp",
+    "location": "East Blue",
+    "description": "Island where <strong>Shells Town</strong> is located",
+    "notable_locations": ["Shells Town", "Food Foo", "153rd Branch"],
+    "current_ruler": "Unknown",
+    "notable_members": ["Ripper", "Rokkaku", "Ukkari", "Rika"]
+  },
+  {
+    "name": "Shimotsuki's Village Island",
+    "image": "/images/islands/Shimotsuki_Village.webp",
+    "location": "East Blue",
+    "description": "Unnamed Island where <strong>Shimotsuki Village</strong> is located",
+    "notable_locations": ["Shimotsuki Village", "Isshin Dojo"],
+    "current_ruler": "Unknown",
+    "notable_members": ["Shimotsuki Koushirou"]
+  },
+  {
+    "name": "Organ Islands",
+    "image": "/images/islands/Organ_Islands.webp",
+    "location": "East Blue",
+    "description": "Archipelago where <strong> Orange Town </strong> is located",
+    "notable_locations": ["Orange Town", "Pet Food Shop", "Drinker Pub", "Refuge"],
+    "current_ruler": "Boodle (Orange Town)",
+    "notable_members": ["Boodle", "Chouchou", "Poro"]
+  },
+  {
+    "name": "Island of Rare Animals",
+    "image": "/images/islands/Island_of_Rare_Animals.webp",
+    "location": "East Blue",
+    "description": "Island populated by bizarre hybrid animals, Gaimon and Sarfunkel",
+    "current_ruler": "No ruler",
+    "notable_members": ["Gaimon", "Sarfunkel"]
+  },
+  {
+    "name": "Gecko Islands",
+    "image": "/images/islands/Gecko_Islands.webp",
+    "location": "East Blue",
+    "description": "Island where <strong>Syrup Village</strong> is located",
+    "notable_locations": ["Syrup Village", "Meshi"],
+    "current_ruler": "Mornin (Syrup Village)",
+    "notable_members": ["Kaya", "Merry", "Ninjin", "Piiman", "Tamanegi", "Mornin"]
+  },
+  {
+    "name": "Conomi Islands",
+    "image": "/images/islands/Conomi_Islands.webp",
+    "location": "East Blue",
+    "description": "Archipelago located in the northwestern region of the East Blue. It is where <strong>Cocoyasi Village</strong> is located",
+    "notable_locations": ["Cocoyasi Village", "Arlong Park", "Gosa Village"],
+    "current_ruler": "Unknown",
+    "notable_members": ["Nojiko", "Genzo", "Nako", "Johnny", "Yosaku"]
+  },
+    {
+    "name": "16th Branch's Island",
+    "image": "/images/islands/16thbranch.webp",
+    "location": "East Blue",
+    "description": "Island where the <strong>Marine 16th Branch</strong> of the Marines commanded by captain Nezumi is located",
+    "notable_locations": ["16th Branch"],
+    "current_ruler": "Unknown",
+    "notable_members": ["Nezumi"]
+  },
+  {
+    "name": "Polestar Islands",
+    "image": "/images/islands/Loguetown.webp",
+    "location": "East Blue",
+    "description": "Island where <strong>Loguetown</strong> is located. Almost all East Blue ships come here to resupply for the Grand Line. Birthplace and execution site of Gol D. Roger",
+    "notable_locations": ["Loguetown", "Marine Base", "Arms Shop", "Execution Platform"],
+    "current_ruler": "Unknown",
+    "notable_members": ["Ipponmatsu", "Ipponume", "Yu", "Sapi", "Hanger", "Packy"]
+  },
+  {
+    "name": "Kumate Island",
+    "image": "/images/islands/Kumate_Island.webp",
+    "location": "East Blue",
+    "description": "Home of the <strong>Kumate Tribe</strong>",
+    "current_ruler": "No ruler"
+  },
+  {
+    "name": "Mirror Ball Island",
+    "image": "/images/islands/Mirror_Ball_Island.webp",
+    "location": "East Blue",
+    "description": "Island where <strong>Jango</strong> traveled after Syrup Village",
+    "notable_locations": ["Doskoi Panda headquarters"],
+    "current_ruler": "Unknown"
+  },
+  {
+    "name": "Cozia",
+    "image": "/images/islands/Cozia.webp",
+    "location": "East Blue",
+    "description": "Island that was attacked by <strong>Germa 66</strong> 13 years ago",
+    "current_ruler": "Unknown"
+  },
+  {
+    "name": "Oykot's Kingdom Island",
+    "image": "/images/islands/Oykot_Kingdom.webp",
+    "location": "East Blue",
+    "description": "Country where <strong>Bell-mère</strong> first met Nami and Nojiko",
+    "notable_locations": ["Oykot Kingdom"],
+    "current_ruler": "Unknown"
+  },
+  {
+    "name": "Sixis",
+    "image": "/images/islands/Sixis.webp",
+    "location": "East Blue",
+    "description": "Island where <strong>Ace</strong> was stranded during the start of his journey",
+    "current_ruler": "No ruler"
+  },
+  {
+    "name": "Frauce's Kingdom Island",
+    "image": "/images/islands/frauce.webp",
+    "location": "East Blue",
+    "description": "Island where the World Government affiliated <strong>Frauce Kingdom</strong> is located",
+    "notable_locations": ["Frauce Kingdom"],
+    "current_ruler": "Ban Dedessinée (Frauce Kingdom)",
+    "notable_members": ["Ban Dedessinée"]
+  },
+  {
+    "name": "Nagagutsu's Kingdom Island",
+    "image": "/images/islands/nagagutsu.webp",
+    "location": "East Blue",
+    "description": "Island where the World Government affiliated <strong>Nagagutsu Kingdom</strong> is located",
+    "notable_locations": ["Nagagutsu Kingdom"],
+    "current_ruler": "King Furarri (Nagagutsu Kingdomn)",
+    "notable_members": ["Furrari", "Tritobu", "Nyornyo Nyarmani"]
+  },
+  {
+    "name": "Satsuruzo's Kingdom Island",
+    "image": "/images/islands/satsuruzo.webp",
+    "location": "East Blue",
+    "description": "Island where <strong>Satsuruzo Kingdom</strong> is located. Home island of Koby",
+    "notable_locations": ["Satsuruzo Kingdom"],
+    "current_ruler": "Unknown"
+  },
+  {
+    "name": "Ohara",
+    "image": "/images/islands/ohara.webp",
+    "location": "West Blue",
+    "description": "Island that consisted primarly of archaeologists and is also the birthplace of Nico Robin. It was destroyed 22 years ago by a Buster Call",
+    "notable_locations": ["Tree of Knowledge", "Robin's Town"],
+    "current_ruler": "No ruler"
+  },
+  {
+    "name": "Ilisia's Kingdom Island",
+    "image": "/images/islands/Ilisia.webp",
+    "location": "West Blue",
+    "description": "Island where the World Government affiliated <strong>Ilisia Kingdom</strong> is located",
+    "notable_locations": ["Ilisia Kingdom"],
+    "current_ruler": "Cezar (Ilisia Kingdom)",
+    "notable_members": ["Cezar"]
+  },
+  {
+    "name": "Toroa",
+    "image": "/images/islands/Toroa.webp",
+    "location": "West Blue",
+    "description": "Home island of <strong>Byron</strong>",
+    "current_ruler": "Unknown"
+  },
+  {
+    "name": "Las Camp",
+    "image": "/images/islands/Las_Camp.webp",
+    "location": "West Blue",
+    "description": "Island that got attacked by pirates after Whitebeard's death",
+    "current_ruler": "Unknown"
+  },
+  {
+    "name": "Kano's Country Island",
+    "image": "/images/islands/Kano_Country.webp",
+    "location": "West Blue",
+    "description": "Island where the World Government affiliated <strong>Kano Kingdom</strong> is located. Home island of the Chinjao Family",
+    "notable_locations": ["Kano Country"],
+    "current_ruler": "Ramen (Kano Country)",
+    "notable_members": ["Ramen", "Chinjao", "Sai", "Boo", "Baby 5", "Chichilisia", "Uholisia"]
+  },
+  {
+    "name": "Ballywood's Kingdom Island",
+    "image": "/images/islands/Ballywood_Kingdom.webp",
+    "location": "West Blue",
+    "description": "Island where the World Government affiliated <strong>Ballywood Kingdom</strong> is located",
+    "notable_locations": ["Ballywood Kingdom"],
+    "current_ruler": "Ham Burger (Ballywood Kingdom)",
+    "notable_members": ["Ham Burger"]
+  },
+  {
+    "name": "God Valley",
+    "image": "/images/islands/God_Valley.webp",
+    "location": "West Blue",
+    "description": "Island where the <strong> God Valley Incident </strong> took place. Home island of Shanks, Shamrock, Xebec, and other Davy clan members. The island has since disappeared without a trace",
+    "current_ruler": "No ruler (island destroyed)"
+  },
+  {
+    "name": "Soja Island",
+    "image": "/images/islands/Soja.webp",
+    "location": "West Blue",
+    "description": "World government affiliated island and the place where <strong>Issho</strong> lived prior to joining the Marines",
+    "current_ruler": "Unknown"
+  },
+  {
+    "name": "Lvneel's Kingdom Island",
+    "image": "/images/islands/Lvneel_Kingdom.webp",
+    "location": "North Blue",
+    "description": "Home island of <strong>Mont Blanc Noland</strong> and also where he was executed",
+    "notable_locations": ["Lvneel Kingdom"],
+    "current_ruler": "Unknown"
+  },
+  {
+    "name": "Downs",
+    "image": "/images/islands/Downs.webp",
+    "location": "North Blue",
+    "description": "Island where <strong>Donquixote Doflamingo</strong> founded the gang that preceded the Donquixote Pirates",
+    "current_ruler": "Unknown"
+  },
+  {
+    "name": "Spider Miles' Island",
+    "image": "/images/islands/Spider_Miles.webp",
+    "location": "North Blue",
+    "description": "Spider Miles is a port town in an unnamed North Blue island. <strong>Doflamingo</strong> hid here for 16 years after he fled from Mary Geoise",
+    "notable_locations": ["Spider Miles"],
+    "current_ruler": "Unknown"
+  },
+  {
+    "name": "Flevance's Island",
+    "image": "/images/islands/Flevance.webp",
+    "location": "North Blue",
+    "description": "Home island of Trafalgar Law, notable for its Amber Lead",
+    "notable_locations": ["Flevance","Hospital"],
+    "current_ruler": "Unknown"
+  },
+  {
+    "name": "Rubeck Island",
+    "image": "/images/islands/Rubeck_Island.webp",
+    "location": "North Blue",
+    "description": "<strong> Diez Barrels </strong> was going to trade the Ope Ope no Mi to the Marines here 13 years ago",
+    "current_ruler": "Unknown"
+  },
+  {
+    "name": "Swallow Island",
+    "image": "/images/islands/Swallow_Island.webp",
+    "location": "North Blue",
+    "description": "Island found on the south of Minion Island and Rubeck Island. Temporary base for the Donquixote Pirates and the place where Law met Bepo, Penguin and Shachi",
+    "notable_locations": ["Pleasure Town"],
+    "current_ruler": "Unknown"
+  },
+  {
+    "name": "Minion Island",
+    "image": "/images/islands/Minion_Island.webp",
+    "location": "North Blue",
+    "description": "Island where Law obtained his Ope Ope no Mi powers and Rosinante died by the hands of his elder brother Doflamingo",
+    "current_ruler": "Unknown"
+  },
+  {
+    "name": "Rakesh's Island",
+    "image": "/images/islands/Rakesh.webp",
+    "location": "North Blue",
+    "description": "Doflamingo sent Gladius, Señor Pink, Giolla, Machvise and Baby 5 to attack this port town",
+    "notable_locations": ["Rakesh"],
+    "current_ruler": "Unknown"
+  },
+  {
+    "name": "Notice's Island",
+    "image": "/images/islands/Notice.webp",
+    "location": "North Blue",
+    "description": "Island where the <strong>Bellamy Pirates</strong> were born. They found this place boring and left it for a life of piracy",
+    "notable_locations": ["Notice"],
+    "current_ruler": "Unknown"
+  },
+  {
+    "name": "Kuen's Village Island",
+    "image": "/images/islands/Kuen_Village.webp",
+    "location": "North Blue",
+    "description": "Home island of <strong>Baby 5</strong>",
+    "notable_locations": ["Kuen's Village"],
+    "current_ruler": "Unknown"
+  },
+  {
+    "name": "Deul's Kingdom Island",
+    "image": "/images/islands/Deul.webp",
+    "location": "North Blue",
+    "description": "Island where the World Government affiliated <strong>Deul Kingdom</strong> is located",
+    "notable_locations": ["Deul Kingdom"],
+    "current_ruler": "Chap (Deul Kingdom)",
+    "notable_members": ["Chap"]
+  },
+  {
+    "name": "Whiteland's Kingdom Island",
+    "image": "/images/islands/Whiteland.webp",
+    "location": "North Blue",
+    "description": "Island where the World Government affiliated <strong>Whiteland Kingdom</strong> is located",
+    "notable_locations": ["Whiteland Kingdom"],
+    "current_ruler": "Iwatobi (Whiteland Kingdom)",
+    "notable_members": ["Iwatobi"]
+  },
+  {
+    "name": "Briss' Kingdom Island",
+    "image": "/images/islands/Briss.webp",
+    "location": "South Blue",
+    "description": "Island where the <strong> Briss Kingdom </strong> is located. St. Briss had come from this country",
+    "notable_locations": ["Briss Kingdom"],
+    "current_ruler": "Unknown"
+  },
+  {
+    "name": "Karate Island",
+    "image": "/images/islands/Karate.webp",
+    "location": "South Blue",
+    "description": "People can master many types oof martial arts in this island. <strong> Jerry </strong> from CP6 trained here",
+    "current_ruler": "Unknown"
+  },
+  {
+    "name": "Centaurea's Island",
+    "image": "/images/islands/Centaurea.webp",
+    "location": "South Blue",
+    "description": "12 years ago, the <strong>Revolutionary Army</strong> and an unknown force battled for the control of the country",
+    "notable_locations": ["Centaurea"],
+    "current_ruler": "Unknown"
+  },
+  {
+    "name": "Torino Kingdom",
+    "image": "/images/islands/Torino_Kingdom.webp",
+    "location": "South Blue",
+    "description": "Small island with a huge tree growing in the middle of it. <strong>Chopper</strong> was sent here by Kuma",
+    "notable_locations": ["Giant tree"],
+    "current_ruler": "No ruler",
+    "notable_members": ["Shanba"]
+  },
+  {
+    "name": "Baterilla",
+    "image": "/images/islands/Baterilla.webp",
+    "location": "South Blue",
+    "description": "Home island of <strong>Portgas D Ace</strong>",
+    "current_ruler": "Unknown"
+  },
+  {
+    "name": "Evil Black Drum's Kingdom Island",
+    "image": "/images/islands/Evil_Black_Drum_Kingdom.webp",
+    "location": "South Blue",
+    "description": "Island where the World Government affiliated <strong>Evil Black Drum Kingdom</strong> is located",
+    "notable_locations": ["Evil Black Drum Kingdom"],
+    "current_ruler": "Wapol (Evil Black Drum Kingdom)",
+    "notable_members": ["Wapol", "Kinderella", "Hakowan"]
+  },
+  {
+    "name": "Sorbet's Kingdom Island",
+    "image": "/images/islands/Sorbet_Kingdom.webp",
+    "location": "South Blue",
+    "description": "Island where the Sorbet Kingdom is located. Once ruled by <strong>Bartholomew Kuma</strong>",
+    "notable_locations": ["Sorbet Kingdom", "Castle Town", "Church", "Elderly Village"],
+    "current_ruler": "Bulldog (Sorbet Kingdom)",
+    "notable_members": ["Bulldog", "Conney"]
+  },
+  {
+    "name": "Samba's Kingdom Island",
+    "image": "/images/islands/Samba.webp",
+    "location": "South Blue",
+    "description": "Island where the World Government affiliated <strong>Samba Kingdom</strong> is located",
+    "notable_locations": ["Samba Kingdom"],
+    "current_ruler": "Moqueca (Samba Kingdom)",
+    "notable_members": ["Moqueca"]
+  },
+  {
+    "name": "Roshwan's Kingdom Island",
+    "image": "/images/islands/Roshwan.webp",
+    "location": "South Blue",
+    "description": "Island where the World Government affiliated <strong>Roshwan Kingdom</strong> is located",
+    "notable_locations": ["Roshwan Kingdom"],
+    "current_ruler": "Beer VI (Roshwan Kingdom)",
+    "notable_members": ["Beer VI", "Matryosaka", "Matryosuka", "Matryoseka", "Matryosoka"]
+  },
+  {
+    "name": "Tumi's Island",
+    "image": "/images/islands/Tumi.webp",
+    "location": "South Blue",
+    "description": "Island that was conquered by the Revolutionary Army around 12 years ago",
+    "notable_locations": ["Tumi"],
+    "current_ruler": "Unknown"
+  },
+  {
+    "name": "Kutsukku Island",
+    "image": "/images/islands/Kutsukku_Island.webp",
+    "location": "South Blue",
+    "description": "Home island of <strong>Kid</strong>, Killer, Heat and Wire",
+    "current_ruler": "Unknown"
+  },
+  {
+    "name": "Taya's Kingdom Island",
+    "image": "/images/islands/Taya.webp",
+    "location": "South Blue",
+    "description": "Home island of <strong>Aramaki</strong>",
+    "notable_locations": ["Taya Kingdom"],
+    "current_ruler": "Unknown"
+  },
+  {
+    "name": "Vespa's Kingdom Island",
+    "image": "/images/islands/Vespa.webp",
+    "location": "South Blue",
+    "description": "Home island of <strong>Kuzan</strong>",
+    "notable_locations": ["Vespa Kingdom"],
+    "current_ruler": "Unknown"
+  },
+    {
+    "name": "Samuwanai Island",
+    "image": "/images/islands/Samuwanai.webp",
+    "location": "South Blue",
+    "description": "Home island of <strong>Ida</strong>",
+    "current_ruler": "Unknown"
+  },
+  {
+    "name": "Island of Women",
+    "image": "/images/islands/Amazon_Lily.webp",
+    "location": "Calm Belt",
+    "description": "Island where <strong> Amazon Lily </strong> is located",
+    "notable_locations": ["Amazon Lily", "Kuja Castle", "Battle ring", "Fort", "City"],
+    "current_ruler": "Boa Hancock (Amazon Lily)",
+    "notable_members": ["Boa Hancock", "Boa Sandersonia", "Boa Marigold", "Marguerite", "Sweet Pea", "Aphelandra", "Daisy", "Belladonna", "Kikyo"]
+  },
+  {
+    "name": "Impel Down",
+    "image": "/images/islands/Impel_Down.webp",
+    "location": "Calm Belt",
+    "description": "Island where the Underwater Prison <strong>Impel Down</strong> is located",
+    "current_ruler": "Hannyabal",
+    "notable_members": ["Hannyabal", "Magellan", "Domino", "Saldeath", "Sadi", "Minotaurus", "Minokoala", "Minorhinoceros", "Minozebra", "Minochihuahua", "Donquixote Doflamingo", "Señor Pink"]
+  },
+  {
+    "name": "Rusukaina",
+    "image": "/images/islands/Rusukaina.webp",
+    "location": "Calm Belt",
+    "description": "Island northwest of Amazon Lily. Harsh island that has 48 seasons a year. It was here that Luffy spent 2 years honing his skills and mastering Haki",
+    "notable_locations": ["Safe tree"],
+    "current_ruler": "No ruler"
+  },
+  {
+    "name": "Nanimonai Island",
+    "image": "/images/islands/Nanimonai.webp",
+    "location": "Paradise",
+    "description": "Uninhabited island just before Arabasta Kingdom. Only mentioned, never seen",
+    "current_ruler": "No ruler"
+  },
+  {
+    "name": "Renaisse",
+    "image": "/images/islands/Renaisse.webp",
+    "location": "Paradise",
+    "description": "Island where Smoker and Tashigi captured Mr.11",
+    "current_ruler": "Unknown"
+  },
+  {
+    "name": "Cactus Island",
+    "image": "/images/islands/Cactus_Island.webp",
+    "location": "Paradise",
+    "description": "Island where <strong>Whisky Peak</strong> is located",
+    "notable_locations": ["Whisky Peak", "Sapoten Graveyard"],
+    "current_ruler": "Unknown",
+    "notable_members": ["Miss Monday", "Mr. 9", "Nanday", "Miss Catherina", "Mr. Beans"]
+  },
+  {
+    "name": "Little Garden",
+    "image": "/images/islands/Little_Garden.webp",
+    "location": "Paradise",
+    "description": "Island inhabited by dinosaurs due to its climate. The 100 years duel between <strong>Dorry and Broggy</strong> took place here",
+    "notable_locations": ["Sea King Mountains", "Hourly Volcano", "Giants' Camps", "Mr. 3's Headquarters"],
+    "current_ruler": "No ruler"
+  },
+  {
+    "name": "Kyuka Island",
+    "image": "/images/islands/Kyuka_Island.webp",
+    "location": "Paradise",
+    "description": "Island where <strong>Mr.3 and Miss Goldenweek</strong> took their days off when they were not on missions",
+    "current_ruler": "No ruler"
+  },
+  {
+    "name": "Drum Island",
+    "image": "/images/islands/Drum_Island.webp",
+    "location": "Paradise",
+    "description": "Island where the World Government affiliated <strong>Sakura Kingdom</strong> is located",
+    "notable_locations": ["Sakura Kingdom", "Bighorn", "Cocoa Weed", "Gyasta", "Robelle", "Drum Castle", "Drum Rockies", "Drum Ropeway"],
+    "current_ruler": "Dalton (Sakura Kingdom)",
+    "notable_members": ["Dalton", "Kureha", "Negikuma Maria", "Tamachibi"]
+  },
+  {
+    "name": "Sandy Island",
+    "image": "/images/islands/Arabasta_Kingdom.webp",
+    "location": "Paradise",
+    "description": "Island where the World Government affiliated <strong>Arabasta Kingdom</strong> is located",
+    "notable_locations": ["Arabasta Kingdom", "Alubarna", "Nanohana", "Yuba", "Erumalu", "Rainbase", "Katorea", "Sandora Desert", "Sandora River", "Tomb of the Kings"],
+    "current_ruler": "Nefertari Vivi",
+    "notable_members": ["Nefertari Vivi", "Chaka", "Pell", "Igaram", "Koza", "Terracotta", "Karoo", "Toto"]
+  },
+  {
+    "name": "Jaya",
+    "image": "/images/islands/Jaya.webp",
+    "location": "Paradise",
+    "description": "Lawless island popular with pirates. 400 years ago, it was the homeland of the <strong>Shandia</strong>, at the time in the shape of a skull and much larger than it is now",
+    "notable_locations": ["Mock Town", "Mouth Bay", "South Grave", "Cricket's House"],
+    "current_ruler": "No ruler",
+    "notable_members": ["Terry", "Spector", "Jobo"]
+  },
+  {
+    "name": "Long Ring Long Land",
+    "image": "/images/islands/Long_Ring_Long_Land.webp",
+    "location": "Paradise",
+    "description": "Archipelago that is preceded by Skypiea and followed by Water 7 if following the Log Pose",
+    "current_ruler": "No ruler",
+    "notable_members": ["Tonjit", "Shelly", "Tonsfer", "Tonjil"]
+  },
+  {
+    "name": "Ukkari Hot-Spring Island",
+    "image": "/images/islands/Ukkari_Hot-Spring_Island.webp",
+    "location": "Paradise",
+    "description": "Island where <strong>Gedatsu</strong> landed after being defeated in Skypiea",
+    "notable_locations": ["Forest with three off-shaped trees"],
+    "current_ruler": "No ruler",
+    "notable_members": ["Goro", "Gedatsu", "Dirt Boss", "Forest Boss", "Hasami"]
+  },
+  {
+    "name": "Water 7",
+    "image": "/images/islands/Water_7.webp",
+    "location": "Paradise",
+    "description": "Island known for its shipwrights. <strong>Capital of Water</strong>",
+    "notable_locations": ["Galley-La Headquarters", "Dock 1", "Blue Station", "Blueno's Bar", "Franky House", "Scrap Island", "Rental Bull Shop", "Rocky Cape"],
+    "current_ruler": "Iceburg",
+    "notable_members": ["Iceburg", "Alice", "Paulie", "Peepley Lulu", "Tilestone", "Zambai", "Mozu", "Kiwi", "Tamagon", "Sodoma", "Gomorrah", "Kokoro", "Chimney", "Yokozuna"]
+  },
+  {
+    "name": "Enies Lobby",
+    "image": "/images/islands/Enies_Lobby.webp",
+    "location": "Paradise",
+    "description": "World Government-controlled stronghold. <strong> Judicial Island </strong>. Its gate leads to both Marineford and Impel Down",
+    "notable_locations": ["Waterfall Ring", "Day Station", "Main Gate", "Courtyard", "Courthouse", "Tower of Justice", "Bridge of Hesitation"],
+    "current_ruler": "No ruler"
+  },
+  {
+    "name": "Scrap Island",
+    "image": "/images/islands/Scrap_Island.webp",
+    "location": "Paradise",
+    "description": "Island made up of the wrecked remains of hundreds of abandoned ships. Connected to <strong> Water 7 </strong> by a large stone bridge",
+    "current_ruler": "No ruler"
+  },
+  {
+    "name": "San Faldo",
+    "image": "/images/islands/San_Faldo.webp",
+    "location": "Paradise",
+    "description": "Island city connected to Water 7 via the Sea Train. Known as the <strong>Carnival Town</strong>",
+    "current_ruler": "Unknown"
+  },
+  {
+    "name": "Pucci",
+    "image": "/images/islands/Pucci.webp",
+    "location": "Paradise",
+    "description": "Island city connected to Water 7 via the Sea Train. Known as the <strong>Gourmet City</strong>",
+    "current_ruler": "Bimine",
+    "notable_members": ["Bimine", "Marumieta", "Yamenahare"]
+  },
+  {
+    "name": "St. Poplar",
+    "image": "/images/islands/St._Poplar.webp",
+    "location": "Paradise",
+    "description": "Island city connected to Water 7 via the Sea Train. Known as the <strong>Town of the Spring Queen</strong>",
+    "current_ruler": "Unknown"
+  },
+  {
+    "name": "Thriller Bark",
+    "image": "/images/islands/Thriller_Bark.webp",
+    "location": "Paradise",
+    "description": "Giant ship ruled by <strong>Gecko Moria</strong> that got abandonded after his defeat. Originally from the West Blue",
+    "notable_locations": ["Dead Forest", "Graveyard", "Mansion", "Hogback's Lab", "Perona's Wonder Garden", "Perona's Room", "Mast Mansion"],
+    "current_ruler": "No ruler"
+  },
+  {
+    "name": "Sabaody Archipelago",
+    "image": "/images/islands/Sabaody_Archipelago.webp",
+    "location": "Paradise",
+    "description": "Island at the end of Paradise, close to the <strong>Red Line</strong>. Massive mangrove forest frowing out from the middle of the ocean with each tree of the forest serving as an island on which people live",
+    "notable_locations": ["Groves 1-79", "Marine Base", "Human Auctioning House", "Sabaody Park", "Antonio's Graman", "Shakky's Rip-Off Bar", "Sabao Dome"],
+    "current_ruler": "Unknown",
+    "notable_members": ["Silvers Rayleigh", "Shakuyaku [Shakky]", "Disco", "Antonio", "Kairiken", "Minoruba", "Catacombo"]
+  },
+  {
+    "name": "Marineford",
+    "image": "/images/islands/Marineford.webp",
+    "location": "Paradise",
+    "description": "Island where the <strong>Marine Base G-1</strong> is located. Former location of Marine Headquarters",
+    "notable_locations": ["Marine Base G-1", "Marineford Bay", "Marineford Town", "Oris Plaza"],
+    "current_ruler": "Unknown",
+    "notable_members": ["Momonga", "Zotto", "Stalker"]
+  },
+  {
+    "name": "Banaro Island",
+    "image": "/images/islands/Banaro_Island.webp",
+    "location": "Paradise",
+    "description": "Island that was ransacked by <strong>Blackbeard</strong> and his crew. Close to Water 7",
+    "notable_locations": ["Banana Rock", "Town"],
+    "current_ruler": "Unknown"
+  },
+  {
+    "name": "G-2's Island",
+    "image": "/images/islands/G-2.webp",
+    "location": "Paradise",
+    "description": "Island where the <strong>Marine Base G-2</strong> is located. North-east of Lulusia Kingdom",
+    "notable_locations": ["Marine Base G-2"],
+    "current_ruler": "Unknown",
+    "notable_members": ["Comil", "Kyuji", "Koda"]
+  },
+  {
+    "name": "Karakuri Island",
+    "image": "/images/islands/Karakuri_Island.webp",
+    "location": "Paradise",
+    "description": "Island where the <strong>Future Country Baldimore</strong> is located. It is where Dr. Tsukimi built his own automata and were <strong>Franky</strong> was sent by Kuma",
+    "notable_locations": ["Vegapunk's old laboratory", "Kitton's home", "Marine Base"],
+    "current_ruler": "Unknown",
+    "notable_members": ["Kitton's grandfather", "Kitton", "Taroimo"]
+  },
+  {
+    "name": "Momoiro Island",
+    "image": "/images/islands/Momoiro_Island.webp",
+    "location": "Paradise",
+    "description": "Island where the <strong>Kamabakka Kingdom</strong> is located. Location of the Revolutionary Army base of operations",
+    "current_ruler": "Emporio Ivankov",
+    "notable_members": ["Emporio Ivankov", "Inazuma", "Tibany", "Usakkov", "Tsunokkov", "Francois"]
+  },
+  {
+    "name": "Boin Archipelago",
+    "image": "/images/islands/Boin_Archipelago.webp",
+    "location": "Paradise",
+    "description": "Series of flower-shaped islands where <strong>Usopp</strong> was sent by Kuma after Sabaody",
+    "notable_locations": ["Forest of Gluttony", "Greenstone"],
+    "current_ruler": "Unknown"
+  },
+  {
+    "name": "Namakura Island",
+    "image": "/images/islands/Namakura_Island.webp",
+    "location": "Paradise",
+    "description": "Island where the nation of <strong> Harahettania </strong> is located. <strong> Brook </strong> was sent here by Kuma after Sabaody",
+    "notable_locations": ["Harahetttania"],
+    "current_ruler": "Pekkori (Harahettania)",
+    "notable_members": ["Pekkori"]
+  },
+  {
+    "name": "Kuraigana Island",
+    "image": "/images/islands/Kuraigana_Island.webp",
+    "location": "Paradise",
+    "description": "Island that was once home of the Shikkearu Kingdom. <strong> Zoro </strong> was sent here by Kuma after Sabaody. Former residence of <strong>Dracule Mihawk</strong>",
+    "notable_locations": ["Castle"],
+    "current_ruler": "No ruler"
+  },
+  {
+    "name": "Foolshout Island",
+    "image": "/images/islands/Foolshout_Island.webp",
+    "location": "Paradise",
+    "description": "Home island of <strong> Koala </strong>",
+    "current_ruler": "Unknown",
+    "notable_members": ["Muti"]
+  },
+  {
+    "name": "Guanhao",
+    "image": "/images/islands/Guanhao.webp",
+    "location": "Paradise",
+    "description": "Island where the World Government organized a training camp for future <strong>Cipher Pol</strong> agents",
+    "notable_locations": ["Tower with trees on the roof"],
+    "current_ruler": "Unknown"
+  },
+  {
+    "name": "Kenzan Island",
+    "image": "/images/islands/Kenzan_Island.webp",
+    "location": "Paradise",
+    "description": "Island where the <strong> Tehna Gehna Kingdom </strong> is located. Seems to be the homeland of the Longarm Tribe",
+    "notable_locations": ["Tehna Gehna Kingdom"],
+    "current_ruler": "Unknown"
+  },
+  {
+    "name": "Lulusia's Kingdom Island",
+    "image": "/images/islands/Lulusia_Kingdom.webp",
+    "location": "Paradise",
+    "description": "Was an island where the World Government affiliated <strong>Lulusia Kingdom</strong> was located. It was destroyed by Imu using an Ancient Weapon and was erased from history",
+    "notable_locations": ["Lulusia Kingdom", "Town", "Port Town", "Milk Farm"],
+    "current_ruler": "No ruler (island destroyed)",
+    "notable_members": ["Seki", "Komane", "Kurotsuru"]
+  },
+  {
+    "name": "Fish-Man Island",
+    "image": "/images/islands/Fish-Man_Island.webp",
+    "location": "Paradise",
+    "description": "Island where the World Government affiliated <strong> Ryugu Kingdom </strong> is located, home of the fish-men and merfolk. It serves as an underway gateway to the New World for those who do not wish to cross over the Red Line above",
+    "notable_locations": ["Ryugu Kingdom", "Ryugu Palace", "Mermaid Cove", "Coral Hill", "Sea Forest", "Fish-Man District", "Gyoverly Hills"],
+    "current_ruler": "Neptune (Ryugu Kingdom)",
+    "notable_members": ["Neptune", "Fukaboshi", "Ryuboshi", "Manboshi", "Shirahoshi", "Minister of the Left", "Minister of the Right", "Megalo", "Shyarly", "Camie", "Hatchan", "Pappag", "Aladine", "Macro", "Charlotte Praline", "Hody Jones", "Vander Decken IX", "Hyouzou", "Zeo", "Daruma", "Dosun", "Ikaros Much"]
+  },
+  {
+    "name": "Pants Hazard",
+    "image": "/images/islands/Pants_Hazard.webp",
+    "location": "Paradise",
+    "description": "Island located south of Karakuri Island and said to be set apart from the rest of the world. It is where <strong>Vegapants</strong> currently lives. The residents have a culture of wearing women's underwear over their heads",
+    "current_ruler": "Unknown",
+    "notable_members": ["Vegapants"]
+  },
+  {
+    "name": "Hachinosu",
+    "image": "/images/islands/hachinosu.webp",
+    "location": "New World",
+    "description": "Pirate Island currently occupied by the <strong>Blackbeard Pirates</strong> and where the legendary Rocks Pirates resided. Previously ruled by Ochoku until he was defeat around a year ago by Koby, Law and Blackbeard",
+    "notable_locations": ["City", "Skull fortress"],
+    "current_ruler": "Marshall D. Teach",
+    "notable_members": ["Marshall D. Teach [Blackbeard]", "Jesus Burgess", "Shiryu", "Van Augur", "Avalo Pizarro", "Laffitte", "Catarina Devon", "Sanjuan Wolf", "Vasco Shot", "Doc Q", "Stronger", "Kuzan [Aokiji]", "Krieg", "Gin", "Pearl"]
+  },
+  {
+    "name": "Wano Country's Island",
+    "image": "/images/islands/Wano_Country.webp",
+    "location": "New World",
+    "description": "Island where the <strong> Wano Country </strong> is located. Previously occupied by the Beasts Pirates under Kaido, currently ruled by Kouzuki Momonosuke and location of the Ancient Weapon Pluton",
+    "notable_locations": ["Flower Capital", "Kuri", "Kibi", "Udon", "Hakumai", "Ringo", "Climbing Koi Waterfall", "Ancient Wano", "Amigasa Village", "Okoborne Town", "Bakura Town", "Udon Prison", "Neko Port", "Mogura Port", "Habu Port", "Oihagi Bridge", "Ebisu Town"],
+    "current_ruler": "Kouzuki Momonosuke",
+    "notable_members": ["Kouzuki Momonosuke", "Kouzuki Sukiyaki", "Kouzuki Hiyori", "Kinemon", "Denjiro", "Kikunojo", "Raizo", "Inuarashi", "Nekomamushi", "Kawamatsu", "Shinobu", "Kurozumi Tama", "Toko", "Onimaru", "Yamato", "Arber [King]", "Scien [Queen]", "Jack", "Whos-Who", "Fukurokuju", "Hotei"]
+  },
+  {
+    "name": "Foodvalten",
+    "image": "/images/islands/Foodvalten.webp",
+    "location": "New World",
+    "description": "Island formerly protected by <strong>Whitebeard</strong> until his death. <strong>Brownbeard</strong> later claimed this island as his territory but was defeated by Hawkins after",
+    "current_ruler": "Unknown"
+  },
+  {
+    "name": "New Marineford",
+    "image": "/images/islands/New_Marineford.webp",
+    "location": "New World",
+    "description": "Island that currently contains Marine Headquarters. Formerly contained <strong>Marine Base G-1</strong> until Sakazuki changed bases' locations with former Marine Base G-1",
+    "current_ruler": "Sakazuki",
+    "notable_members": ["Sakazuki [Akainu]"]
+  },
+  {
+    "name": "G-5's Island",
+    "image": "/images/islands/G-5.webp",
+    "location": "New World",
+    "description": "Island where <strong>Marine Base</strong> G-5 is located",
+    "notable_locations": ["Marine Base G-5"],
+    "current_ruler": "Unknown",
+    "notable_members": ["Smoker", "Yarisugi", "Tashigi"]
+  },
+  {
+    "name": "Laugh Tale",
+    "image": "/images/islands/Laugh_Tale.webp",
+    "location": "New World",
+    "description": "Island at the end of the New World which supposedly holds the treasure One Piece. It was named by Roger. The four Road Poneglyphs lead to four locations which, if aligned, lead to Laugh Tale",
+    "current_ruler": "Unknown"
+  },
+  {
+    "name": "Totto Land",
+    "image": "/images/islands/Totto_Land.webp",
+    "location": "New World",
+    "description": "Archipelago that constitutes the main territory of Big Mom and her crew. It has </strong>Whole Cake Island</strong> as Big Mom's base of operations, and 34 subsidiary islands arranged roughly in concentric circles. Each island is ruled by a member of the Charlotte Family as its minister",
+    "notable_locations": ["Whole Cake Island", "Sweet City", "Whole Cake Chateau", "Secuding Woods", "Brûlée's House", "Lake Aprico", "Caesar Clown's Replica Laboratory", "Northeastern Coast"],
+    "current_ruler": "Unknown",
+    "notable_members": ["Charlotte Perospero", "Charlotte Katakuri", "Charlotte Daifuku", "Charlotte Oven", "Charlotte Cracker", "Charlotte Amande", "Charlotte Mont-dOr", "Charlotte Smoothie", "Streusen", "Tamago"]
+  },
+  {
+    "name": "Punk Hazard",
+    "image": "/images/islands/Punk_Hazard.webp",
+    "location": "New World",
+    "description": "Island where Akainu and Aokiji had a battle during the timeskip over the Fleet Admiral position. First island the Straw Hats went to on the New World due to a distress call they received",
+    "notable_locations": ["Burning Lands", "Ice Lands", "Area F-16", "Research Institutes"],
+    "current_ruler": "No ruler"
+  },
+  {
+    "name": "Raijin Island",
+    "image": "/images/islands/Raijin_Island.webp",
+    "location": "New World",
+    "description": "Island at the start of the New World and one of the three islands which someone has to travel to if they are following their Log Pose",
+    "current_ruler": "Unknown",
+    "notable_members": ["Kasa"]
+  },
+  {
+    "name": "Risky Red Island",
+    "image": "/images/islands/Risky_Red_Island.webp",
+    "location": "New World",
+    "description": "Island at the start of the New World and one of the three islands which someone has to travel to if they are following their Log Pose",
+    "current_ruler": "Unknown"
+  },
+  {
+    "name": "Mystoria Island",
+    "image": "/images/islands/Mystoria_Island.webp",
+    "location": "New World",
+    "description": "Island at the start of the New World and one of the three islands which someone has to travel to if they are following their Log Pose",
+    "current_ruler": "Unknown"
+  },
+  {
+    "name": "Dressrosa",
+    "image": "/images/islands/dressrosa.webp",
+    "location": "New World",
+    "description": "Island and one of the twenty kingdoms that founded the World Government, known as the <strong>Land of Love and Passion</strong>. Formerly ruled by Donquixote Doflamingo",
+    "notable_locations": ["Acacia", "Sebio", "Primula", "Balsa", "Corrida Colosseum", "Flower Hill", "King's Plateau", "Royal Palace", "Toys House", "SMILE Factory"],
+    "current_ruler": "Riku Doldo III",
+    "notable_members": ["Viola", "Rebecca", "Kyros", "Tank Lepanto"]
+  },
+  {
+    "name": "Green Bit",
+    "image": "/images/islands/Green_Bit.webp",
+    "location": "New World",
+    "description": "Island located north of Dressrosa. Its underground is home to the <strong>Tontatta Kingdom</strong>",
+    "notable_locations": ["Tontatta Kingdom"],
+    "current_ruler": "Gancho (Tontatta Kingdom)",
+    "notable_members": ["Gancho", "Mansherry", "Leo", "Bomba", "Rampo", "Kabu", "Bian"]
+  },
+  {
+    "name": "Zou",
+    "image": "/images/islands/Zou.webp",
+    "location": "New World",
+    "description": "Island located on the back of a giant elephant named <strong>Zunesha</strong>. Home to the <strong>Mokomo Dukedom</strong> of the Mink Tribe",
+    "notable_locations": ["Front Gate", "Whale Forest", "Kurau City", "Rightrump Forest", "Deep Dark Swamp", "Rightflank Forest"],
+    "current_ruler": "Carrot",
+    "notable_members": ["Carrot", "Shishilian", "Concelot", "Giovanni", "Wanda", "Yomo", "Tristan", "Bariete"]
+  },
+  {
+    "name": "Prodence's Kingdom Island",
+    "image": "/images/islands/Prodence_Kingdom.webp",
+    "location": "New World",
+    "description": "Island where the World Government affiliated <strong>Prodence Kingdom</strong> is located",
+    "notable_locations": ["Prodence Kingdom"],
+    "current_ruler": "Elizabello II (Prodence Kingdom)",
+    "notable_members": ["Elizabello II", "Dagama"]
+  },
+  {
+    "name": "Mogaro's Kingdom Island",
+    "image": "/images/islands/Mogaro_Kingdom.webp",
+    "location": "New World",
+    "description": "Island where the <strong>Mogaro Kingdom</strong> is located and where the <strong>Funk Brothers</strong> came from",
+    "notable_locations": ["Mogaro Kingdom"],
+    "current_ruler": "Unknown",
+    "notable_members": ["Kelly Funk", "Bobby Funk"]
+  },
+  {
+    "name": "Jewel Ice Sheet's Island",
+    "image": "/images/islands/Jewel_Ice_Sheet.webp",
+    "location": "New World",
+    "description": "Island where the <strong>Jewel Ice Sheet</strong>, a treasure cache frozen beneath extremely hard ice, is located. <strong>Chinjao</strong> broke through this ice 13 years ago with his head",
+    "notable_locations": ["Jewel Ice Sheet"],
+    "current_ruler": "Unknown"
+  },
+  {
+    "name": "Doerena's Kingdom Island",
+    "image": "/images/islands/Mogaro_Kingdom.webp",
+    "location": "New World",
+    "description": "Island where the <strong> Doerena Kingdom </strong> is located. Some noble of the kingdom travelled to Dressrosa to compete in the Corrida Colosseum",
+    "notable_locations": ["Doerena Kingdom"],
+    "current_ruler": "Unknown"
+  },
+  {
+    "name": "Majiatsuka's Kingdom Island",
+    "image": "/images/islands/Majiatsuka_Kingdom.webp",
+    "location": "New World",
+    "description": "Island where the <strong>Majiatsuka Kingdom</strong> is located and where <strong>Rolling Logan</strong> comes from",
+    "notable_locations": ["Majiatsuka Kingdom"],
+    "current_ruler": "Unknown",
+    "notable_members": ["Rolling Logan"]
+  },
+  {
+    "name": "Applenine Island",
+    "image": "/images/islands/Applenine_Island.webp",
+    "location": "New World",
+    "description": "One of the three islands neighboring Dressrosa",
+    "current_ruler": "Unknown"
+  },
+  {
+    "name": "Karai Bari Island",
+    "image": "/images/islands/Karai_Bari_Island.webp",
+    "location": "New World",
+    "description": "Island currently occupied by Buggy's Delivery, which has since integrated into the <strong>Cross Guild</strong>",
+    "notable_locations": ["Buggy Town"],
+    "current_ruler": "Buggy",
+    "notable_members": ["Buggy", "Dracule Mihawk", "Crocodile", "Alvida", "Galdino [Mr. 3]", "Mohji", "Cabaji", "Daz Bonez [Mr. 1]"]
+  },
+  {
+    "name": "Broc Coli Island",
+    "image": "/images/islands/Broc_Coli_Island.webp",
+    "location": "New World",
+    "description": "Island that is about 2 days ago from Whole Cake Island",
+    "current_ruler": "Unknown"
+  },
+  {
+    "name": "Elbaph Island",
+    "image": "/images/islands/Elbaph.webp",
+    "location": "New World",
+    "description": "Island where the <strong> Warland Kingdom </strong> is located. Considered to be the strongest country in the world due to its mighty giant warriors",
+    "notable_locations": ["Treasure Tree Adam", "Underworld", "Tavern", "Road's Castle", "Sun World", "Western Village", "Owl Library", "Walrus School", "Aurust Castle", "Ancient Facility", "Artisan Village", "Hunter Village", "Heaven World"],
+    "current_ruler": "No ruler",
+    "notable_members": ["Loki", "Dorry", "Broggy", "Hajrudin", "Oimo", "Kashii", "Stansen", "Gerd", "Road", "Goldberg", "Jarul", "Jaguar D. Saul", "Colon", "Ripley", "Ange", "Biblo", "Scopper Gaban", "Kiba", "Ylva", "Ronja", "Ragnir"]
+  },
+  {
+    "name": "Germa Kingdom",
+    "image": "/images/islands/Germa_Kingdom.webp",
+    "location": "New World",
+    "description": "World's only seafaring kingdom, ruled by <strong>Vinsmoke Judge</strong> and formerly affiliated with the World Government",
+    "notable_locations": ["Vinsmoke Castle", "Throne Room", "Sanji's Room", "Soldier Stock Depot", "Dungeon", "Yonji's Castle"],
+    "current_ruler": "Vinsmoke Judge",
+    "notable_members": ["Vinsmoke Judge", "Vinsmoke Ichiji", "Vinsmoke Reiju", "Vinsmoke Niji", "Vinsmoke Yonji"]
+  },
+  {
+    "name": "Port Chibaralta Island",
+    "image": "/images/islands/Port_Chibaralta_Island.webp",
+    "location": "New World",
+    "description": "Island that was once territory of the <strong>Whitebeard Pirates</strong>",
+    "current_ruler": "Unknown"
+  },
+  {
+    "name": "Sphinx",
+    "image": "/images/islands/Sphinx_(Location).webp",
+    "location": "New World",
+    "description": "Island where <strong>Edward Newgate</strong> was born. Currently under Marco's protection",
+    "current_ruler": "Unknown",
+    "notable_members": ["Marco", "Oide", "Tama"]
+  },
+  {
+    "name": "Lodestar Island",
+    "image": "/images/islands/Lodestar_Island.webp",
+    "location": "New World",
+    "description": "Penultimate island in the Grand Line and the last island that can be reached by following the Log Pose",
+    "current_ruler": "Unknown"
+  },
+  {
+    "name": "Egghead",
+    "image": "/images/islands/Egghead.webp",
+    "location": "New World",
+    "description": "Island that houses the laboratory of <strong> Dr. Vegapunk </strong>. Designed to be 500 years into the future, it became labelled as Future Island",
+    "notable_locations": ["Fabiriophase", "Labophase", "Cloud Plant", "Punk Records", "Scrapyard"],
+    "current_ruler": "No ruler",
+    "notable_members": ["Shaka", "Lilith", "Edison", "Pythagoras", "Atlas"]
+  },
+  {
+    "name": "G-9's Island",
+    "image": "/images/islands/G-9.webp",
+    "location": "New World",
+    "description": "Island where the <strong>Marine Base G-9</strong> is located",
+    "notable_locations": ["Marine Base G-9"],
+    "current_ruler": "Unknown"
+  },
+  {
+    "name": "G-14's Island",
+    "image": "/images/islands/G-14.webp",
+    "location": "New World",
+    "description": "Island where the <strong>Marine Base G-14</strong> is located",
+    "notable_locations": ["Marine Base G-14"],
+    "current_ruler": "Unknown",
+    "notable_members": ["Doll", "Prince Grus", "Kujaku"]
+  },
+  {
+    "name": "Winner Island",
+    "image": "/images/islands/Winner_Island.webp",
+    "location": "New World",
+    "description": "Island northeast of Wano Country. <strong> Law </strong> selected this route from Wano and he and his crew were defeated here by the Blackbeard Pirates",
+    "current_ruler": "Unknown"
+  },
+  {
+    "name": "Gartel Island",
+    "image": "/images/islands/Gartel_Island.webp",
+    "location": "New World",
+    "description": "Island under the protection of the <strong> Red Hair Pirates </strong>. Bartolomeo and his crew were defeated here by them",
+    "current_ruler": "Unknown"
+  },
+  {
+    "name": "Bunt's Kingdom Island",
+    "image": "/images/islands/Bunt_Kingdom.webp",
+    "location": "New World",
+    "description": "Island where the <strong> Bunt Kingdom </strong> is located. Over 105 years ago, <strong>Ida</strong> washed up on the shore and was saved by the human citizens. She was given a job at the local circus here to earn a living while she recovered",
+    "notable_locations": ["Bunt Kingdom"],
+    "current_ruler": "Unknown"
+  },
+  {
+    "name": "Enishi Island",
+    "image": "/images/islands/Enishi.webp",
+    "location": "New World",
+    "description": "Island that has a non-affiliated World Government region in it and once aided <strong> Elbaph </strong> during a famine",
+    "current_ruler": "Unknown"
+  },
+  {
+    "name": "Foot Colony's Island",
+    "image": "/images/islands/Foot_Colony.webp",
+    "location": "New World",
+    "description": "Island where the International Philanthropy Federation's temple, <strong> Foot Colony </strong> was located 44 years ago until it was raided and destroyed by the Rocks Pirates",
+    "notable_locations": ["Foot Colony"],
+    "current_ruler": "Unknown"
+  },
+  {
+    "name": "Skypiea",
+    "image": "/images/islands/Skypiea.webp",
+    "location": "Sky",
+    "description": "Island located in the sky above <strong> Paradise </strong>",
+    "notable_locations": ["Heaven's Gate", "Angel Island", "Angel Beach", "Lovely Street", "Gan Fall's Home", "Upper Yard", "Hidden Cloud Village", "Wagomuland", "Pumpkin Cafe"],
+    "current_ruler": "Gan Fall",
+    "notable_members": ["Gan Fall", "Wyper", "Conis", "Pagaya", "Amazon", "McKinley", "Pierre", "Shandia Chief", "Aisa", "Kamakiri"]
+  },
+  {
+    "name": "Birka",
+    "image": "/images/islands/Birka.webp",
+    "location": "Sky",
+    "description": "Island located in the sky above <strong> Paradise </strong>, far to the southeast of Skypiea until its destruction. Home island of Enel",
+    "current_ruler": "No ruler"
+  },
+  {
+    "name": "Weatheria",
+    "image": "/images/islands/Weatheria.webp",
+    "location": "Sky",
+    "description": "Artificial sky island where <strong> Nami </strong> was sent by Kuma during Sabaody",
+    "notable_locations": ["Haredas' House", "Prison"],
+    "current_ruler": "Unknown",
+    "notable_members": ["Haredas"]
+  },
+  {
+    "name": "Ballon Terminal",
+    "image": "/images/islands/Ballon_Terminal.webp",
+    "location": "Sky",
+    "description": "Island located in the sky above the <strong> New World </strong>",
+    "current_ruler": "Unknown"
+  },
+  {
+    "name": "Merveille",
+    "image": "/images/islands/Merveille.webp",
+    "location": "Sky",
+    "description": "Archipelago located in the sky above <strong> Paradise </strong> that served as the base of operations for the <strong> Golden Lion Pirates </strong>",
+    "current_ruler": "Unknown"
+  },
+  {
+    "name": "Vira's Island",
+    "image": "/images/islands/Vira.webp",
+    "location": "Unknown",
+    "description": "Island somewhere in the <strong>Grand Line</strong> where a small country named <strong>Vira</strong> is located. The government was eventually overthrown by the Revolutionary Army",
+    "notable_locations": ["Vira"],
+    "current_ruler": "Unknown"
+  },
+  {
+    "name": "Yukiryu Island",
+    "image": "/images/islands/Yukiryu_Island.webp",
+    "location": "Unknown",
+    "description": "Island where <strong>Shanks</strong> and his crew were staying when they received a call from Rockstar about Whitebeard tearing up a message he wanted to send him",
+    "current_ruler": "Unknown"
+  },
+  {
+    "name": "Baltigo",
+    "image": "/images/islands/Baltigo.webp",
+    "location": "Unknown",
+    "description": "Island somewhere in the <strong> Grand Line </strong> where the Headquarters of the <strong> Revolutionary Army </strong> were located until they were destroyed by the Blackbeard Pirates. Robin spent 2 years here training",
+    "notable_locations": ["Revolutionary Army Headquarters"],
+    "current_ruler": "Unknown"
+  },
+  {
+    "name": "G-3's Island",
+    "image": "/images/islands/G-3.webp",
+    "location": "Unknown",
+    "description": "Island somewhere in the <strong> Grand Line </strong> where the <strong>Marine Base G-3</strong> is located",
+    "notable_locations": ["Marine Base G-3"],
+    "current_ruler": "Unknown"
+  },
+  {
+    "name": "Bourgeois' Kingdom Island",
+    "image": "/images/islands/Bourgeois_Kingdom.webp",
+    "location": "Unknown",
+    "description": "Island somewhere in the <strong> Grand Line </strong> where the <strong> Bourgeois Kingdom </strong> is located from which Cavendish hails",
+    "notable_locations": ["Bourgeois Kingdom"],
+    "current_ruler": "Unknown"
+  },
+  {
+    "name": "Standing's Kingdom Island",
+    "image": "/images/islands/Standing_Kingdom.webp",
+    "location": "Unknown",
+    "description": "Island somewhere in the <strong> Grand Line </strong> where the <strong> Standing Kingdom </strong> is located. Orlumbus' home nation",
+    "notable_locations": ["Standing Kingdom"],
+    "current_ruler": "Unknown"
+  },
+  {
+    "name": "Eigis' Kingdom Island",
+    "image": "/images/islands/Eigis_Kingdom.webp",
+    "location": "Unknown",
+    "description": "Island somewhere in the <strong> Grand Line </strong> where the World Government affiliated <strong> Eigis Kingdom </strong> is located. The citizens of the kingdom participated in the Eight-Nation Revolution, rebelling against their monarchs",
+    "notable_locations": ["Eigis Kingdom"],
+    "current_ruler": "King Tea IV (Eigis Kingdom)",
+    "notable_members": ["Tea IV"]
+  },
+  {
+    "name": "Vodka's Kingdom Island",
+    "image": "/images/islands/Vodka_Kingdom.webp",
+    "location": "Unknown",
+    "description": "Island somewhere in the <strong> Grand Line </strong> where the World Government affiliated <strong> Vodka Kingdom </strong> is located. Kaido lived here when he was a kid",
+    "notable_locations": ["Vodka Kingdom"],
+    "current_ruler": "Unknown"
+  },
+  {
+    "name": "Aoi's Kingdom Island",
+    "image": "/images/islands/Aoi_Kingdom.webp",
+    "location": "Unknown",
+    "description": "Island somewhere in the <strong> Grand Line </strong> where the <strong> Aoi Kingdom </strong> is located. Fujitora acted as the defense military chief",
+    "notable_locations": ["Aoi Kingdom"],
+    "current_ruler": "Unknown"
+  },
+  {
+    "name": "Shade's Port Island",
+    "image": "/images/islands/Shade_Port.webp",
+    "location": "Unknown",
+    "description": "Island somewhere in the <strong> Grand Line </strong> where <strong>Blackbeard</strong> was born",
+    "notable_locations": ["Shade Port"],
+    "current_ruler": "Unknown"
+  },
+  {
+    "name": "Porco's Kingdom Island",
+    "image": "/images/islands/Porco_Kingdom.webp",
+    "location": "Unknown",
+    "description": "Island somewhere in the <strong> Grand Line </strong> where the <strong> Porco Kingdom </strong> is located and where <strong>Ginny</strong> was born",
+    "notable_locations": ["Porco Kingdom"],
+    "current_ruler": "Unknown"
+  },
+  {
+    "name": "Mt. Kintoki's Island",
+    "image": "/images/islands/Mt._Kintoki.webp",
+    "location": "Unknown",
+    "description": "Island somewhere in the <strong> Grand Line </strong> where <strong>Mt. Kintoki</strong> is located and where <strong>Sentomaru</strong> was born",
+    "notable_locations": ["Mt. Kintoki"],
+    "current_ruler": "Unknown"
+  },
+  {
+    "name": "Land of Ice's Island",
+    "image": "/images/islands/Land_of_Ice.webp",
+    "location": "Unknown",
+    "description": "Island where the <strong>Land of Ice</strong> is located. 500 years ago, <strong>Oars</strong> died here due to its low temperature",
+    "notable_locations": ["Land of Ice"],
+    "current_ruler": "Unknown"
+  },
+  {
+    "name": "Rommel's Kingdom Island",
+    "image": "/images/islands/Rommel_Kingdom.webp",
+    "location": "Unknown",
+    "description": "Island where the <strong> Rommel Kingdom </strong> is located and where the legend of Hakuba originated",
+    "notable_locations": ["Rommel Kingdom"],
+    "current_ruler": "Unknown"
+  },
+  {
+    "name": "Tajine's Kingdom Island",
+    "image": "/images/islands/Tajine_Kingdom.webp",
+    "location": "Unknown",
+    "description": "Island where the World Government affiliated <strong> Tajine Kingdom </strong> is located",
+    "notable_locations": ["Tajine Kingdom"],
+    "current_ruler": "Mororon (Tajine Kingdom)",
+    "notable_members": ["Mororon"]
+  },
+  {
+    "name": "Shishano's Kingdom Island",
+    "image": "/images/islands/Tajine_Kingdom.webp",
+    "location": "Unknown",
+    "description": "Island where the World Government affiliated <strong> Shishano Kingdom </strong> is located",
+    "notable_locations": ["Shishano Kingdom"],
+    "current_ruler": "Tacos (Shishano Kingdom)",
+    "notable_members": ["Tacos"]
+  },
+  {
+    "name": "Bestland's Kingdom Island",
+    "image": "/images/islands/Tajine_Kingdom.webp",
+    "location": "Unknown",
+    "description": "Island where the World Government affiliated <strong> Bestland Kingdom </strong> is located",
+    "notable_locations": ["Bestland Kingdom"],
+    "current_ruler": "Lemoncheese (Bestland Kingdom)",
+    "notable_members": ["Lemoncheese"]
+  },
+  {
+    "name": "South Fire's Kingdom Island",
+    "image": "/images/islands/Tajine_Kingdom.webp",
+    "location": "Unknown",
+    "description": "Island where the World Government affiliated <strong> South Fire Kingdom </strong> is located",
+    "notable_locations": ["South Fire Kingdom"],
+    "current_ruler": "Jeep (South Fire Kingdom)",
+    "notable_members": ["Jeep"]
+  },
+  {
+    "name": "Ringo's Kingdom Island",
+    "image": "/images/islands/Tajine_Kingdom.webp",
+    "location": "Unknown",
+    "description": "Island where the World Government affiliated <strong> Ringo Kingdom </strong> is located",
+    "notable_locations": ["Ringo Kingdom"],
+    "current_ruler": "Nashi (Ringo Kingdom)",
+    "notable_members": ["Nashi"]
+  },
+  {
+    "name": "Czacho's Kingdom Island",
+    "image": "/images/islands/Tajine_Kingdom.webp",
+    "location": "Unknown",
+    "description": "Island where the World Government affiliated <strong> Czacho Kingdom </strong> is located",
+    "notable_locations": ["Czacho Kingdom"],
+    "current_ruler": "Mari (Czacho Kingdom)",
+    "notable_members": ["Mari"]
+  },
+  {
+    "name": "Jambalaya's Kingdom Island",
+    "image": "/images/islands/Tajine_Kingdom.webp",
+    "location": "Unknown",
+    "description": "Island where the World Government affiliated <strong> Jambalaya Kingdom </strong> is located",
+    "notable_locations": ["Jambalaya Kingdom"],
+    "current_ruler": "Sauce (Jambalaya Kingdom)",
+    "notable_members": ["Sauce"]
+  },
+  {
+    "name": "Gingapore's Kingdom Island",
+    "image": "/images/islands/Tajine_Kingdom.webp",
+    "location": "Unknown",
+    "description": "Island where the World Government affiliated <strong> Gingapore Kingdom </strong> is located",
+    "notable_locations": ["Gingapore Kingdom"],
+    "current_ruler": "Neggy (Gingapore Kingdom)",
+    "notable_members": ["Neggy"]
+  },
+  {
+    "name": "Cameron's Kingdom Island",
+    "image": "/images/islands/Tajine_Kingdom.webp",
+    "location": "Unknown",
+    "description": "Island where the World Government affiliated <strong> Cameron Kingdom </strong> is located",
+    "notable_locations": ["Cameron Kingdom"],
+    "current_ruler": "Couran (Cameron Kingdom)",
+    "notable_members": ["Couran"]
+  },
+  {
+    "name": "Beef's Kingdom Island",
+    "image": "/images/islands/Tajine_Kingdom.webp",
+    "location": "Unknown",
+    "description": "Island where the World Government affiliated <strong> Beef Kingdom </strong> is located",
+    "notable_locations": ["Beef Kingdom"],
+    "current_ruler": "Stroganoff (Beef Kingdom)",
+    "notable_members": ["Stroganoff"]
+  },
+  {
+    "name": "Pepe's Kingdom Island",
+    "image": "/images/islands/Pepe_Kingdom.webp",
+    "location": "Unknown",
+    "description": "Island where the <strong> Pepe Kingdom </strong> is located. Extremely impoverished, as it is said that a thousand of its citizens die of hunger each year",
+    "notable_locations": ["Pepe Kingdom"],
+    "current_ruler": "Unknown"
+  },
+  {
+    "name": "Micqueot's Island",
+    "image": "/images/islands/Tajine_Kingdom.webp",
+    "location": "Unknown",
+    "description": "Place that is renowned for its vineyards and the production of the Ithürzburger Stein wine. It was mentioned by <strong> Fullbody </strong> at the Baratie",
+    "notable_locations": ["Micqueot"],
+    "current_ruler": "Unknown"
+  },
+  {
+    "name": "Mt. Mauri's Island",
+    "image": "/images/islands/Mt._Mauri.webp",
+    "location": "Unknown",
+    "description": "Island where <strong> Mt Mauri </strong> is located. It is known to the Big Mom Pirates, as Smoothie offered Mt. Mauri lava as a drink to the guests",
+    "notable_locations": ["Mt. Mauri"],
+    "current_ruler": "Unknown"
+  },
+  {
+    "name": "Sankan's Kingdom Island",
+    "image": "/images/islands/Tajine_Kingdom.webp",
+    "location": "Unknown",
+    "description": "Island where the <strong> Sankan Kingdom </strong> is located",
+    "notable_locations": ["Sankan Kingdom"],
+    "current_ruler": "Vincent (Sankan Kingdom)",
+    "notable_members": ["Vincent"]
+  },
+  {
+    "name": "G-4's Island",
+    "image": "/images/islands/G-4.webp",
+    "location": "Unknown",
+    "description": "Island somewhere in the <strong> Grand Line </strong> where the <strong>Marine Base G-4</strong> is located. <strong> Fake Straw Hat crew  </strong> is imprisoned here",
+    "notable_locations": ["Marine Base G-4"],
+    "current_ruler": "Unknown"
+  },
+  {
+    "name": "Marine GS General Hospital's Island",
+    "image": "/images/islands/Marine_GS_General_Hospital.webp",
+    "location": "Unknown",
+    "description": "Island somewhere in the <strong> Grand Line </strong> where the <strong>Marine GS General Hospital</strong> is located. Members of SWORD were recovering here after the Hachinosu raid",
+    "notable_locations": ["Marine GS General Hospital"],
+    "current_ruler": "Unknown"
+  },
+  {
+    "name": "G-11's Island",
+    "image": "/images/islands/G-9.webp",
+    "location": "Unknown",
+    "description": "Island somewhere in the <strong> Grand Line </strong> where the <strong>Marine Base G-11</strong> is located",
+    "notable_locations": ["Marine Base G-11"],
+    "current_ruler": "Unknown"
+  },
+  {
+    "name": "Yano Country's Island",
+    "image": "/images/islands/Yano_Country.webp",
+    "location": "Unknown",
+    "description": "Home island of <strong>Shiki</strong>. Described as a rougher version of Wano Country",
+    "notable_locations": ["Yano Country"],
+    "current_ruler": "Unknown"
+  }
+]

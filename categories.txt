@@ -1,0 +1,247 @@
+ONE PIECE - CATEGORY LIST
+Categories matched by at least 3 characters. Count = number of matching characters.
+Source: characters.json (joined with devil_fruits.json and islands.json)
+Total: 195 categories
+
+======================================================================
+Bounty  (7 categories)
+======================================================================
+  Has a known bounty                       222 characters
+  Bounty ≥ 100,000,000                     139 characters
+  Bounty below 100,000,000 (but has one)    83 characters
+  Bounty ≥ 500,000,000                      75 characters
+  Bounty ≥ 1,000,000,000                    29 characters
+  Bounty ≥ 1,500,000,000                    21 characters
+  Bounty ≥ 3,000,000,000                    16 characters
+
+======================================================================
+Race  (20 categories)
+======================================================================
+  Race: Human                   1114 characters
+  Race: Animal                   112 characters
+  Race: Giant                     50 characters
+  Race: Fish-man                  40 characters
+  Race: Merfolk                   32 characters
+  Race: Mink                      25 characters
+  Race: Dwarf                     22 characters
+  Race: Devil Fruit creation      20 characters
+  Race: Moon people - Shandian    17 characters
+  Race: Object                    17 characters
+  Race: Robot                     14 characters
+  Race: Artificial Giant          10 characters
+  Race: Moon people - Birkan      10 characters
+  Race: Moon people - Skypiean     9 characters
+  Race: Human-Snakeneck hybrid     7 characters
+  Race: Longarm                    6 characters
+  Race: Human-Longarm hybrid       4 characters
+  Race: Human-Fish-man hybrid      3 characters
+  Race: Human-Longleg hybrid       3 characters
+  Race: Merfolk-Human hybrid       3 characters
+
+======================================================================
+Status  (3 categories)
+======================================================================
+  Status: Alive     1211 characters
+  Status: Unknown    168 characters
+  Status: Deceased   153 characters
+
+======================================================================
+Affiliation  (93 categories)
+======================================================================
+  Affiliation: Big Mom Pirates                               95 characters
+  Affiliation: Marines                                       87 characters
+  Affiliation: Beasts Pirates                                73 characters
+  Affiliation: Whitebeard Pirates                            59 characters
+  Affiliation: Kouzuki Family                                27 characters
+  Affiliation: Thriller Bark Pirates                         26 characters
+  Affiliation: Roger Pirates                                 25 characters
+  Affiliation: Kuja                                          23 characters
+  Affiliation: Arabasta Kingdom                              22 characters
+  Affiliation: Kid Pirates                                   22 characters
+  Affiliation: Tontatta Kingdom                              22 characters
+  Affiliation: Revolutionary Army                            19 characters
+  Affiliation: Spade Pirates                                 19 characters
+  Affiliation: Mokomo Dukedom                                18 characters
+  Affiliation: World Government                              18 characters
+  Affiliation: Baroque Works                                 16 characters
+  Affiliation: Blackbeard Pirates                            16 characters
+  Affiliation: Donquixote Pirates                            16 characters
+  Affiliation: Walrus School                                 16 characters
+  Affiliation: Foxy Pirates                                  15 characters
+  Affiliation: CP0                                           14 characters
+  Affiliation: Impel Down                                    14 characters
+  Affiliation: Shandia                                       14 characters
+  Affiliation: Giant Warrior Pirates                         13 characters
+  Affiliation: Red Hair Pirates                              13 characters
+  Affiliation: Ryugu Kingdom                                 13 characters
+  Affiliation: Kurozumi Family                               12 characters
+  Affiliation: Mermaid Café                                  11 characters
+  Affiliation: Straw Hat Pirates                             11 characters
+  Affiliation: Beasts Pirates (Numbers)                      10 characters
+  Affiliation: Caesar Clown                                  10 characters
+  Affiliation: Fake Straw Hat Crew                           10 characters
+  Affiliation: Cross Guild                                    9 characters
+  Affiliation: Franky Family                                  9 characters
+  Affiliation: Germa Kingdom                                  9 characters
+  Affiliation: Heart Pirates                                  9 characters
+  Affiliation: New Fish-Man Pirates                           9 characters
+  Affiliation: Ohara Archaeologists                           9 characters
+  Affiliation: Shimotsuki Family                              9 characters
+  Affiliation: Arlong Pirates                                 8 characters
+  Affiliation: Bellamy Pirates                                8 characters
+  Affiliation: God's Army                                     8 characters
+  Affiliation: New Spiders Cafe                               7 characters
+  Affiliation: Beasts Pirates (Armored Division)              6 characters
+  Affiliation: Five Elders                                    6 characters
+  Affiliation: Knights of God                                 6 characters
+  Affiliation: Krieg Pirates                                  6 characters
+  Affiliation: Marines (SSG)                                  6 characters
+  Affiliation: New Giant Warrior Pirates                      6 characters
+  Affiliation: Poseidon                                       6 characters
+  Affiliation: Rocks Pirates                                  6 characters
+  Affiliation: Underworld                                     6 characters
+  Affiliation: Automata                                       5 characters
+  Affiliation: Baroque Works (Millions)                       5 characters
+  Affiliation: Bonney Pirates                                 5 characters
+  Affiliation: Charlotte Family                               5 characters
+  Affiliation: Dressrosa Kingdom                              5 characters
+  Affiliation: Fire Tank Pirates                              5 characters
+  Affiliation: Galley-La Company                              5 characters
+  Affiliation: Germ Pirates                                   5 characters
+  Affiliation: Goa Kingdom                                    5 characters
+  Affiliation: Marines (SWORD)                                5 characters
+  Affiliation: Roshwan Kingdom                                5 characters
+  Affiliation: Ukkari Hot-Spring Island                       5 characters
+  Affiliation: Black Cat Pirates                              4 characters
+  Affiliation: CP9                                            4 characters
+  Affiliation: Drum Kingdom                                   4 characters
+  Affiliation: God's Guards                                   4 characters
+  Affiliation: Ideo Pirates                                   4 characters
+  Affiliation: Island of Rare Animals                         4 characters
+  Affiliation: Newkama Land                                   4 characters
+  Affiliation: Rebel Army                                     4 characters
+  Affiliation: Sun Pirates                                    4 characters
+  Affiliation: Vegapunk                                       4 characters
+  Affiliation: Warland Kingdom                                4 characters
+  Affiliation: Alvida Pirates (disbanded)                     3 characters
+  Affiliation: Baratie                                        3 characters
+  Affiliation: Baroque Works (Billions)                       3 characters
+  Affiliation: Beasts Pirates (Tobiroppo)                     3 characters
+  Affiliation: Beautiful Pirates                              3 characters
+  Affiliation: Dadan Family                                   3 characters
+  Affiliation: Endurance Curry Pirates                        3 characters
+  Affiliation: Galley-La Company (Zambai's Company Union)     3 characters
+  Affiliation: Happo Navy                                     3 characters
+  Affiliation: Kyoshiro Family                                3 characters
+  Affiliation: Lvneel Kingdom                                 3 characters
+  Affiliation: Macro Pirates                                  3 characters
+  Affiliation: Rumbar Pirates                                 3 characters
+  Affiliation: Tom's Workers                                  3 characters
+  Affiliation: Usopp Pirates (disbanded)                      3 characters
+  Affiliation: Wagomuland                                     3 characters
+  Affiliation: World Economy News Paper                       3 characters
+  Affiliation: Yes Pirates                                    3 characters
+
+======================================================================
+Origin sea  (8 categories)
+======================================================================
+  Origin: Grand Line    302 characters
+  Origin: East Blue     110 characters
+  Origin: North Blue     62 characters
+  Origin: West Blue      38 characters
+  Origin: South Blue     36 characters
+  Origin: Calm Belt      19 characters
+  Origin: Sky Islands    19 characters
+  Origin: Red Line        6 characters
+
+======================================================================
+Devil Fruit  (7 categories)
+======================================================================
+  Has a Devil Fruit                      223 characters
+  Devil Fruit type: Zoan                 107 characters
+  Devil Fruit type: Paramecia            100 characters
+  Devil Fruit subtype: Artificial Zoan    51 characters
+  Devil Fruit subtype: Mythical Zoan      15 characters
+  Devil Fruit type: Logia                 14 characters
+  Devil Fruit subtype: Ancient Zoan        9 characters
+
+======================================================================
+Haki  (5 categories)
+======================================================================
+  Can use Haki                      184 characters
+  Can use Armament Haki             159 characters
+  Can use Observation Haki          123 characters
+  Can use Conqueror's Haki           28 characters
+  Can use all three types of Haki    20 characters
+
+======================================================================
+Height  (4 categories)
+======================================================================
+  Height between 150 and 200 cm   133 characters
+  Height over 500 cm               68 characters
+  Height over 1,000 cm             31 characters
+  Height under 100 cm               9 characters
+
+======================================================================
+Age  (4 categories)
+======================================================================
+  Has a known age   501 characters
+  Age 60 or older    63 characters
+  Age under 18       46 characters
+  Age over 100       12 characters
+
+======================================================================
+Debut chapter  (7 categories)
+======================================================================
+  Debuted after the timeskip (ch. ≥ 598)    797 characters
+  Debuted before the timeskip (ch. ≤ 597)   721 characters
+  Debut chapter ≥ 900                       413 characters
+  Debut chapter 1–300                       353 characters
+  Debut chapter 1–100                       136 characters
+  Debut chapter ≥ 1000                      132 characters
+  Debuted in Chapter 1                       19 characters
+
+======================================================================
+Visited (journey)  (28 categories)
+======================================================================
+  Visited Wano Country's Island   369 characters
+  Visited Marineford              161 characters
+  Visited Totto Land              140 characters
+  Visited Dressrosa               139 characters
+  Visited Mary Geoise             136 characters
+  Visited Sabaody Archipelago     122 characters
+  Visited Fish-Man Island         116 characters
+  Visited Elbaph Island           113 characters
+  Visited Water 7                  80 characters
+  Visited Zou                      75 characters
+  Visited Sandy Island             73 characters
+  Visited Skypiea                  68 characters
+  Visited Impel Down               64 characters
+  Visited Punk Hazard              62 characters
+  Visited Hachinosu                60 characters
+  Visited Egghead                  58 characters
+  Visited God Valley               57 characters
+  Visited Enies Lobby              56 characters
+  Visited Jaya                     42 characters
+  Visited Island of Women          40 characters
+  Visited Thriller Bark            39 characters
+  Visited Dawn Island              35 characters
+  Visited Little Garden            25 characters
+  Visited Baratie                  24 characters
+  Visited Drum Island              24 characters
+  Visited Ohara                    24 characters
+  Visited Baltigo                  20 characters
+  Visited Laugh Tale               19 characters
+
+======================================================================
+Misc  (9 categories)
+======================================================================
+  Has 5 or more listed relationships            394 characters
+  Has an epithet                                261 characters
+  Has 10 or more listed relationships           156 characters
+  Has a transformation / alternate form image   113 characters
+  Member of the Charlotte family (by name)       86 characters
+  Carries the "D." in their name                 14 characters
+  Vinsmoke family (by name)                       6 characters
+  Kouzuki family (by name)                        5 characters
+  Boa family (by name)                            3 characters

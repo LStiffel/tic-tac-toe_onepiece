@@ -1,0 +1,1764 @@
+[
+  {
+    "name": " Bara Bara no Mi",
+    "english": "Chop-Chop Fruit",
+    "image": "/images/devil_fruits/barabara.webp",
+    "image_pre": "/images/devil_fruits/barabarausage.webp",
+    "type": "Paramecia",
+    "user": "Buggy",
+    "description": "Allows the user to split their body into independently controllable parts and become immune to cutting attacks, making them a <strong>Splitting Human</strong>."
+  },
+  {
+    "name": " Sube Sube no Mi",
+    "english": "Slip-Slip Fruit",
+    "image": "/images/devil_fruits/subesube.webp",
+    "image_pre": "/images/devil_fruits/subesubeusage.webp",
+    "type": "Paramecia",
+    "user": "Alvida",
+    "description": "Allows the user to have an incredibly smooth, frictionless body that makes physical attacks and objects slide off, making them a <strong>Slippery Human</strong>."
+  },
+  {
+    "name": " Bomu Bomu no Mi",
+    "english": "Boom-Boom Fruit",
+    "image": "/images/devil_fruits/bomubomu.webp",
+    "image_pre": "/images/devil_fruits/bomubomuusage.webp",
+    "type": "Paramecia",
+    "user": "Gem [Mr. 5]",
+    "description": "Allows the user to make any part of their body explode, making them a <strong>Explosive Human</strong>."
+  },
+  {
+    "name": " Kiro Kiro no Mi",
+    "english": "Kilo-Kilo Fruit",
+    "image": "/images/devil_fruits/kirokiro.webp",
+    "image_pre": "/images/devil_fruits/kirokirousage.webp",
+    "type": "Paramecia",
+    "user": "Mikita [Miss Valentine]",
+    "description": "Allows the user to manipulate the weight of themselves, increasing or decreasing mass at will, making them a <strong>Weight-Warping Human</strong>."
+  },
+  {
+    "name": " Hana Hana no Mi",
+    "english": "Flower-Flower Fruit",
+    "image": "/images/devil_fruits/hanahana.webp",
+    "image_pre": "/images/devil_fruits/hanahanausage.webp",
+    "type": "Paramecia",
+    "user": "Nico Robin",
+    "description": "Allows the user to sprout extra body parts from any surface, making them a <strong>Multiplied Human</strong>."
+  },
+  {
+    "name": " Doru Doru no Mi",
+    "english": "Wax-Wax Fruit",
+    "image": "/images/devil_fruits/dorudoru.webp",
+    "image_pre": "/images/devil_fruits/dorudoruusage.webp",
+    "type": "Paramecia",
+    "user": "Galdino [Mr. 3]",
+    "description": "Allows the user to create and manipulate wax to mold their body or objects at will, making them a <strong>Candle Human</strong>."
+  },
+  {
+    "name": " Baku Baku no Mi",
+    "english": "Munch-Munch Fruit",
+    "image": "/images/devil_fruits/bakubaku.webp",
+    "image_pre": "/images/devil_fruits/bakubakuusage.webp",
+    "type": "Paramecia",
+    "user": "Wapol",
+    "description": "Allows the user to devour and merge with objects to gain their properties, making them a <strong>Voracious Human</strong>."
+  },
+  {
+    "name": " Mane Mane no Mi",
+    "english": "Clone-Clone Fruit",
+    "image": "/images/devil_fruits/manemane.webp",
+    "image_pre": "/images/devil_fruits/manemaneusage.webp",
+    "type": "Paramecia",
+    "user": "Bentham (Bon Clay) [Mr. 2]",
+    "description": "Allows the user to mimic the appearance and voice of anyone they touch, making them an <strong>Imitating Human</strong>."
+  },
+  {
+    "name": " Supa Supa no Mi",
+    "english": "Dice-Dice Fruit",
+    "image": "/images/devil_fruits/supasupa.webp",
+    "image_pre": "/images/devil_fruits/supasupausage.webp",
+    "type": "Paramecia",
+    "user": "Daz Bonez [Mr. 1]",
+    "description": "Allows the user to transform parts of their body into sharp, metallic blades, making them a <strong>Full-Body Bladed Human</strong>."
+  },
+  {
+    "name": " Toge Toge no Mi",
+    "english": "Spike-Spike Fruit",
+    "image": "/images/devil_fruits/togetoge.webp",
+    "type": "Paramecia",
+    "user": "Zala [Miss Doublefinger]",
+    "description": "Allows the user to sprout and control spikes or thorns from their body, making them a <strong>Spike Human</strong>."
+  },
+  {
+    "name": " Ori Ori no Mi",
+    "english": "Bind-Bind Fruit",
+    "image": "/images/devil_fruits/oriori.webp",
+    "type": "Paramecia",
+    "user": "Hina",
+    "description": "Allows the user to bind and restrain targets by generating unbreakable chains or bindings, making them a <strong>Binding Human</strong>."
+  },
+  {
+    "name": " Bane Bane no Mi",
+    "english": "Spring-Spring Fruit",
+    "image": "/images/devil_fruits/banebane.webp",
+    "type": "Paramecia",
+    "user": "Bellamy",
+    "description": "Allows the user to bounce and propel themselves by converting parts of their body into springs, making them a <strong>Spring Human</strong>."
+  },
+  {
+    "name": " Ito Ito no Mi (Awakened)",
+    "english": "String-String Fruit",
+    "image": "/images/devil_fruits/itoito.webp",
+    "image_pre": "/images/devil_fruits/itoitousage.webp",
+    "type": "Paramecia",
+    "user": "Donquixote Doflamingo",
+    "description": "Allows the user to produce and control thin, strong strings to manipulate objects and people, making them a <strong>String Human</strong>."
+  },
+  {
+    "name": " Noro Noro no Mi",
+    "english": "Slow-Slow Fruit",
+    "image": "/images/devil_fruits/noronoro.webp",
+    "type": "Paramecia",
+    "user": "Foxy",
+    "description": "Allows the user to emit beams which temporarily slow down their target, making them a <strong>Noroma Human</strong>."
+  },
+  {
+    "name": " Doa Doa no Mi",
+    "english": "Door-Door Fruit",
+    "image": "/images/devil_fruits/doadoa.webp",
+    "type": "Paramecia",
+    "user": "Blueno",
+    "description": "Allows the user to create doors through anything they touch, making them a <strong>Door Human</strong>."
+  },
+  {
+    "name": " Awa Awa no Mi",
+    "english": "Bubble-Bubble Fruit",
+    "image": "/images/devil_fruits/awaawa.webp",
+    "image_pre": "/images/devil_fruits/awaawausage.webp",
+    "type": "Paramecia",
+    "user": "Kalifa",
+    "description": "Allows the user to emit and control soap and bubbles that can not only clean off dirt but can also clean off power, making them a <strong>Soap Human</strong>."
+  },
+  {
+    "name": " Beri Beri no Mi",
+    "english": "Berry-Berry Fruit",
+    "image": "/images/devil_fruits/beriberi.webp",
+    "type": "Paramecia",
+    "user": "Very Good",
+    "description": "allows the user to transform their body parts into a multitude of berry-like balls, making them a <strong>Grape Human</strong>."
+  },
+  {
+    "name": " Sabi Sabi no Mi",
+    "english": "Rust-Rust Fruit",
+    "image": "/images/devil_fruits/sabisabi.webp",
+    "type": "Paramecia",
+    "user": "Shu",
+    "description": "Allows the user to cause metallic items to rust and break, making them a <strong>Rust Human</strong>."
+  },
+  {
+    "name": " Shari Shari no Mi",
+    "english": "Spin-Spin Fruit",
+    "image": "/images/devil_fruits/sharishari.webp",
+    "type": "Paramecia",
+    "user": "Sharinguru",
+    "description": "Allows the user to rotate their body parts like wheels making them a <strong>Wheel Human</strong>."
+  },
+  {
+    "name": " Horo Horo no Mi",
+    "english": "Hollow-Hollow Fruit",
+    "image": "/images/devil_fruits/horohoro.webp",
+    "image_pre": "/images/devil_fruits/horohorousage.webp",
+    "type": "Paramecia",
+    "user": "Perona",
+    "description": "Allows the user to conjure ghost, making them a <strong>Ghost Human</strong>."
+  },
+  {
+    "name": " Yomi Yomi no Mi",
+    "english": "Revive-Revive Fruit",
+    "image": "/images/devil_fruits/yomiyomi.webp",
+    "image_pre": "/images/devil_fruits/yomiyomiusage.webp",
+    "type": "Paramecia",
+    "user": "Brook",
+    "description": "Allows the user to resurrect after their first death and use several other soul-based abilities, making them a <strong>Reviving Human</strong>."
+  },
+  {
+    "name": " Kage Kage no Mi",
+    "english": "Shadow-Shadow Fruit",
+    "image": "/images/devil_fruits/kagekage.webp",
+    "image_pre": "/images/devil_fruits/kagekageusage.webp",
+    "type": "Paramecia",
+    "user": "Gecko Moria [Kouzuki Moria]",
+    "description": "Alows the user to manifest and control shadows of living creatures as tangible forms, making them a <strong>Ruler of Shadows</strong>."
+  },
+  {
+    "name": " Nikyu Nikyu no Mi",
+    "english": "Paw-Paw Fruit",
+    "image": "/images/devil_fruits/nikyunikyu.webp",
+    "image_pre": "/images/devil_fruits/nikyunikyuusage.webp",
+    "type": "Paramecia",
+    "user": "Bartholomew Kuma",
+    "description": "Allows the user to repel anything via paws, making them a <strong>Paw Human</strong>."
+  },
+  {
+    "name": " Toshi Toshi no Mi",
+    "english": "Age-Age Fruit",
+    "image": "/images/devil_fruits/toshitoshi.webp",
+    "type": "Paramecia",
+    "user": "Jewelry Bonney",
+    "description": "Allows the user to manipulate the ages of people or objects, making them a <strong>Age Manipulation Human</strong>. "
+  },
+  {
+    "name": " Jiki Jiki no Mi (Awakened)",
+    "english": "Magnet-Magnet Fruit",
+    "image": "/images/devil_fruits/jikijiki.webp",
+    "image_pre": "/images/devil_fruits/jikijikiusage.webp",
+    "type": "Paramecia",
+    "user": "Eustass Kid",
+    "description": "Allows the user to create magnetic forces and use them to control metal, making them a <strong>Metal Human</strong>."
+  },
+  {
+    "name": " Ope Ope no Mi (Awakened)",
+    "english": "Op-Op Fruit",
+    "image": "/images/devil_fruits/opeope.webp",
+    "image_pre": "/images/devil_fruits/opeopeusage.webp",
+    "type": "Paramecia",
+    "user": "Trafalgar D. Water Law",
+    "description": "Allows the user to create spherical domains, inside of which the user can freely rearrange, dismantle and remodel anything and anyone, making them a <strong>Free Modification Human</strong>."
+  },
+  {
+    "name": " Shiro Shiro no Mi",
+    "english": "Castle-Castle Fruit",
+    "image": "/images/devil_fruits/shiroshiro.webp",
+    "type": "Paramecia",
+    "user": "Capone Bege",
+    "description": "Alows the user to become a living fortress, making them a <strong>Castle Human</strong>."
+  },
+  {
+    "name": " Unnamed Paramecia",
+    "image": "/images/devil_fruits/urougefruit.webp",
+    "type": "Paramecia",
+    "user": "Urouge",
+    "description": "Allows the user to convert damage inflicted onto him into physical strenght, making them a <strong>??? Human</strong>."
+  },
+  {
+    "name": " Wara Wara no Mi",
+    "english": "Straw-Straw Fruit",
+    "image": "/images/devil_fruits/warawara.webp",
+    "type": "Paramecia",
+    "user": "Basil Hawkins",
+    "description": "Allows the user to create and manipulate straw at will, with the straw having damage-redirecting properties, making them a <strong>Straw Human</strong>."
+  },
+  {
+    "name": " Oto Oto no Mi",
+    "english": "Tone-Tone Fruit",
+    "image": "/images/devil_fruits/otooto.webp",
+    "type": "Paramecia",
+    "user": "Scratchmen Apoo",
+    "description": "Allows the user to transform parts of their body into musical instruments and play music with a variety of destructive effects, making them a <strong>Music Human</strong>."
+  },
+  {
+    "name": " Mero Mero no Mi",
+    "english": "Love-Love Fruit",
+    "image": "/images/devil_fruits/meromero.webp",
+    "image_pre": "/images/devil_fruits/meromerousage.webp",
+    "type": "Paramecia",
+    "user": "Boa Hancock",
+    "description": "Allows the user to make a range of attacks which use emotions of love, lust or adoration to transform opponents into stone, making them a <strong>Love Human</strong>. "
+  },
+  {
+    "name": " Doku Doku no Mi",
+    "english": "Venom-Venom Fruit",
+    "image": "/images/devil_fruits/dokudoku.webp",
+    "type": "Paramecia",
+    "user": "Magellan",
+    "description": "Allows the user to produce and control different types of poison, as well as granting immunity to all of them, making them a <strong>Poison Human</strong>."
+  },
+  {
+    "name": " Horu Horu no Mi",
+    "english": "Hormone-Hormone Fruit",
+    "image": "/images/devil_fruits/horuhoru.webp",
+    "type": "Paramecia",
+    "user": "Emporio Ivankov",
+    "description": "Allows the user to create a variety of special hormones that can alter the recipient's body in any way the user desires, making them a <strong>Hormone Controlling Human</strong>."
+  },
+  {
+    "name": " Choki Choki no Mi",
+    "english": "Snip-Snip Fruit",
+    "image": "/images/devil_fruits/chokichoki.webp",
+    "type": "Paramecia",
+    "user": "Inazuma",
+    "description": "Allows the user to transform parts of their body into scissors and cut solid objects as if they were papper, making them a <strong>Scissors Human</strong>."
+  },
+  {
+    "name": " Kira Kira no Mi",
+    "english": "Twinkle-Twinkle Fruit",
+    "image": "/images/devil_fruits/kirakira.webp",
+    "type": "Paramecia",
+    "user": "Jozu",
+    "description": "Allows the user to transform their body into diamond, making them a <strong>Diamond Human</strong>."
+  },
+  {
+    "name": " Poke Poke no Mi",
+    "english": "Pocket-Pocket Fruit",
+    "image": "/images/devil_fruits/pokepoke.webp",
+    "type": "Paramecia",
+    "user": "Blamenco",
+    "description": "Allows the user to create pockets on their body with infinite storage, making them a <strong>Pocket Human</strong>."
+  },
+  {
+    "name": " Woshu Woshu no Mi",
+    "english": "Wash-Wash Fruit",
+    "image": "/images/devil_fruits/woshuwoshu.webp",
+    "type": "Paramecia",
+    "user": "Tsuru",
+    "description": "Allows the user to literally wash and hang out to dry people and objects as if they were clothes, making them a <strong>Laundry Human</strong>."
+  },
+  {
+    "name": " Fuwa Fuwa no Mi",
+    "english": "Float-Float Fruit",
+    "image": "/images/devil_fruits/fuwafuwa.webp",
+    "type": "Paramecia",
+    "user": "Shiki",
+    "description": "Allows the user to levitate themselves and non-living things into the air, making them a <strong>Levitating Human</strong>."
+  },
+  {
+    "name": " Deka Deka no Mi",
+    "english": "Huge-Huge Fruit",
+    "image": "/images/devil_fruits/dekadeka.webp",
+    "type": "Paramecia",
+    "user": "Sanjuan Wolf",
+    "description": "Allows the user to drastically enlarge their body, making them a <strong>Gigantification Human</strong>."
+  },
+  {
+    "name": " Gura Gura no Mi",
+    "english": "Tremor-Tremor Fruit",
+    "image": "/images/devil_fruits/guragura.webp",
+    "image_pre": "/images/devil_fruits/guragurausage.webp",
+    "type": "Paramecia",
+    "user": "Marshall D. Teach [Blackbeard]",
+    "description": "Allows the user to create vibrations or quakes, making them a <strong>Tremor Human</strong>."
+  },
+  {
+    "name": " Mato Mato no Mi",
+    "english": "Mark-Mark Fruit",
+    "image": "/images/devil_fruits/matomato.webp",
+    "type": "Paramecia",
+    "user": "Vander Decken IX",
+    "description": "Allows the user to mark any target with their hands and later aim at them any object, from any location and at any time, making them a <strong>Mark Human</strong>."
+  },
+  {
+    "name": " Soru Soru no Mi",
+    "english": "Soul-Soul Fruit",
+    "image": "/images/devil_fruits/sorusoru.webp",
+    "type": "Paramecia",
+    "user": "Charlotte Linlin",
+    "description": "Allows the user to manipulate and interact with souls, making them a <strong>Soul Human</strong>. "
+  },
+  {
+    "name": " Fuku Fuku no Mi",
+    "english": "Garb-Garb Fruit",
+    "image": "/images/devil_fruits/fukufuku.webp",
+    "type": "Paramecia",
+    "user": "Kinemon",
+    "description": "Allows the user to create clothing and other apparel out of leaves or stones by visualizing them, making them a <strong>Clothes Human</strong>."
+  },
+  {
+    "name": " Hobi Hobi no Mi",
+    "english": "Hobby-Hobby Fruit",
+    "image": "/images/devil_fruits/hobihobi.webp",
+    "image_pre": "/images/devil_fruits/hobihobiusage.webp",
+    "type": "Paramecia",
+    "user": "Sugar",
+    "description": "Allows the user to transform living people into toys, and erase memories of their existence from others, making them a <strong>Toy Human</strong>."
+  },
+  {
+    "name": " Buki Buki no Mi",
+    "english": "Arms-Arms Fruit",
+    "image": "/images/devil_fruits/bukibuki.webp",
+    "type": "Paramecia",
+    "user": "Baby 5",
+    "description": "Allows the user to change their body parts into any weapon, making them a <strong>Full-Body Weapon Human</strong>."
+  },
+  {
+    "name": " Guru Guru no Mi",
+    "english": "Spin-Spin Fruit",
+    "image": "/images/devil_fruits/guruguru.webp",
+    "type": "Paramecia",
+    "user": "Buffalo",
+    "description": "Allows the user to transform any part of their body or piece of worn clothing into propellers capable of rotating at high speed, making them a <strong>Rotation Human</strong>."
+  },
+  {
+    "name": " Beta Beta no Mi",
+    "english": "Stick-Stick Fruit",
+    "image": "/images/devil_fruits/betabeta.webp",
+    "type": "Paramecia",
+    "user": "Trebol",
+    "description": "Allows the to create and control mucus, making them a <strong>Mucus Human</strong>."
+  },
+  {
+    "name": " Zushi Zushi no Mi",
+    "english": "Press-Press Fruit",
+    "image": "/images/devil_fruits/zushizushi.webp",
+    "type": "Paramecia",
+    "user": "Issho [Fujitora]",
+    "description": "Allows the user to create and manipulate gravitational force, making them a <strong>Gravity Human</strong>."
+  },
+  {
+    "name": " Bari Bari no Mi",
+    "english": "Barrier-Barrier Fruit",
+    "image": "/images/devil_fruits/baribari.webp",
+    "type": "Paramecia",
+    "user": "Bartolomeo",
+    "description": "Allows the user to generate barriers, making them a <strong>Barrier Human</strong>."
+  },
+  {
+    "name": " Nui Nui no Mi",
+    "english": "Stitch-Stitch Fruit",
+    "image": "/images/devil_fruits/nuinui.webp",
+    "image_pre": "/images/devil_fruits/nuinuiusage.webp",
+    "type": "Paramecia",
+    "user": "Leo",
+    "description": "Allows the user to stitch things together and un-stitch them like if nothing had happened, making them a <strong>Stitch Human</strong>."
+  },
+  {
+    "name": " Giro Giro no Mi",
+    "english": "Glare-Glare Fruit",
+    "image": "/images/devil_fruits/girogiro.webp",
+    "type": "Paramecia",
+    "user": "Viola",
+    "description": "Allows the user to see through everything and read the minds of others, making them a <strong>Insight Human</strong>."
+  },
+  {
+    "name": " Ato Ato no Mi",
+    "english": "Art-Art Fruit",
+    "image": "/images/devil_fruits/atoato.webp",
+    "type": "Paramecia",
+    "user": "Giolla",
+    "description": "Allows the user to turn people or objects into abstract art, making them a <strong>Art Human</strong>."
+  },
+  {
+    "name": " Jake Jake no Mi",
+    "english": "Jacket-Jacket Fruit",
+    "image": "/images/devil_fruits/jakejake.webp",
+    "type": "Paramecia",
+    "user": "Kelly Funk",
+    "description": "Alows the user to become a jacket and be worn by others, making them a <strong>Jacket Human</strong>."
+  },
+  {
+    "name": " Pamu Pamu no Mi",
+    "english": "Pop-Pop Fruit",
+    "image": "/images/devil_fruits/pamupamu.webp",
+    "type": "Paramecia",
+    "user": "Gladius",
+    "description": "Allows the user to cause their own body or any inorganic object they touch to rupture and explode, making them a <strong>Puncture Human</strong>."
+  },
+  {
+    "name": " Sui Sui no Mi",
+    "english": "Swim-Swim Fruit",
+    "image": "/images/devil_fruits/suisui.webp",
+    "type": "Paramecia",
+    "user": "Señor Pink",
+    "description": "Allows the user to swim in ground or walls, making them a <strong>Free-Swimming Human</strong>."
+  },
+  {
+    "name": " Ton Ton no Mi",
+    "english": "Ton-Ton Fruit",
+    "image": "/images/devil_fruits/tonton.webp",
+    "type": "Paramecia",
+    "user": "Machvise",
+    "description": "Allows the user to increase their weight, making them a <strong>Super Weight Human</strong>."
+  },
+  {
+    "name": " Hira Hira no Mi",
+    "english": "Ripple-Ripple Fruit",
+    "image": "/images/devil_fruits/hirahira.webp",
+    "type": "Paramecia",
+    "user": "Diamante",
+    "description": "Allows the user to make their body and any object they touch become flat and flexible, letting solid objects ripple, billow, and flutter like a flag, making them a <strong>Flag Human</strong>."
+  },
+  {
+    "name": " Ishi Ishi no Mi",
+    "english": "Stone-Stone Fruit",
+    "image": "/images/devil_fruits/ishiishi.webp",
+    "type": "Paramecia",
+    "user": "Pica",
+    "description": "Allows the user to merge with and manipulate stone, making them a <strong>Stone Assimilation Human</strong>."
+  },
+  {
+    "name": " Chiyu Chiyu no Mi",
+    "english": "Heal-Heal Fruit",
+    "image": "/images/devil_fruits/chiyuchiyu.webp",
+    "type": "Paramecia",
+    "user": "Mansherry",
+    "description": "Allows the user to heal any wound through the use of liquid that comes from the user's body, such as tears, making them a <strong>Healing Human</strong>."
+  },
+  {
+    "name": " Maki Maki no Mi",
+    "english": "Scroll-Scroll Fruit",
+    "image": "/images/devil_fruits/makimaki.webp",
+    "type": "Paramecia",
+    "user": "Raizo",
+    "description": "Allows the user to create and control scrolls at will, which have special properties including storing objects and generating drawings, making them a <strong>Scroll Human</strong>."
+  },
+  {
+    "name": " Mira Mira no Mi",
+    "english": "Mirror-Mirror Fruit",
+    "image": "/images/devil_fruits/miramira.webp",
+    "type": "Paramecia",
+    "user": "Charlotte Brûlée",
+    "description": "Allows the user to create mirrors which can reflect attacks or appearances, making them a <strong>Mirror Human</strong>."
+  },
+  {
+    "name": " Pero Pero no Mi",
+    "english": "Lick-Lick Fruit",
+    "image": "/images/devil_fruits/peropero.webp",
+    "type": "Paramecia",
+    "user": "Charlotte Perospero",
+    "description": "Allows the user to create and manipulate candy at will, making them a <strong>Candy Human</strong>."
+  },
+  {
+    "name": " Bisu Bisu no Mi",
+    "english": "Biscuit-Biscuit Fruit",
+    "image": "/images/devil_fruits/bisubisu.webp",
+    "type": "Paramecia",
+    "user": "Charlotte Cracker",
+    "description": "Allows the user to generate and manipulate biscuits at will, making them a <strong>Biscuit Human</strong>."
+  },
+  {
+    "name": " Bata Bata no Mi",
+    "english": "Butter-Butter Fruit",
+    "image": "/images/devil_fruits/batabata.webp",
+    "type": "Paramecia",
+    "user": "Charlotte Galette",
+    "description": "Allows the user to create and control butter, making them a <strong>Butter Human</strong>."
+  },
+  {
+    "name": " Buku Buku no Mi",
+    "english": "Book-Book Fruit",
+    "image": "/images/devil_fruits/bukubuku.webp",
+    "type": "Paramecia",
+    "user": "Charlotte Mont-dOr",
+    "description": "Allows the user to manipulate books, making them a <strong>Book Human</strong>."
+  },
+  {
+    "name": " Kuri Kuri no Mi",
+    "english": "Cream-Cream Fruit",
+    "image": "/images/devil_fruits/kurikuri.webp",
+    "type": "Paramecia",
+    "user": "Charlotte Opera",
+    "description": "Allows the user to create and manipulate cream at will, making them a <strong>Cream Human</strong>."
+  },
+  {
+    "name": " Shibo Shibo no Mi",
+    "english": "Wring-Wring Fruit",
+    "image": "/images/devil_fruits/shiboshibo.webp",
+    "type": "Paramecia",
+    "user": "Charlotte Smoothie",
+    "description": "Allows the user to drain liquid from both living and non-living things by wringing them, as well as absorb liquid into themselves and their weapons, making them a <strong>Dehydration Human</strong>."
+  },
+  {
+    "name": " Memo Memo no Mi",
+    "english": "Memo-Memo Fruit",
+    "image": "/images/devil_fruits/memomemo.webp",
+    "type": "Paramecia",
+    "user": "Charlotte Pudding",
+    "description": "Allows the user to turn people's memories into strips of film and manipulate them, making them a <strong>Memory Human</strong>."
+  },
+  {
+    "name": " Mochi Mochi no Mi (Awakened)",
+    "english": "Mochi-Mochi Fruit",
+    "image": "/images/devil_fruits/mochimochi.webp",
+    "image_pre": "/images/devil_fruits/mochimochiusage.webp",
+    "type": "Paramecia",
+    "user": "Charlotte Katakuri",
+    "description": "Allows the user to create and control mochi at will, making them a <strong>Mochi Human</strong>."
+  },
+  {
+    "name": " Hoya Hoya no Mi",
+    "english": "Puff-Puff Fruit",
+    "image": "/images/devil_fruits/hoyahoya.webp",
+    "type": "Paramecia",
+    "user": "Charlotte Daifuku",
+    "description": "Allows the user to summon a genie from their body, making them a <strong>Lamp Human</strong>."
+  },
+  {
+    "name": " Netsu Netsu no Mi",
+    "english": "Heat-Heat Fruit",
+    "image": "/images/devil_fruits/netsunetsu.webp",
+    "type": "Paramecia",
+    "user": "Charlotte Oven",
+    "description": "Allows the user to emanate heat from their body, making them a <strong>High Heat Human</strong>."
+  },
+  {
+    "name": " Kuku Kuku no Mi",
+    "english": "Cook-Cook Fruit",
+    "image": "/images/devil_fruits/kukukuku.webp",
+    "type": "Paramecia",
+    "user": "Streusen",
+    "description": "Allows the user to turn objects into food, making them a <strong>Cooking Human</strong>."
+  },
+  {
+    "name": " Gocha Gocha no Mi",
+    "english": "Pile-Pile Fruit",
+    "image": "/images/devil_fruits/gochagocha.webp",
+    "type": "Paramecia",
+    "user": "Charlotte Newshi",
+    "description": "Allows the user to merge themselves with other people, making them a <strong>Merge Human</strong>."
+  },
+  {
+    "name": " Oshi Oshi no Mi",
+    "english": "Push-Push Fruit",
+    "image": "/images/devil_fruits/oshioshi.webp",
+    "type": "Paramecia",
+    "user": "Morley",
+    "description": "Allows the user to freely move and shape the ground as tough it was malleable like clay, making them a <strong>Sculpting Human</strong>."
+  },
+  {
+    "name": " Kobu Kobu no Mi",
+    "english": "Pump-Pump Fruit",
+    "image": "/images/devil_fruits/kobukobu.webp",
+    "type": "Paramecia",
+    "user": "Belo Betty",
+    "description": "Allows the user to encourage and rally other people to awaken their latent potential, making them an <strong>Encouraging Human</strong>."
+  },
+  {
+    "name": " Kibi Kibi no Mi",
+    "english": "Millet-Millet Fruit",
+    "image": "/images/devil_fruits/kibikibi.webp",
+    "type": "Paramecia",
+    "user": "Kurozumi Tama",
+    "description": "Allows the user to create dango from their cheeks that can tame animals and those of part-animal nature for 1 month, making them a <strong>Taming Human</strong>."
+  },
+  {
+    "name": " Juku Juku no Mi",
+    "english": "Ripe-Ripe Fruit",
+    "image": "/images/devil_fruits/jukujuku.webp",
+    "type": "Paramecia",
+    "user": "Shinobu",
+    "description": "Allows the user to mature and decay anything they touch, making them a <strong>Decay Human</strong>."
+  },
+  {
+    "name": " Suke Suke no Mi",
+    "english": "Clear-Clear Fruit",
+    "image": "/images/devil_fruits/sukesuke.webp",
+    "type": "Paramecia",
+    "user": "Shiryu",
+    "description": "Allows the user to turn themselves and whatever they touch invisible, making them a <strong>Clear Human</strong>."
+  },
+  {
+    "name": " Shiku Shiku no Mi",
+    "english": "Sick-Sick Fruit",
+    "image": "/images/devil_fruits/shikushiku.webp",
+    "type": "Paramecia",
+    "user": "Doc Q",
+    "description": "Allows the user to afflict others with diseases, making them a <strong>Disease Human</strong>."
+  },
+  {
+    "name": " Wapu Wapu no Mi",
+    "english": "Warp-Warp Fruit",
+    "image": "/images/devil_fruits/wapuwapu.webp",
+    "type": "Paramecia",
+    "user": "Van Augur",
+    "description": "Allows the user to teleport themselves and others from place to place, making them a <strong>Teleporting Human</strong>."
+  },
+  {
+    "name": " Riki Riki no Mi",
+    "english": "Strong-Strong Fruit",
+    "image": "/images/devil_fruits/rikiriki.webp",
+    "type": "Paramecia",
+    "user": "Jesus Burguess",
+    "description": "Allows the user to have incredible strenght, making them a <strong>Strong Human</strong>."
+  },
+  {
+    "name": " Shima Shima no Mi",
+    "english": "Isle-Isle Fruit",
+    "image": "/images/devil_fruits/shimashima.webp",
+    "type": "Paramecia",
+    "user": "Avalo Pizarro",
+    "description": "Allows the user to merge with an island's environment and manipulate it, making them an <strong>Island Human</strong>."
+  },
+  {
+    "name": " Gabu Gabu no Mi",
+    "english": "Glug-Glug Fruit",
+    "image": "/images/devil_fruits/gabugabu.webp",
+    "type": "Paramecia",
+    "user": "Vasco Shot",
+    "description": "Details of what abilities this devil fruit grants are currently unknown. It makes the user a <strong>Liquor Human</strong>."
+  },
+  {
+    "name": " Muchi Muchi no Mi",
+    "english": "Whip-Whip Fruit",
+    "image": "/images/devil_fruits/muchimuchi.webp",
+    "type": "Paramecia",
+    "user": "Kujaku",
+    "description": "Allows the user to use whips to command anything they hit, making them a <strong>Training Human</strong>."
+  },
+  {
+    "name": " Nori Nori no Mi",
+    "english": "Ride-Ride Fruit",
+    "image": "/images/devil_fruits/norinori.webp",
+    "type": "Paramecia",
+    "user": "Bluegrass",
+    "description": "Allows the user to control anything they ride, making them a <strong>Driving Human</strong>."
+  },
+  {
+    "name": " Tsutsu Tsutsu no Mi",
+    "english": "Barrel-Barrel Fruit",
+    "image": "/images/devil_fruits/tsutsutsutsu.webp",
+    "type": "Paramecia",
+    "user": "Urban",
+    "description": "Allows the user to transform their head into a cannon, making them a <strong>Cannon Human</strong>."
+  },
+  {
+    "name": " Iku Iku no Mi",
+    "english": "Grow-Grow Fruit",
+    "image": "/images/devil_fruits/ikuiku.webp",
+    "type": "Paramecia",
+    "user": "Biblo",
+    "description": "Allows the user to make inanimate objects in their care grow larger as though they were living organisms, making them a <strong>Nurturing Human</strong>."
+  },
+  {
+    "name": " Aro Aro no Mi",
+    "english": "Arrow-Arrow Fruit",
+    "image": "/images/devil_fruits/aroaro.webp",
+    "type": "Paramecia",
+    "user": "Gunko",
+    "description": "Allows the user to generate and control vectorial arrows capable of manipulation motion and its properties, making them an <strong>Arrow Human</strong>."
+  },
+  {
+    "name": " Iba Iba no Mi",
+    "english": "Thorn-Thorn Fruit",
+    "image": "/images/devil_fruits/ibaiba.webp",
+    "type": "Paramecia",
+    "user": "Shepherd Sommers",
+    "description": "Allows the user to generate thorns from his targets when someone touches them. The stronger the love for the target, the more painful the thorns are, making them a <strong>Thorn Human</strong>."
+  },
+  {
+    "name": " Nagi Nagi no Mi",
+    "english": "Calm-Calm Fruit",
+    "image": "/images/devil_fruits/naginagi.webp",
+    "type": "Paramecia",
+    "user": "In circulation",
+    "description": "Allows the user to create a soundproof field and to cancel all noises, making them a <strong>Soundless Human</strong>."
+  },
+  {
+    "name": " Toki Toki no Mi",
+    "english": "Time-Time Fruit",
+    "image": "/images/devil_fruits/tokitoki.webp",
+    "type": "Paramecia",
+    "user": "In circulation",
+    "description": "Allows the user to send themselves and others forward in time, making them a <strong>Time Travelling Human</strong>."
+  },
+  {
+    "name": " Fude Fude no Mi",
+    "english": "Brush-Brush Fruit",
+    "image": "/images/devil_fruits/fudefude.webp",
+    "image_pre": "/images/devil_fruits/fudefudeusage.webp",
+    "type": "Paramecia",
+    "user": "In circulation",
+    "description": "Allows the user to generate ink from their body and use a painting brush to turn images created with that ink into real, lifelike objects, making them a <strong>Drawing Human</strong>."
+  },
+  {
+    "name": " Nomi Nomi no Mi",
+    "english": "Brain-Brain Fruit",
+    "image": "/images/devil_fruits/nominomi.webp",
+    "type": "Paramecia",
+    "user": "In circulation",
+    "description": "Allows the user's brain to expand indefinitely with new knowledge, making them a <strong>Brains Human</strong>."
+  },
+  {
+    "name": " Moku Moku no Mi",
+    "english": "Smoke-Smoke Fruit",
+    "image": "/images/devil_fruits/mokumoku.webp",
+    "image_pre": "/images/devil_fruits/mokumokuusage.webp",
+    "type": "Logia",
+    "user": "Smoker",
+    "description": "Allows the user to create, control and transform into smoke at will, making them a <strong>Smoke Human</strong>."
+  },
+  {
+    "name": " Suna Suna no Mi",
+    "english": "Sand-Sand Fruit",
+    "image": "/images/devil_fruits/sunasuna.webp",
+    "image_pre": "/images/devil_fruits/sunasunausage.webp",
+    "type": "Logia",
+    "user": "Crocodile",
+    "description": "Allows the user to create, control and transform into sand at will, making them a <strong>Sand Human</strong>."
+  },
+  {
+    "name": " Goro Goro no Mi",
+    "english": "Rumble-Rumble Fruit",
+    "image": "/images/devil_fruits/gorogoro.webp",
+    "image_pre": "/images/devil_fruits/gorogorousage.webp",
+    "type": "Logia",
+    "user": "Enel",
+    "description": "Allows the user to create, control and transform into Lightning at will, making them a <strong>Lightning Human</strong>."
+  },
+  {
+    "name": " Hie Hie no Mi",
+    "english": "Ice-Ice Fruit",
+    "image": "/images/devil_fruits/hiehie.webp",
+    "type": "Logia",
+    "user": "Kuzan [Aokiji]",
+    "description": "Allows the user to create, control and transform into ice at will, making them a <strong>Freezing Human</strong>."
+  },
+  {
+    "name": " Yami Yami no Mi",
+    "english": "Dark-Dark Fruit",
+    "image": "/images/devil_fruits/yamiyami.webp",
+    "image_pre": "/images/devil_fruits/yamiyamiusage.webp",
+    "type": "Logia",
+    "user": "Marshall D. Teach [Blackbeard]",
+    "description": "Allows the user to create, control and transform into darkness at will, making them a <strong>Darkness Human</strong>."
+  },
+  {
+    "name": " Pika Pika no Mi",
+    "english": "Glint-Glint Fruit",
+    "image": "/images/devil_fruits/pikapika.webp",
+    "type": "Logia",
+    "user": "Borsalino [Kizaru]",
+    "description": "Allows the user to create, control and transform into light at will, making them a <strong>Light Human</strong>."
+  },
+  {
+    "name": " Magu Magu no Mi",
+    "english": "Mag-Mag Fruit",
+    "image": "/images/devil_fruits/magumagu.webp",
+    "type": "Logia",
+    "user": "Sakazuki [Akainu]",
+    "description": "Allows the user to create, control and transform into magma at will, making them a <strong>Magma Human</strong>."
+  },
+  {
+    "name": " Susu Susu no Mi",
+    "english": "Soot-Soot Fruit",
+    "image": "/images/devil_fruits/susususu.webp",
+    "type": "Logia",
+    "user": "Karasu",
+    "description": "Allows the user to create, control and transform into soot at will, making them a <strong>Soot Human</strong>."
+  },
+  {
+    "name": " Numa Numa no Mi",
+    "english": "Swamp-Swamp Fruit",
+    "image": "/images/devil_fruits/numanuma.webp",
+    "type": "Logia",
+    "user": "Caribou",
+    "description": "Allows the user to create, control and transform into mud at will, making them a <strong>Swamp Human</strong>."
+  },
+  {
+    "name": " Gasu Gasu no Mi",
+    "english": "Gas-Gas Fruit",
+    "image": "/images/devil_fruits/gasugasu.webp",
+    "type": "Logia",
+    "user": "Caesar Clown",
+    "description": "Allows the user to create, control and transform into gas at will, making them a <strong>Gas Human</strong>."
+  },
+  {
+    "name": " Mera Mera no Mi",
+    "english": "Flame-Flame Fruit",
+    "image": "/images/devil_fruits/meramera.webp",
+    "image_pre": "/images/devil_fruits/meramerausage.webp",
+    "type": "Logia",
+    "user": "Sabo",
+    "description": "Allows the user to create, control and transform into fire at will, making them a <strong>Fire Human</strong>."
+  },
+  {
+    "name": " Mori Mori no Mi",
+    "english": "Woods-Woods Fruit",
+    "image": "/images/devil_fruits/morimori.webp",
+    "type": "Logia",
+    "user": "Aramaki [Ryokugyu]",
+    "description": "Allows the user to create, control and transform into flora at will, making them a <strong>Forest Human</strong>."
+  },
+  {
+    "name": " Yuki Yuki no Mi",
+    "english": "Snow-Snow Fruit",
+    "image": "/images/devil_fruits/yukiyuki.webp",
+    "type": "Logia",
+    "user": "In circulation",
+    "description": "Allows the user to create, control and transform into snow at will, making them a <strong>Snow Human</strong>."
+  },
+  {
+    "name": " Ushi Ushi no Mi, Model: Bison",
+    "english": "Ox-Ox Fruit, Model: Bison",
+    "image": "/images/devil_fruits/bison.webp",
+    "image_pre": "/images/devil_fruits/bisonusage.webp",
+    "type": "Zoan",
+    "user": "Dalton",
+    "description": "Allows the user to transform into a <strong>Bison</strong> at will."
+  },
+  {
+    "name": " Hito Hito no Mi",
+    "english": "Human-Human Fruit",
+    "image": "/images/devil_fruits/hitohito.webp",
+    "image_pre": "/images/devil_fruits/hitohitousage.webp",
+    "type": "Zoan",
+    "user": "Tony Tony Chopper",
+    "description": "Allows the user to transform into a <strong>Human</strong> at will."
+  },
+  {
+    "name": " Tori Tori no Mi, Model: Falcon",
+    "english": "Bird-Bird Fruit, Model: Falcon",
+    "image": "/images/devil_fruits/falcon.webp",
+    "type": "Zoan",
+    "user": "Pell",
+    "description": "Allows the user to transform into a <strong>Falcon</strong> at will."
+  },
+  {
+    "name": " Inu Inu no Mi, Model: Dachshund",
+    "english": "Mutt-Mutt Fruit, Model: Dachshund",
+    "image": "/images/devil_fruits/dachshund.webp",
+    "type": "Zoan",
+    "user": "Lassoo",
+    "description": "Allows the user to transform into a <strong>Dachshund</strong> at will."
+  },
+  {
+    "name": " Mogu Mogu no Mi",
+    "english": "Mole-Mole Fruit",
+    "image": "/images/devil_fruits/mogumogu.webp",
+    "type": "Zoan",
+    "user": "Drophy [Miss Merry Christmas]",
+    "description": "Allows the user to transform into a <strong>Mole</strong> at will."
+  },
+  {
+    "name": " Inu Inu no Mi, Model: Jackal",
+    "english": "Dog-Dog Fruit, Model: Jackal",
+    "image": "/images/devil_fruits/jackal.webp",
+    "type": "Zoan",
+    "user": "Chaka",
+    "description": "Allows the user to transform into a <strong>Jackal</strong> at will."
+  },
+  {
+    "name": " Uma Uma no Mi",
+    "english": "Horse-Horse Fruit",
+    "image": "/images/devil_fruits/umauma.webp",
+    "type": "Zoan",
+    "user": "Pierre",
+    "description": "Allows the user to transform into a <strong>Horse</strong> at will."
+  },
+  {
+    "name": " Neko Neko no Mi, Model: Leopard (Awakened)",
+    "english": "Cat-Cat Fruit, Model: Leopard",
+    "image": "/images/devil_fruits/leopard.webp",
+    "image_pre": "/images/devil_fruits/leopardusage.webp",
+    "type": "Zoan",
+    "user": "Rob Lucci",
+    "description": "Allows the user to transform into a <strong>Leopard</strong> at will."
+  },
+  {
+    "name": " Zou Zou no Mi",
+    "english": "Elephant-Elephant Fruit",
+    "image": "/images/devil_fruits/zouzou.webp",
+    "type": "Zoan",
+    "user": "Funkfreed",
+    "description": "Allows the user to transform into an <strong>elephant</strong> at will."
+  },
+  {
+    "name": " Inu Inu no Mi, Model: Wolf",
+    "english": "Dog-Dog Fruit, Model: Wolf",
+    "image": "/images/devil_fruits/wolf.webp",
+    "type": "Zoan",
+    "user": "Jabra",
+    "description": "Allows the user to transform into a <strong>wolf</strong> at will."
+  },
+  {
+    "name": " Ushi Ushi no Mi, Model: Giraffe (Awakened)",
+    "english": "Ox-Ox Fruit, Model: Giraffe",
+    "image": "/images/devil_fruits/giraffe.webp",
+    "image_pre": "/images/devil_fruits/giraffeusage.webp",
+    "type": "Zoan",
+    "user": "Kaku",
+    "description": "Allows the user to transform into a <strong>giraffe</strong> at will."
+  },
+  {
+    "name": " Hebi Hebi no Mi, Model: King Cobra",
+    "english": "Snake-Snake Fruit, Model: King Cobra",
+    "image": "/images/devil_fruits/kingcobra.webp",
+    "type": "Zoan",
+    "user": "Boa Marigold",
+    "description": "Allows the user to transform into a <strong>king cobra</strong> at will."
+  },
+  {
+    "name": " Hebi Hebi no Mi, Model: Anaconda",
+    "english": "Snake-Snake Fruit, Model: Anaconda",
+    "image": "/images/devil_fruits/anaconda.webp",
+    "type": "Zoan",
+    "user": "Boa Sandersonia",
+    "description": "Allows the user to transform into an <strong>anaconda</strong> at will."
+  },
+  {
+    "name": " Unnamed Cow Zoan (Failed Awakened)",
+    "image": "/images/devil_fruits/cow.webp",
+    "type": "Zoan",
+    "user": "Minotaurus",
+    "description": "Allows the user to transform into a <strong>COW</strong> at will."
+  },
+  {
+    "name": " Unnamed Koala Zoan (Failed Awakened)",
+    "image": "/images/devil_fruits/koala.webp",
+    "type": "Zoan",
+    "user": "Minokoala",
+    "description": "Allows the user to transform into a <strong>koala</strong> at will."
+  },
+  {
+    "name": " Unnamed Rhinoceros Zoan (Failed Awakened)",
+    "image": "/images/devil_fruits/rhino.webp",
+    "type": "Zoan",
+    "user": "Minorhinoceros",
+    "description": "Allows the user to transform into a <strong>rhino</strong> at will."
+  },
+  {
+    "name": " Unnamed Zebra Zoan (Failed Awakened)",
+    "image": "/images/devil_fruits/zebra.webp",
+    "type": "Zoan",
+    "user": "Minozebra",
+    "description": "Allows the user to transform into a <strong>zebra</strong> at will."
+  },
+  {
+    "name": " Unnamed Dalmatian Zoan",
+    "image": "/images/devil_fruits/dalmatian.webp",
+    "type": "Zoan",
+    "user": "Dalmatian",
+    "description": "Allows the user to transform into a <strong>dalmatian</strong> at will."
+  },
+  {
+    "name": " Kame Kame no Mi",
+    "english": "Turtle-Turtle Fruit",
+    "image": "/images/devil_fruits/kamekame.webp",
+    "type": "Zoan",
+    "user": "Pekoms",
+    "description": "Allows the user to transform into a <strong>turtle</strong> at will."
+  },
+  {
+    "name": " Tama Tama no Mi",
+    "english": "Egg-Egg Fruit",
+    "image": "/images/devil_fruits/tamatama.webp",
+    "type": "Zoan",
+    "user": "Tamago",
+    "description": "Allows the user to turn their body composition into that of an egg, which if cracked open will cause the user to regenerate into a stronger body that features more and more <strong>chicken</strong> features each time."
+  },
+  {
+    "name": " Unnamed Chihuahua Zoan (Failed Awakened)",
+    "image": "/images/devil_fruits/chihuahua.webp",
+    "type": "Zoan",
+    "user": "Minochihuahua",
+    "description": "Allows the user to transform into a <strong>chihuahua</strong> at will."
+  },
+  {
+    "name": "Sara Sara no Mi, Model: Axolotl",
+    "english": "Sala-Sala Fruit, Model: Axolotl",
+    "image": "/images/devil_fruits/axolotl.webp",
+    "image_pre": "/images/devil_fruits/axolotlusage.webp",
+    "type": "Zoan",
+    "user": "In circulation",
+    "description": "Allows the user to transform into an <strong>axolotl</strong> at will."
+  },
+  {
+    "name": " Mushi Mushi no Mi, Model: Kabutomushi",
+    "english": "Bug-Bug Fruit, Model: Rhinoceros Beetle",
+    "image": "/images/devil_fruits/kabutomushi.webp",
+    "type": "Zoan",
+    "user": "Kabu",
+    "description": "Allows the user to transform into a <strong>rhinoceros beetle</strong> at will."
+  },
+  {
+    "name": " Mushi Mushi no Mi, Model: Suzumebachi",
+    "english": "Bug-Bug Fruit, Model: Hornet",
+    "image": "/images/devil_fruits/suzumebachi.webp",
+    "type": "Zoan",
+    "user": "Bian",
+    "description": "Allows the user to transform into a <strong>hornet</strong> at will."
+  },
+  {
+    "name": " Tori Tori no Mi, Model: Albatross",
+    "english": "Bird-Bird Fruit, Model: Albatross",
+    "image": "/images/devil_fruits/albatross.webp",
+    "type": "Zoan",
+    "user": "Morgans",
+    "description": "Allows the user to transform into an <strong>albatross</strong> at will."
+  },
+  {
+    "name": " Inu Inu no Mi, Model: Tanuki",
+    "english": "Dog-Dog Fruit, Model: Tanuki",
+    "image": "/images/devil_fruits/tanuki.webp",
+    "type": "Zoan",
+    "user": "Bunbuku",
+    "description": "Allows the user to transform into a <strong>tanuki</strong> at will."
+  },
+  {
+    "name": " Batto Batto no Mi",
+    "english": "Bat-Bat Fruit",
+    "image": "/images/devil_fruits/battobatto.webp",
+    "type": "Zoan",
+    "user": "Stussy",
+    "description": "Allows the user to transform into a <strong>bat</strong> at will."
+  },
+  {
+    "name": " Rako Rako no Mi",
+    "english": "Ott-Ott Fruit",
+    "image": "/images/devil_fruits/rakorako.webp",
+    "type": "Zoan",
+    "user": "Pomsky",
+    "description": "Allows the user to transform into a <strong>sea otter</strong> at will."
+  },
+  {
+    "name": " Inu Inu no Mi, Model: Hound",
+    "english": "Dog-Dog Fruit, Model: Hound",
+    "image": "/images/devil_fruits/hound.webp",
+    "type": "Zoan",
+    "user": "Hound",
+    "description": "Allows the user to transform into a <strong>hound</strong> at will."
+  },
+  {
+    "name": " Unnamed Spider Zoan",
+    "image": "/images/devil_fruits/spider.webp",
+    "type": "Zoan",
+    "user": "Onigumo",
+    "description": "Allows the user to transform into a <strong>spider</strong> at will."
+  },
+  {
+    "name": " Unnamed Caterpillar Zoan",
+    "image": "/images/devil_fruits/caterpillar.webp",
+    "type": "Zoan",
+    "user": "Epoida",
+    "description": "Allows the user to transform into a <strong>caterpillar</strong> at will."
+  },
+  {
+    "name": "Unnamed Squirrel Zoan",
+    "image": "/images/devil_fruits/Unnamed Squirrel Zoan.webp",
+    "type": "Zoan",
+    "user": "Ragnir",
+    "description": "Allows the user to transform into a giant <strong>squirrel</strong> at will."
+  },
+  {
+    "name": " Ryu Ryu no Mi, Model: Allosaurus",
+    "english": "Dragon-Dragon Fruit, Model: Allosaurus",
+    "image": "/images/devil_fruits/allosaurus.webp",
+    "type": "Zoan",
+    "subtype": "Ancient",
+    "user": "X Drake",
+    "description": "Allows the user to transform into an <strong>allosaurus</strong> at will."
+  },
+  {
+    "name": " Zou Zou no Mi, Model: Mammoth",
+    "english": "Elephant-Elephant Fruit, Model: Mammoth",
+    "image": "/images/devil_fruits/mammoth.webp",
+    "type": "Zoan",
+    "subtype": "Ancient",
+    "user": "Jack",
+    "description": "Allows the user to transform into a <strong>mammoth</strong> at will."
+  },
+  {
+    "name": " Ryu Ryu no Mi, Model: Spinosaurus",
+    "english": "Dragon-Dragon Fruit, Model: Spinosaurus",
+    "image": "/images/devil_fruits/spinosaurus.webp",
+    "type": "Zoan",
+    "subtype": "Ancient",
+    "user": "Page One",
+    "description": "Allows the user to transform into a <strong>spinosaurus</strong> at will."
+  },
+  {
+    "name": " Ryu Ryu no Mi, Model: Pteranodon",
+    "english": "Dragon-Dragon Fruit, Model: Pteranodon",
+    "image": "/images/devil_fruits/Pteranodon.webp",
+    "type": "Zoan",
+    "subtype": "Ancient",
+    "user": "Arber [King]",
+    "description": "Allows the user to transform into a <strong>pteranodon</strong> at will."
+  },
+  {
+    "name": " Ryu Ryu no Mi, Model: Brachiosaurus",
+    "english": "Dragon-Dragon Fruit, Model: Brachiosaurus",
+    "image": "/images/devil_fruits/Brachiosaurus.webp",
+    "type": "Zoan",
+    "subtype": "Ancient",
+    "user": "Scien [Queen]",
+    "description": "Allows the user to transform into a <strong>brachiosaurus</strong> at will."
+  },
+  {
+    "name": " Ryu Ryu no Mi, Model: Pachycephalosaurus",
+    "english": "Dragon-Dragon Fruit, Model: Pachycephalosaurus",
+    "image": "/images/devil_fruits/Pachycephalosaurus.webp",
+    "type": "Zoan",
+    "subtype": "Ancient",
+    "user": "Ulti",
+    "description": "Allows the user to transform into a <strong>pachucephalosaurus</strong> at will."
+  },
+  {
+    "name": " Ryu Ryu no Mi, Model: Triceratops",
+    "english": "Dragon-Dragon Fruit, Model: Triceratops",
+    "image": "/images/devil_fruits/Triceratops.webp",
+    "type": "Zoan",
+    "subtype": "Ancient",
+    "user": "Sasaki",
+    "description": "Allows the user to transform into a <strong>triceratops</strong> at will."
+  },
+  {
+    "name": " Kumo Kumo no Mi, Model: Rosamygale Grauvogeli",
+    "english": "Spider-Spider Fruit, Model: Rosamygale Grauvogeli",
+    "image": "/images/devil_fruits/Rosamygale.webp",
+    "type": "Zoan",
+    "subtype": "Ancient",
+    "user": "Black Maria",
+    "description": "Allows the user to transform into a <strong>Rosamygale Grauvogeli</strong> at will."
+  },
+  {
+    "name": " Neko Neko no Mi, Model: Saber Tiger",
+    "english": "Cat-Cat Fruit, Model: Saber Tiger",
+    "image": "/images/devil_fruits/sabertiger.webp",
+    "type": "Zoan",
+    "subtype": "Ancient",
+    "user": "Whos-Who",
+    "description": "Allows the user to transform into a <strong>saber tiger</strong> at will."
+  },
+  {
+    "name": " Hito Hito no Mi, Model: Nika (Awakened)",
+    "english": "Human-Human Fruit, Model: Nika",
+    "image": "/images/devil_fruits/nika.webp",
+    "image_pre": "/images/devil_fruits/nikausage.webp",
+    "type": "Zoan",
+    "subtype": "Mythical",
+    "user": "Monkey D. Luffy",
+    "description": "Allows the user to transform into the legendary figure Sun God <strong>Nika</strong> at will, while always making the user's body have the properties of rubber."
+  },
+  {
+    "name": " Tori Tori no Mi, Model: Phoenix",
+    "english": "Bird-Bird Fruit, Model: Phoenix",
+    "image": "/images/devil_fruits/Phoenix.webp",
+    "image_pre": "/images/devil_fruits/Phoenixusage.webp",
+    "type": "Zoan",
+    "subtype": "Mythical",
+    "user": "Marco",
+    "description": "Allows the user to transform into a <strong>phoenix</strong> at will."
+  },
+  {
+    "name": " Hito Hito no Mi, Model: Daibutsu",
+    "english": "Human-Human Fruit, Model: Daibutsu",
+    "image": "/images/devil_fruits/Daibutsu.webp",
+    "type": "Zoan",
+    "subtype": "Mythical",
+    "user": "Sengoku",
+    "description": "Allows the user to transform into a <strong>daibutsu</strong> at will."
+  },
+  {
+    "name": " Uo Uo no Mi, Model: Seiryu",
+    "english": "Fish-Fish Fruit, Model: Azure Dragon",
+    "image": "/images/devil_fruits/Seiryu.webp",
+    "image_pre": "/images/devil_fruits/Seiryuusage.webp",
+    "type": "Zoan",
+    "subtype": "Mythical",
+    "user": "Kaidou",
+    "description": "Allows the user to transform into a <strong>azure dragon</strong> at will."
+  },
+  {
+    "name": " Inu Inu no Mi, Model: Kyubi no Kitsune",
+    "english": "Dog-Dog Fruit, Model: Nine Tailed Fox",
+    "image": "/images/devil_fruits/Kyubi.webp",
+    "type": "Zoan",
+    "subtype": "Mythical",
+    "user": "Catarina Devon",
+    "description": "Allows the user to transform into a <strong>nine-tailed fox</strong> at will."
+  },
+  {
+    "name": " Hebi Hebi no Mi, Model: Yamata no Orochi",
+    "english": "Snake-Snake Fruit, Model: Yamata-no-Orochi",
+    "image": "/images/devil_fruits/Yamata.webp",
+    "image_pre": "/images/devil_fruits/Yamatausage.webp",
+    "type": "Zoan",
+    "subtype": "Mythical",
+    "user": "Kurozumi Orochi",
+    "description": "Allows the user to transform into an <strong>eight-headed snake</strong> of the japanese mythology at will."
+  },
+  {
+    "name": " Hito Hito no Mi, Model: Onyudo",
+    "english": "Human-Human Fruit, Model: Onyudo",
+    "image": "/images/devil_fruits/Onyudo.webp",
+    "type": "Zoan",
+    "subtype": "Mythical",
+    "user": "Onimaru",
+    "description": "Allows the user to transform into an <strong>onyudo</strong> at will."
+  },
+  {
+    "name": " Inu Inu no Mi, Model: Okuchi no Makami",
+    "english": "Dog-Dog Fruit, Model: Okuchi no Makami",
+    "image": "/images/devil_fruits/Okuchi.webp",
+    "image_pre": "/images/devil_fruits/Okuchiusage.webp",
+    "type": "Zoan",
+    "subtype": "Mythical",
+    "user": "Yamato",
+    "description": "Allows the user to transform into an <strong>ancient wolf deity</strong> at will."
+  },
+  {
+    "name": " Uma Uma no Mi, Model: Pegasus",
+    "english": "Horse-Horse Fruit, Model: Pegasus",
+    "image": "/images/devil_fruits/Pegasus.webp",
+    "type": "Zoan",
+    "subtype": "Mythical",
+    "user": "Stronger",
+    "description": "Allows the user to transform into a <strong>pegasus</strong> at will."
+  },
+  {
+    "name": " Unnamed Cerberus Zoan (Awakened)",
+    "image": "/images/devil_fruits/cerberus.webp",
+    "type": "Zoan",
+    "subtype": "Mythical",
+    "user": "Cerberus (sword)",
+    "description": "Allows the user to transform into a <strong>cerberus</strong> at will."
+  },
+  {
+    "name": " Ryu Ryu no Mi, Model: Qilin (Awakened)",
+    "english": "Dragon-Dragon Fruit, Model: Kirin",
+    "image": "/images/devil_fruits/qilin.webp",
+    "type": "Zoan",
+    "subtype": "Mythical",
+    "user": "Rimoshifu Killingham",
+    "description": "Allows the user to transform into a <strong>Kirin</strong> at will and materialize objects from people's dreams, making him a <strong> Dream-Materializing Man </strong>"
+  },
+  {
+    "name": " Ryu Ryu no Mi, Model: Nidhogg",
+    "english": "Dragon-Dragon Fruit, Model: Nidhogg",
+    "image": "/images/devil_fruits/nidhogg.webp",
+    "image_pre": "/images/devil_fruits/nidhoggusage.webp",
+    "type": "Zoan",
+    "subtype": "Mythical",
+    "user": "Loki",
+    "description": "Allows the user to transform into a <strong>Nidhogg</strong> at will."
+  },
+  {
+    "name": " Akuma No Mi (Awakened)",
+    "english": "The Devil's Fruit",
+    "image": "/images/devil_fruits/akuma.webp",
+    "type": "Zoan",
+    "subtype": "Mythical",
+    "user": "Nerona Imu",
+    "description": "Allows the user to transform into a <strong>Devil</strong> at will and access a numerous demonic abilities which they can bestow to others."
+  },
+  {
+    "name": " Uo Uo no Mi, Model: Seiryu (Artificial)",
+    "english": "Fish-Fish Fruit, Model: Azure Dragon",
+    "image": "/images/devil_fruits/seiryusmile.webp",
+    "image_pre":"/images/devil_fruits/seiryusmileusage.webp",
+    "type": "Zoan",
+    "subtype": "Artificial",
+    "user": "Kouzuki Momonosuke",
+    "description": "Allows the user to transform into an <strong>azure dragon</strong> at will."
+  },
+  {
+    "name": " Sheep SMILE",
+    "image": "/images/devil_fruits/sheepsmile.webp",
+    "type": "Zoan",
+    "subtype": "Artificial",
+    "user": "Sheepshead",
+    "description": "Allows the user to have <strong>sheep</strong> body part(s) growing on their own body."
+  },
+  {
+    "name": " Squirrel SMILE",
+    "image": "/images/devil_fruits/squirrelsmile.webp",
+    "type": "Zoan",
+    "subtype": "Artificial",
+    "user": "Ginrummy",
+    "description": "Allows the user to have <strong>squirrel</strong> body part(s) growing on their own body."
+  },
+  {
+    "name": "  Bat SMILE",
+    "image": "/images/devil_fruits/batsmile.webp",
+    "type": "Zoan",
+    "subtype": "Artificial",
+    "user": "Batman",
+    "description": "Allows the user to have <strong>bat</strong> body part(s) growing on their own body."
+  },
+  {
+    "name": "  Gazelle SMILE",
+    "image": "/images/devil_fruits/gazellesmile.webp",
+    "type": "Zoan",
+    "subtype": "Artificial",
+    "user": "Gazelleman",
+    "description": "Allows the user to have <strong>gazelle</strong> body part(s) growing on their own body."
+  },
+  {
+    "name": "  Mouse SMILE",
+    "image": "/images/devil_fruits/mousesmile.webp",
+    "type": "Zoan",
+    "subtype": "Artificial",
+    "user": "Mouseman",
+    "description": "Allows the user to have <strong>mouse</strong> body part(s) growing on their own body."
+  },
+  {
+    "name": "  Lion SMILE",
+    "image": "/images/devil_fruits/lionsmile.webp",
+    "type": "Zoan",
+    "subtype": "Artificial",
+    "user": "Holedem",
+    "description": "Allows the user to have <strong>lion</strong> body part(s) growing on their own body."
+  },
+  {
+    "name": "  Horse SMILE",
+    "image": "/images/devil_fruits/horsesmile.webp",
+    "type": "Zoan",
+    "subtype": "Artificial",
+    "user": "Speed",
+    "description": "Allows the user to have <strong>horse</strong> body part(s) growing on their own body."
+  },
+  {
+    "name": " Snake SMILE",
+    "image": "/images/devil_fruits/snakesmile.webp",
+    "type": "Zoan",
+    "subtype": "Artificial",
+    "user": "Snakeman",
+    "description": "Allows the user to have <strong>snake</strong> body part(s) growing on their own body."
+  },
+  {
+    "name": " Rabbit SMILE",
+    "image": "/images/devil_fruits/rabbitsmile.webp",
+    "type": "Zoan",
+    "subtype": "Artificial",
+    "user": "Rabbitman",
+    "description": "Allows the user to have <strong>rabbit</strong> body part(s) growing on their own body."
+  },
+  {
+    "name": " Snake SMILE (2)",
+    "image": "/images/devil_fruits/snakesmile2.webp",
+    "type": "Zoan",
+    "subtype": "Artificial",
+    "user": "Sarahebi",
+    "description": "Allows the user to have <strong>snake</strong> body part(s) growing on their own body."
+  },
+  {
+    "name": " Hippopotamus SMILE",
+    "image": "/images/devil_fruits/hippopotamussmile.webp",
+    "type": "Zoan",
+    "subtype": "Artificial",
+    "user": "Dobon",
+    "description": "Allows the user to have <strong>hippopotamus</strong> body part(s) growing on their own body."
+  },
+  {
+    "name": " Alpaca SMILE",
+    "image": "/images/devil_fruits/alpacasmile.webp",
+    "type": "Zoan",
+    "subtype": "Artificial",
+    "user": "Alpacaman",
+    "description": "Allows the user to have <strong>alpaca</strong> body part(s) growing on their own body."
+  },
+  {
+    "name": " Scorpion SMILE",
+    "image": "/images/devil_fruits/scorpionsmile.webp",
+    "type": "Zoan",
+    "subtype": "Artificial",
+    "user": "Daifugo",
+    "description": "Allows the user to have <strong>scorpion</strong> body part(s) growing on their own body."
+  },
+  {
+    "name": " Elephant SMILE",
+    "image": "/images/devil_fruits/elephantsmile.webp",
+    "type": "Zoan",
+    "subtype": "Artificial",
+    "user": "Babanuki",
+    "description": "Allows the user to have <strong>elephant</strong> body part(s) growing on their own body."
+  },
+  {
+    "name": " Monkey SMILE",
+    "image": "/images/devil_fruits/monkeysmile.webp",
+    "type": "Zoan",
+    "subtype": "Artificial",
+    "user": "Solitaire",
+    "description": "Allows the user to have <strong>monkey</strong> body part(s) growing on their own body."
+  },
+  {
+    "name": " Armadillo SMILE",
+    "image": "/images/devil_fruits/armadillosmile.webp",
+    "type": "Zoan",
+    "subtype": "Artificial",
+    "user": "Madilloman",
+    "description": "Allows the user to have <strong>armadillo</strong> body part(s) growing on their own body."
+  },
+  {
+    "name": " Ostrich SMILE",
+    "image": "/images/devil_fruits/ostrichsmile.webp",
+    "type": "Zoan",
+    "subtype": "Artificial",
+    "user": "Dachoman",
+    "description": "Allows the user to have <strong>ostrich</strong> body part(s) growing on their own body."
+  },
+  {
+    "name": " Horse SMILE (2)",
+    "image": "/images/devil_fruits/horsesmile2.webp",
+    "type": "Zoan",
+    "subtype": "Artificial",
+    "user": "Hoisassa",
+    "description": "Allows the user to have <strong>horse</strong> body part(s) growing on their own body."
+  },
+  {
+    "name": " Swallowtail Butterfly SMILE",
+    "image": "/images/devil_fruits/butterflysmile.webp",
+    "type": "Zoan",
+    "subtype": "Artificial",
+    "user": "Ageha Woman",
+    "description": "Allows the user to have <strong>swallowtail butterfly</strong> body part(s) growing on their own body."
+  },
+  {
+    "name": " Hawk SMILE",
+    "image": "/images/devil_fruits/hawksmile.webp",
+    "type": "Zoan",
+    "subtype": "Artificial",
+    "user": "Hawkman",
+    "description": "Allows the user to have <strong>hawk</strong> body part(s) growing on their own body."
+  },
+  {
+    "name": " Peregrine Falcon SMILE",
+    "image": "/images/devil_fruits/falconsmile.webp",
+    "type": "Zoan",
+    "subtype": "Artificial",
+    "user": "Koshi Falcon",
+    "description": "Allows the user to have <strong>peregrine falcon</strong> body part(s) growing on their own body."
+  },
+  {
+    "name": " Flying Squirrel SMILE",
+    "image": "/images/devil_fruits/flyingsquirrelsmile.webp",
+    "type": "Zoan",
+    "subtype": "Artificial",
+    "user": "Bao Huang",
+    "description": "Allows the user to have <strong>flying squirrel</strong> body part(s) growing on their own body."
+  },
+  {
+    "name": " Chinese Grasshopper SMILE",
+    "image": "/images/devil_fruits/grasshoppersmile.webp",
+    "type": "Zoan",
+    "subtype": "Artificial",
+    "user": "Jumper",
+    "description": "Allows the user to have <strong>chinese grasshopper</strong> body part(s) growing on their own body."
+  },
+  {
+    "name": " Wasp SMILE",
+    "image": "/images/devil_fruits/waspsmile.webp",
+    "type": "Zoan",
+    "subtype": "Artificial",
+    "user": "Beegirl",
+    "description": "Allows the user to have <strong>wasp</strong> body part(s) growing on their own body."
+  },
+  {
+    "name": " Gastrimargus Grasshopper SMILE",
+    "image": "/images/devil_fruits/grasshopper2smile.webp",
+    "type": "Zoan",
+    "subtype": "Artificial",
+    "user": "Battaman",
+    "description": "Allows the user to have <strong>gastrimargus grasshopper</strong> body part(s) growing on their own body."
+  },
+  {
+    "name": " White Snake SMILE",
+    "image": "/images/devil_fruits/whitesnakesmile.webp",
+    "type": "Zoan",
+    "subtype": "Artificial",
+    "user": "Tenjo-Sagari",
+    "description": "Allows the user to have <strong>white snake</strong> body part(s) growing on their own body."
+  },
+  {
+    "name": " Phasmid SMILE",
+    "image": "/images/devil_fruits/phasmidsmile.webp",
+    "type": "Zoan",
+    "subtype": "Artificial",
+    "user": "Chochinman",
+    "description": "Allows the user to have <strong>phasmid</strong> body part(s) growing on their own body."
+  },
+  {
+    "name": " Giant Tortoise SMILE",
+    "image": "/images/devil_fruits/tortoisesmile.webp",
+    "type": "Zoan",
+    "subtype": "Artificial",
+    "user": "Usunoro",
+    "description": "Allows the user to have <strong>giant tortoise</strong> body part(s) growing on their own body."
+  },
+  {
+    "name": " Crab SMILE",
+    "image": "/images/devil_fruits/crabsmile.webp",
+    "type": "Zoan",
+    "subtype": "Artificial",
+    "user": "Nightcrab Girl",
+    "description": "Allows the user to have <strong>crab</strong> body part(s) growing on their own body."
+  },
+  {
+    "name": " Japanese Stag Beetle SMILE",
+    "image": "/images/devil_fruits/beetlesmile.webp",
+    "type": "Zoan",
+    "subtype": "Artificial",
+    "user": "Nokokuwa Police",
+    "description": "Allows the user to have <strong>japanese stag beetle</strong> body part(s) growing on their own body."
+  },
+  {
+    "name": " Gorilla SMILE",
+    "image": "/images/devil_fruits/gorillasmile.webp",
+    "type": "Zoan",
+    "subtype": "Artificial",
+    "user": "Mizerka",
+    "description": "Allows the user to have <strong>gorilla</strong> body part(s) growing on their own body."
+  },
+  {
+    "name": " Wolf SMILE",
+    "image": "/images/devil_fruits/wolfsmile.webp",
+    "type": "Zoan",
+    "subtype": "Artificial",
+    "user": "Redwolf",
+    "description": "Allows the user to have <strong>wolf</strong> body part(s) growing on their own body."
+  },
+  {
+    "name": " Rhino Beetle SMILE",
+    "image": "/images/devil_fruits/rhinobeetlesmile.webp",
+    "type": "Zoan",
+    "subtype": "Artificial",
+    "user": "Beetleman",
+    "description": "Allows the user to have <strong>rhino beetle</strong> body part(s) growing on their own body."
+  },
+  {
+    "name": " Praying Mantis SMILE",
+    "image": "/images/devil_fruits/mantissmile.webp",
+    "type": "Zoan",
+    "subtype": "Artificial",
+    "user": "Kamakirigirl",
+    "description": "Allows the user to have <strong>praying mantis</strong> body part(s) growing on their own body."
+  },
+  {
+    "name": " Gorilla SMILE (2)",
+    "image": "/images/devil_fruits/gorillasmile2.webp",
+    "type": "Zoan",
+    "subtype": "Artificial",
+    "user": "Briscola",
+    "description": "Allows the user to have <strong>gorilla</strong> body part(s) growing on their own body."
+  },
+  {
+    "name": " Caucasus Beetle SMILE",
+    "image": "/images/devil_fruits/caucasusbeetlesmile.webp",
+    "type": "Zoan",
+    "subtype": "Artificial",
+    "user": "Caucasusman",
+    "description": "Allows the user to have <strong>caucasus beetle</strong> body part(s) growing on their own body."
+  },
+  {
+    "name": " Rhino SMILE",
+    "image": "/images/devil_fruits/rhinosmile2.webp",
+    "type": "Zoan",
+    "subtype": "Artificial",
+    "user": "Saitank",
+    "description": "Allows the user to have <strong>rhino</strong> body part(s) growing on their own body."
+  },
+  {
+    "name": " Hedgehog SMILE",
+    "image": "/images/devil_fruits/hedgehogsmile.webp",
+    "type": "Zoan",
+    "subtype": "Artificial",
+    "user": "Bisley",
+    "description": "Allows the user to have <strong>hedgehog</strong> body part(s) growing on their own body."
+  },
+  {
+    "name": " Scorpion SMILE (2)",
+    "image": "/images/devil_fruits/scorpionsmile2.webp",
+    "type": "Zoan",
+    "subtype": "Artificial",
+    "user": "Scorpionlady",
+    "description": "Allows the user to have <strong>scorpion</strong> body part(s) growing on their own body."
+  },
+  {
+    "name": " Chicken SMILE",
+    "image": "/images/devil_fruits/chickensmile.webp",
+    "type": "Zoan",
+    "subtype": "Artificial",
+    "user": "Fourtricks",
+    "description": "Allows the user to have <strong>chicken</strong> body part(s) growing on their own body."
+  },
+  {
+    "name": " Giraffe SMILE",
+    "image": "/images/devil_fruits/giraffesmile.webp",
+    "type": "Zoan",
+    "subtype": "Artificial",
+    "user": "Hamlet",
+    "description": "Allows the user to have <strong>giraffe</strong> body part(s) growing on their own body."
+  },  
+  {
+    "name": " Rattlesnake SMILE",
+    "image": "/images/devil_fruits/rattlesnakesmile.webp",
+    "type": "Zoan",
+    "subtype": "Artificial",
+    "user": "Poker",
+    "description": "Allows the user to have <strong>rattlesnake</strong> body part(s) growing on their own body."
+  },
+  {
+    "name": " Hognose Snake SMILE",
+    "image": "/images/devil_fruits/hognosesmile.webp",
+    "type": "Zoan",
+    "subtype": "Artificial",
+    "user": "Nure-Onna",
+    "description": "Allows the user to have <strong>hognose snake</strong> body part(s) growing on their own body."
+  }, 
+  {
+    "name": " Python SMILE",
+    "image": "/images/devil_fruits/pythonsmile.webp",
+    "type": "Zoan",
+    "subtype": "Artificial",
+    "user": "Bishonure-Onna",
+    "description": "Allows the user to have <strong>python</strong> body part(s) growing on their own body."
+  }, 
+  {
+    "name": " Japanese Rat Snake SMILE",
+    "image": "/images/devil_fruits/japaneseratsmile.webp",
+    "type": "Zoan",
+    "subtype": "Artificial",
+    "user": "Yamanba",
+    "description": "Allows the user to have <strong>japanese rat</strong> body part(s) growing on their own body."
+  }, 
+  {
+    "name": " Caiman SMILE",
+    "image": "/images/devil_fruits/caimansmile.webp",
+    "type": "Zoan",
+    "subtype": "Artificial",
+    "user": "Caimanlady",
+    "description": "Allows the user to have <strong>caiman</strong> body part(s) growing on their own body."
+  }, 
+  {
+    "name": " Pug SMILE",
+    "image": "/images/devil_fruits/pugsmile.webp",
+    "type": "Zoan",
+    "subtype": "Artificial",
+    "user": "Wanyudo",
+    "description": "Allows the user to have <strong>pug</strong> body part(s) growing on their own body."
+  }, 
+  {
+    "name": " Horse SMILE (3)",
+    "image": "/images/devil_fruits/horsesmile3.webp",
+    "type": "Zoan",
+    "subtype": "Artificial",
+    "user": "Horseman",
+    "description": "Allows the user to have <strong>horse</strong> body part(s) growing on their own body."
+  }, 
+  {
+    "name": " Horse SMILE (4)",
+    "image": "/images/devil_fruits/horsesmile4.webp",
+    "type": "Zoan",
+    "subtype": "Artificial",
+    "user": "Fuga",
+    "description": "Allows the user to have <strong>horse</strong> body part(s) growing on their own body."
+  }, 
+  {
+    "name": " Owl SMILE",
+    "image": "/images/devil_fruits/owlsmile.webp",
+    "type": "Zoan",
+    "subtype": "Artificial",
+    "user": "Doubt Brothers",
+    "description": "Allows the user to have <strong>owl</strong> body part(s) growing on their own body."
+  },
+  {
+    "name": " Gunyo Gunyo no Mi",
+    "image": "/images/devil_fruits/gunyogunyo.webp",
+    "english": "Glorp-Glorp Fruit",
+    "type": "Unknown",
+    "user": "Prince Grus",
+    "description": "Unknown-type Devil Fruit that allows the user to create and control clay, making them a <strong>Clay Human</strong>."
+  },
+  {
+    "name": "Unnamed Wings Devil Fruit",
+    "image": "/images/devil_fruits/laffittewings.webp",
+    "type": "Unknown",
+    "user": "Laffitte",
+    "description": "Unknown-type Devil Fruit that allows the user to transform his arms into a pair of bird-like wings."
+  },
+  {
+    "name": "Unnamed Devil Fruit in Panda Shark's posession",
+    "image": "/images/devil_fruits/pandashark.webp",
+    "type": "Unknown",
+    "user": "In circulation",
+    "description": "Unknown-type Devil Fruit in the posession of a Panda Shark from Hatchan's Cover Story"
+  }
+]
