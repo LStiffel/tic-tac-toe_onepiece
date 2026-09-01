@@ -74,8 +74,12 @@ players; a Character in the Used pool cannot be named again in that Match.
 _Avoid_: History, Claimed list
 
 **Pass**:
-A turn in which a player claims no Cell. Two Passes in immediate succession end the
-Match as a draw.
+A turn in which a player claims no Cell, identified by the Match and the acting
+player. Allowed only on the player's turn while the Match is in progress;
+otherwise **rejected** with a reason (`not-your-turn`, `match-over` — no state
+change). An accepted Pass hands the turn over and increments a consecutive-Pass
+counter; two Passes in immediate succession end the Match as a draw. Any claim or
+wrong Guess resets the counter, so only immediate succession counts.
 _Avoid_: Skip, Forfeit
 
 **Guess**:

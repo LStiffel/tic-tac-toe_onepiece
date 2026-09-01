@@ -11,7 +11,7 @@ from pydantic import BaseModel, Field
 
 from app.dataset import DataQualityReport
 from app.domain import Category, Cell, Grid, Match, Player
-from app.statemachine import ClaimResult
+from app.statemachine import ClaimResult, PassResult
 
 
 class MatchCreate(BaseModel):
@@ -35,6 +35,13 @@ class GuessCreate(BaseModel):
     row: int = Field(ge=0, le=2)
     column: int = Field(ge=0, le=2)
     character: str
+
+
+class PassCreate(BaseModel):
+    """A Pass on ``POST /matches/{id}/passes``: just the acting player, explicit
+    so the server can enforce turn order (``not-your-turn``)."""
+
+    player: Player
 
 
 class CategoryOut(BaseModel):
@@ -147,6 +154,27 @@ class GuessResult(BaseModel):
             outcome=result.outcome.value,
             row=result.row.value if result.row else None,
             column=result.column.value if result.column else None,
+            reason=result.reason.value if result.reason else None,
+            match=MatchOut.from_domain(result.match),
+        )
+
+
+class PassOut(BaseModel):
+    """The outcome of a Pass plus the Match after it.
+
+    ``outcome`` is ``passed`` | ``rejected``. ``reason`` carries ``not-your-turn``
+    or ``match-over`` for ``rejected`` and is ``null`` otherwise. A second Pass in
+    immediate succession leaves ``match.status`` as ``draw``.
+    """
+
+    outcome: str
+    reason: str | None = None
+    match: MatchOut
+
+    @classmethod
+    def from_domain(cls, result: PassResult) -> PassOut:
+        return cls(
+            outcome=result.outcome.value,
             reason=result.reason.value if result.reason else None,
             match=MatchOut.from_domain(result.match),
         )

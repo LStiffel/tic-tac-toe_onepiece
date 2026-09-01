@@ -24,6 +24,15 @@ After a ``claimed`` outcome the Match is resolved (issue #6): if the claim
 completed one of the eight Lines the Match ends ``won`` by that player, and if
 it filled the Grid with no Line the Match ends in a ``draw``. Both are terminal
 - any later Guess on a finished Match is ``rejected`` with ``match-over``.
+
+:func:`pass_turn` (issue #7) is the other way a turn ends: a stuck Active player
+Passes instead of guessing. A Pass is accepted only on the caller's turn and
+while the Match is in progress (otherwise ``rejected`` with ``not-your-turn`` or
+``match-over`` and no state change). Each accepted Pass increments
+``consecutive_passes`` and hands the turn over; the second Pass in immediate
+succession ends the Match in a ``draw``. Only *immediate* succession counts: a
+``claimed`` or ``wrong`` outcome resets ``consecutive_passes`` to zero in
+:func:`claim_cell`, which is the sole place that counter is reset.
 """
 
 from __future__ import annotations
@@ -60,6 +69,13 @@ class AxisResult(str, Enum):
     FAIL = "fail"
 
 
+class PassOutcome(str, Enum):
+    """The one outcome a :func:`pass_turn` attempt produces."""
+
+    PASSED = "passed"
+    REJECTED = "rejected"
+
+
 @dataclass(frozen=True)
 class ClaimResult:
     """The outcome of :func:`claim_cell` plus the resulting Match.
@@ -76,8 +92,26 @@ class ClaimResult:
     reason: RejectionReason | None = None
 
 
+@dataclass(frozen=True)
+class PassResult:
+    """The outcome of :func:`pass_turn` plus the resulting Match.
+
+    ``reason`` is set only for ``rejected`` (``not-your-turn`` or ``match-over``),
+    where ``match`` is the unchanged input. For ``passed`` the returned ``match``
+    has the turn handed over and ``consecutive_passes`` incremented - and its
+    ``status`` is ``draw`` when this was the second Pass in a row.
+    """
+
+    outcome: PassOutcome
+    match: Match
+    reason: RejectionReason | None = None
+
+
 #: The Grid is 3x3; Cells are stored row-major (see :mod:`app.gridgen`).
 _GRID_SIZE = 3
+
+#: Two Passes in immediate succession end the Match as a draw (CONTEXT.md).
+_PASSES_FOR_DRAW = 2
 
 #: The eight Lines, as triples of row-major Cell indices: three rows, three
 #: columns, then the two diagonals.
@@ -95,6 +129,21 @@ _LINES: tuple[tuple[int, int, int], ...] = (
 
 def _other(player: Player) -> Player:
     return Player.P2 if player is Player.P1 else Player.P1
+
+
+def _turn_rejection(match: Match, player: Player) -> RejectionReason | None:
+    """Why ``player`` may not act on ``match`` right now - ``match-over`` if the
+    Match is finished, else ``not-your-turn`` if it is the other player's turn -
+    or ``None`` when the turn is theirs to take.
+
+    Shared by :func:`claim_cell` and :func:`pass_turn` so the two entry points
+    reject in the same order (Match state before turn order)."""
+
+    if match.status is not MatchStatus.IN_PROGRESS:
+        return RejectionReason.MATCH_OVER
+    if player is not match.active_player:
+        return RejectionReason.NOT_YOUR_TURN
+    return None
 
 
 def winning_player(grid: Grid) -> Player | None:
@@ -169,14 +218,9 @@ def claim_cell(
     """Resolve ``player``'s attempt to claim Cell ``(row, column)`` by naming
     ``character``. See the module docstring for the full outcome table."""
 
-    if match.status is not MatchStatus.IN_PROGRESS:
-        return ClaimResult(
-            ClaimOutcome.REJECTED, match, reason=RejectionReason.MATCH_OVER
-        )
-    if player is not match.active_player:
-        return ClaimResult(
-            ClaimOutcome.REJECTED, match, reason=RejectionReason.NOT_YOUR_TURN
-        )
+    rejection = _turn_rejection(match, player)
+    if rejection is not None:
+        return ClaimResult(ClaimOutcome.REJECTED, match, reason=rejection)
     if not _cell_at(match.grid, row, column).is_empty:
         return ClaimResult(
             ClaimOutcome.REJECTED, match, reason=RejectionReason.CELL_TAKEN
@@ -215,3 +259,21 @@ def claim_cell(
         row=row_result,
         column=column_result,
     )
+
+
+def pass_turn(match: Match, *, player: Player) -> PassResult:
+    """Resolve ``player``'s Pass - a turn in which they claim no Cell. See the
+    module docstring for when a Pass is ``rejected`` and how the
+    consecutive-Pass counter drives the double-Pass ``draw``."""
+
+    rejection = _turn_rejection(match, player)
+    if rejection is not None:
+        return PassResult(PassOutcome.REJECTED, match, reason=rejection)
+
+    passes = match.consecutive_passes + 1
+    passed = replace(
+        match, active_player=_other(player), consecutive_passes=passes
+    )
+    if passes >= _PASSES_FOR_DRAW:
+        passed = replace(passed, status=MatchStatus.DRAW)
+    return PassResult(PassOutcome.PASSED, passed)

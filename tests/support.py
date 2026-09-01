@@ -13,6 +13,8 @@ tiny so every "does this Character fit this Cell" assertion is exact
 
 from __future__ import annotations
 
+from fastapi.testclient import TestClient
+
 from app.dataset import DataQualityReport, GameData, LoadedCategory
 from app.domain import Category, CategoryGroup
 
@@ -61,3 +63,49 @@ def crafted_game_data() -> GameData:
         categories=CRAFTED_CATEGORIES,
         report=DataQualityReport(),
     )
+
+
+# --- HTTP-seam helpers (shared by the claim and Pass API tests) -------
+#
+# Both API test modules override the ``game_data`` fixture with
+# :func:`crafted_game_data` and force this exact Grid via ``category_ids``.
+
+
+def new_forced_match(client: TestClient) -> tuple[str, str]:
+    """Create a Match forced onto the crafted Grid; return
+    ``(match_id, active_player)``."""
+
+    body = client.post(
+        "/matches", json={"category_ids": CRAFTED_CATEGORY_IDS}
+    ).json()
+    return body["id"], body["active_player"]
+
+
+def other_player(player: str) -> str:
+    """The other player id - ``"P1"`` <-> ``"P2"``."""
+
+    return "P2" if player == "P1" else "P1"
+
+
+def post_guess(
+    client: TestClient,
+    match_id: str,
+    *,
+    player: str,
+    row: int,
+    column: int,
+    character: str,
+) -> dict:
+    """POST a Guess and return the decoded body, asserting a 200 response."""
+
+    response = client.post(
+        f"/matches/{match_id}/guesses",
+        json={
+            "player": player,
+            "row": row,
+            "column": column,
+            "character": character,
+        },
+    )
+    assert response.status_code == 200, response.text
+    return response.json()

@@ -22,47 +22,17 @@ import pytest
 from fastapi.testclient import TestClient
 
 from app.dataset import GameData
-from tests.support import CRAFTED_CATEGORY_IDS, crafted_game_data
+from tests.support import (
+    crafted_game_data,
+    new_forced_match,
+    other_player,
+    post_guess,
+)
 
 
 @pytest.fixture
 def game_data() -> GameData:
     return crafted_game_data()
-
-
-def _new_match(client: TestClient) -> tuple[str, str]:
-    """Create a forced-Grid Match; return ``(match_id, active_player)``."""
-
-    body = client.post(
-        "/matches", json={"category_ids": CRAFTED_CATEGORY_IDS}
-    ).json()
-    return body["id"], body["active_player"]
-
-
-def _other(player: str) -> str:
-    return "P2" if player == "P1" else "P1"
-
-
-def _guess(
-    client: TestClient,
-    match_id: str,
-    *,
-    player: str,
-    row: int,
-    column: int,
-    character: str,
-) -> dict:
-    response = client.post(
-        f"/matches/{match_id}/guesses",
-        json={
-            "player": player,
-            "row": row,
-            "column": column,
-            "character": character,
-        },
-    )
-    assert response.status_code == 200, response.text
-    return response.json()
 
 
 # --- claimed ---------------------------------------------------------
@@ -71,9 +41,9 @@ def _guess(
 def test_correct_guess_claims_the_cell_adds_to_used_pool_and_passes_turn(
     client: TestClient,
 ) -> None:
-    match_id, active = _new_match(client)
+    match_id, active = new_forced_match(client)
 
-    body = _guess(
+    body = post_guess(
         client, match_id, player=active, row=0, column=0, character="Zoro"
     )
 
@@ -82,7 +52,7 @@ def test_correct_guess_claims_the_cell_adds_to_used_pool_and_passes_turn(
     assert body["column"] == "pass"
 
     match = body["match"]
-    assert match["active_player"] == _other(active)
+    assert match["active_player"] == other_player(active)
     assert match["status"] == "in-progress"
     assert match["used_pool"] == ["Zoro"]
     claimed = next(
@@ -93,12 +63,12 @@ def test_correct_guess_claims_the_cell_adds_to_used_pool_and_passes_turn(
 
 
 def test_claimed_state_survives_a_refetch(client: TestClient) -> None:
-    match_id, active = _new_match(client)
-    _guess(client, match_id, player=active, row=0, column=0, character="Zoro")
+    match_id, active = new_forced_match(client)
+    post_guess(client, match_id, player=active, row=0, column=0, character="Zoro")
 
     match = client.get(f"/matches/{match_id}").json()
 
-    assert match["active_player"] == _other(active)
+    assert match["active_player"] == other_player(active)
     assert match["used_pool"] == ["Zoro"]
     claimed = next(
         c for c in match["grid"]["cells"] if c["row"] == 0 and c["column"] == 0
@@ -113,10 +83,10 @@ def test_claimed_state_survives_a_refetch(client: TestClient) -> None:
 def test_wrong_guess_reports_per_axis_forfeits_turn_and_spares_the_character(
     client: TestClient,
 ) -> None:
-    match_id, active = _new_match(client)
+    match_id, active = new_forced_match(client)
 
     # "Nami" is in race_a (row 0 passes) but not haki_arm (column 0 fails).
-    body = _guess(
+    body = post_guess(
         client, match_id, player=active, row=0, column=0, character="Nami"
     )
 
@@ -125,7 +95,7 @@ def test_wrong_guess_reports_per_axis_forfeits_turn_and_spares_the_character(
     assert body["column"] == "fail"
 
     match = body["match"]
-    assert match["active_player"] == _other(active)
+    assert match["active_player"] == other_player(active)
     assert match["used_pool"] == []
     assert all(
         c["claimed_by"] is None for c in match["grid"]["cells"]
@@ -138,13 +108,13 @@ def test_wrong_guess_reports_per_axis_forfeits_turn_and_spares_the_character(
 def test_naming_an_already_used_character_is_distinct_and_keeps_the_turn(
     client: TestClient,
 ) -> None:
-    match_id, active = _new_match(client)
-    _guess(client, match_id, player=active, row=0, column=0, character="Zoro")
-    second = _other(active)
+    match_id, active = new_forced_match(client)
+    post_guess(client, match_id, player=active, row=0, column=0, character="Zoro")
+    second = other_player(active)
 
     # "Zoro" would legitimately fit Cell (2, 0) (aff_crew INTERSECT haki_arm),
     # but it is spent.
-    body = _guess(
+    body = post_guess(
         client, match_id, player=second, row=2, column=0, character="Zoro"
     )
 
@@ -169,12 +139,12 @@ def test_naming_an_already_used_character_is_distinct_and_keeps_the_turn(
 def test_acting_out_of_turn_is_rejected_with_no_state_change(
     client: TestClient,
 ) -> None:
-    match_id, active = _new_match(client)
+    match_id, active = new_forced_match(client)
 
-    body = _guess(
+    body = post_guess(
         client,
         match_id,
-        player=_other(active),
+        player=other_player(active),
         row=0,
         column=0,
         character="Zoro",
@@ -188,13 +158,13 @@ def test_acting_out_of_turn_is_rejected_with_no_state_change(
 
 
 def test_claiming_a_taken_cell_is_rejected(client: TestClient) -> None:
-    match_id, active = _new_match(client)
-    _guess(client, match_id, player=active, row=0, column=0, character="Zoro")
+    match_id, active = new_forced_match(client)
+    post_guess(client, match_id, player=active, row=0, column=0, character="Zoro")
 
-    body = _guess(
+    body = post_guess(
         client,
         match_id,
-        player=_other(active),
+        player=other_player(active),
         row=0,
         column=0,
         character="Luffy",
@@ -207,9 +177,9 @@ def test_claiming_a_taken_cell_is_rejected(client: TestClient) -> None:
 def test_naming_a_character_absent_from_the_roster_is_rejected(
     client: TestClient,
 ) -> None:
-    match_id, active = _new_match(client)
+    match_id, active = new_forced_match(client)
 
-    body = _guess(
+    body = post_guess(
         client, match_id, player=active, row=0, column=0, character="Shanks"
     )
 
@@ -238,7 +208,7 @@ def test_guess_on_an_unknown_match_is_404(client: TestClient) -> None:
 def test_malformed_guess_bodies_are_422(
     client: TestClient, payload: dict
 ) -> None:
-    match_id, _ = _new_match(client)
+    match_id, _ = new_forced_match(client)
 
     response = client.post(f"/matches/{match_id}/guesses", json=payload)
 
@@ -254,11 +224,11 @@ def _play_row_0(
     """Alternate turns until ``active`` holds all of row 0; return the response
     to the winning claim."""
 
-    _guess(client, match_id, player=active, row=0, column=0, character="Zoro")
-    _guess(client, match_id, player=other, row=1, column=2, character="Franky")
-    _guess(client, match_id, player=active, row=0, column=1, character="Luffy")
-    _guess(client, match_id, player=other, row=2, column=0, character="Robin")
-    return _guess(
+    post_guess(client, match_id, player=active, row=0, column=0, character="Zoro")
+    post_guess(client, match_id, player=other, row=1, column=2, character="Franky")
+    post_guess(client, match_id, player=active, row=0, column=1, character="Luffy")
+    post_guess(client, match_id, player=other, row=2, column=0, character="Robin")
+    return post_guess(
         client, match_id, player=active, row=0, column=2, character="Nami"
     )
 
@@ -266,9 +236,9 @@ def _play_row_0(
 def test_completing_a_line_ends_the_match_and_names_the_winner(
     client: TestClient,
 ) -> None:
-    match_id, active = _new_match(client)
+    match_id, active = new_forced_match(client)
 
-    body = _play_row_0(client, match_id, active, _other(active))
+    body = _play_row_0(client, match_id, active, other_player(active))
 
     assert body["outcome"] == "claimed"
     assert body["match"]["status"] == "won"
@@ -276,12 +246,12 @@ def test_completing_a_line_ends_the_match_and_names_the_winner(
 
 
 def test_no_guess_is_accepted_once_the_match_is_over(client: TestClient) -> None:
-    match_id, active = _new_match(client)
-    other = _other(active)
+    match_id, active = new_forced_match(client)
+    other = other_player(active)
     _play_row_0(client, match_id, active, other)
 
     # A move that would otherwise be legal - empty Cell, correct turn.
-    body = _guess(
+    body = post_guess(
         client, match_id, player=other, row=1, column=1, character="Brook"
     )
 
@@ -293,8 +263,8 @@ def test_no_guess_is_accepted_once_the_match_is_over(client: TestClient) -> None
 def test_a_completed_match_reports_its_result_on_refetch(
     client: TestClient,
 ) -> None:
-    match_id, active = _new_match(client)
-    _play_row_0(client, match_id, active, _other(active))
+    match_id, active = new_forced_match(client)
+    _play_row_0(client, match_id, active, other_player(active))
 
     match = client.get(f"/matches/{match_id}").json()
 

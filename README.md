@@ -8,9 +8,11 @@ This repo is being built ticket by ticket (GitHub Issues on
 `LStiffel/tic-tac-toe_onepiece`). Current state: **playable claim loop, on a
 web screen** — the server loads the One Piece dataset at startup, generates a
 real seeded Grid on Match creation, and resolves a Guess to claimed / wrong /
-already-used / rejected with win-and-draw detection. A no-build HTML/JS/CSS
-frontend renders the Grid and drives the claim interaction on one shared screen.
-The end-of-Match banner, Pass, the Used-pool view and Rematch are still to come.
+already-used / rejected with win-and-draw detection. A stuck Active player can
+Pass, and two Passes in immediate succession end the Match as a draw. A no-build
+HTML/JS/CSS frontend renders the Grid and drives the claim interaction on one
+shared screen. The end-of-Match banner, a Pass button, the Used-pool view and
+Rematch are still to come.
 
 ## Requirements
 
@@ -46,6 +48,7 @@ The JSON API is at <http://127.0.0.1:8000> (interactive docs at `/docs`):
 | `POST /matches`          | Create a Match; returns the match id, the generated Grid (3 row + 3 column Categories, nine Cells), the Active player, and status `in-progress`. Optional body: `seed`, `category_ids`. |
 | `GET /matches/{id}`      | Fetch a Match: its `grid` (Categories + the nine Cells with any claims), the Active player, the Used pool, status, and `winner` on a win. `404` if the id is unknown. |
 | `POST /matches/{id}/guesses` | Attempt to claim a Cell (`player`, `row`, `column`, `character`); returns the outcome (`claimed` / `wrong` / `already-used` / `rejected`) plus the Match after it. The Roster check is re-run here, so a hand-crafted request cannot bypass it. |
+| `POST /matches/{id}/passes` | Pass the turn without attempting a Cell (`player`); returns the outcome (`passed` / `rejected`) plus the Match after it. Two Passes in immediate succession end the Match as a `draw`; a Pass out of turn or on a finished Match is `rejected` with no state change. |
 | `GET /roster`            | The Roster as a flat, sorted list of canonical Character names, for client-side autocomplete. Excludes the Category-to-Characters answer key. |
 | `GET /diagnostics/data-quality` | The data-quality report from the dataset load: Category-referenced names that do not resolve to a Roster Character, and Categories excluded from play for having fewer than three resolved Characters. |
 

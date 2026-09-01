@@ -25,8 +25,10 @@ from app.schemas import (
     GuessResult,
     MatchCreate,
     MatchOut,
+    PassCreate,
+    PassOut,
 )
-from app.statemachine import claim_cell
+from app.statemachine import claim_cell, pass_turn
 from app.storage import InMemoryMatchStore, MatchStore
 
 #: The no-build frontend (issue #9): ``<root>/static`` holds ``index.html`` plus
@@ -119,6 +121,26 @@ def create_app(
         if result.match is not match:  # nothing to persist for a no-op outcome
             store.add(result.match)
         return GuessResult.from_domain(result)
+
+    @app.post("/matches/{match_id}/passes", response_model=PassOut)
+    def submit_pass(
+        match_id: str,
+        body: PassCreate,
+        store: MatchStore = Depends(get_store),
+    ) -> PassOut:
+        """Pass the turn without attempting a Cell. Two Passes in immediate
+        succession end the Match as a ``draw`` (issue #7); a Pass out of turn or
+        on a finished Match is ``rejected`` with no state change."""
+
+        match = store.get(match_id)
+        if match is None:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="Match not found"
+            )
+        result = pass_turn(match, player=body.player)
+        if result.match is not match:  # nothing to persist for a rejected Pass
+            store.add(result.match)
+        return PassOut.from_domain(result)
 
     @app.get("/roster", response_model=list[str])
     def get_roster() -> list[str]:
