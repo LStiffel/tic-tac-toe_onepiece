@@ -9,10 +9,21 @@ The test suite has two seams (see ``docs/agents/testing.md``):
 
 from __future__ import annotations
 
+from collections.abc import Callable
+
 import pytest
 from fastapi.testclient import TestClient
 
 from app.dataset import GameData
+from app.domain import (
+    Category,
+    CategoryGroup,
+    Cell,
+    Grid,
+    Match,
+    MatchStatus,
+    Player,
+)
 from app.main import create_app
 from app.storage import InMemoryMatchStore
 
@@ -20,6 +31,39 @@ from app.storage import InMemoryMatchStore
 @pytest.fixture
 def store() -> InMemoryMatchStore:
     return InMemoryMatchStore()
+
+
+@pytest.fixture
+def build_match() -> Callable[..., Match]:
+    """A hand-made in-progress Match on a well-formed 3x3 Grid, for tests that
+    do not exercise real Grid generation (storage, wire mapping, ...)."""
+
+    def _build(
+        *, match_id: str = "m", first_player: Player = Player.P1
+    ) -> Match:
+        rows = tuple(
+            Category(id=f"r{i}", label=f"Row {i}", group=CategoryGroup.RACE)
+            for i in range(3)
+        )
+        columns = tuple(
+            Category(id=f"c{i}", label=f"Col {i}", group=CategoryGroup.BOUNTY)
+            for i in range(3)
+        )
+        grid = Grid(
+            row_categories=rows,
+            column_categories=columns,
+            cells=tuple(
+                Cell(row=r, column=c) for r in range(3) for c in range(3)
+            ),
+        )
+        return Match(
+            id=match_id,
+            grid=grid,
+            active_player=first_player,
+            status=MatchStatus.IN_PROGRESS,
+        )
+
+    return _build
 
 
 @pytest.fixture

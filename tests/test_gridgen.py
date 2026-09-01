@@ -30,9 +30,10 @@ from app.gridgen import (
 
 # --- a small crafted dataset ------------------------------------------------
 #
-# Twelve Characters ``c1``..``c12`` and a handful of Categories with hand-picked
-# playable sets, spread across enough Groups that random generation has room to
-# find a valid Grid.
+# Twelve Characters ``c1``..``c12`` and Categories with hand-picked playable
+# sets. The six "grid" Categories are all size six and pairwise distinct, so no
+# one is a subset of another, and every row x column intersection below is
+# non-empty - a forced Grid over them stands.
 
 _ROSTER = frozenset(f"c{i}" for i in range(1, 13))
 
@@ -46,18 +47,23 @@ def _cat(cid: str, group: CategoryGroup, members: set[str]) -> LoadedCategory:
 
 
 _C = {c.category.id: c for c in (
-    _cat("race_A", CategoryGroup.RACE, {"c1", "c2", "c3", "c4", "c5", "c6", "c7", "c8"}),
-    _cat("bounty_hi", CategoryGroup.BOUNTY, {"c1", "c2", "c3", "c4", "c5", "c6"}),
-    _cat("haki_x", CategoryGroup.HAKI, {"c2", "c3", "c4", "c5", "c6", "c7", "c8", "c9"}),
-    _cat("age_old", CategoryGroup.AGE, {"c1", "c3", "c4", "c5", "c6", "c7", "c9"}),
-    _cat("height_tall", CategoryGroup.HEIGHT, {"c3", "c4", "c5", "c6", "c7", "c8", "c9", "c10"}),
-    _cat("df_zoan", CategoryGroup.DEVIL_FRUIT, {"c1", "c3", "c4", "c5", "c7", "c9", "c11"}),
-    _cat("origin_eb", CategoryGroup.ORIGIN_SEA, {"c2", "c3", "c4", "c6", "c8", "c10", "c12"}),
-    _cat("status_alive", CategoryGroup.STATUS, {"c1", "c2", "c3", "c4", "c5", "c6", "c7"}),
-    _cat("visited_x", CategoryGroup.VISITED, {"c2", "c3", "c4", "c5", "c6", "c8", "c9"}),
+    # rows
+    _cat("race_A", CategoryGroup.RACE, {"c1", "c2", "c3", "c4", "c5", "c6"}),
+    _cat("bounty_hi", CategoryGroup.BOUNTY, {"c4", "c5", "c6", "c7", "c8", "c9"}),
+    _cat("haki_x", CategoryGroup.HAKI, {"c1", "c2", "c7", "c8", "c9", "c10"}),
+    # columns
+    _cat("age_old", CategoryGroup.AGE, {"c1", "c4", "c7", "c10", "c11", "c12"}),
+    _cat("height_tall", CategoryGroup.HEIGHT, {"c2", "c3", "c5", "c8", "c9", "c11"}),
+    _cat("origin_eb", CategoryGroup.ORIGIN_SEA, {"c1", "c3", "c6", "c8", "c9", "c12"}),
+    # spares
+    _cat("visited_x", CategoryGroup.VISITED, {"c2", "c4", "c6", "c8", "c10", "c12"}),
     # deliberately disjoint from race_A - forces an unsolvable Cell if paired.
-    _cat("race_far", CategoryGroup.RACE, {"c9", "c10", "c11"}),
+    _cat("race_far", CategoryGroup.RACE, {"c10", "c11", "c12"}),
 )}
+
+_ROW_IDS = ["race_A", "bounty_hi", "haki_x"]
+_COL_IDS = ["age_old", "height_tall", "origin_eb"]
+_FORCED = _ROW_IDS + _COL_IDS
 
 
 def _crafted_data() -> GameData:
@@ -125,6 +131,19 @@ def test_generated_grid_uses_six_distinct_categories() -> None:
         assert len(set(_grid_ids(generate_grid(data, seed=seed)))) == 6
 
 
+def test_no_two_rows_and_no_two_columns_are_subset_related() -> None:
+    data = default_game_data()
+    by_id = {c.category.id: c for c in data.categories}
+
+    for seed in range(200):
+        grid = generate_grid(data, seed=seed)
+        for axis in (grid.row_categories, grid.column_categories):
+            for a, b in ((0, 1), (0, 2), (1, 2)):
+                sa = by_id[axis[a].id].characters
+                sb = by_id[axis[b].id].characters
+                assert not (sa <= sb or sb <= sa), (seed, axis[a].id, axis[b].id)
+
+
 # --- Category Group distribution ---------------------------------------
 
 
@@ -143,11 +162,12 @@ def test_category_groups_are_distributed_roughly_evenly() -> None:
     assert total == sample * 6
 
     # Tolerance-based: sampling is uniform-with-replacement before the
-    # solvability filter, so shares are not equal, but no Group should
-    # dominate and almost every Group should show up.
+    # solvability filter, so shares are not equal (a uniform draw over ~12
+    # Groups would be ~8% each), but no Group should dominate and every Group
+    # with playable Categories should show up.
     top_share = max(counts.values()) / total
-    assert top_share < 0.30, counts
-    assert len(counts) >= len(groups_with_categories) - 2, counts
+    assert top_share < 0.20, counts
+    assert len(counts) >= len(groups_with_categories) - 1, counts
 
 
 def test_group_sampling_is_with_replacement() -> None:
@@ -170,28 +190,26 @@ def test_group_sampling_is_with_replacement() -> None:
 def test_explicit_category_ids_produce_exactly_that_grid() -> None:
     data = _crafted_data()
 
-    forced = ["race_A", "bounty_hi", "haki_x", "age_old", "height_tall", "origin_eb"]
-    grid = generate_grid(data, category_ids=forced)
+    grid = generate_grid(data, category_ids=_FORCED)
 
-    assert [c.id for c in grid.row_categories] == forced[:3]
-    assert [c.id for c in grid.column_categories] == forced[3:]
+    assert [c.id for c in grid.row_categories] == _ROW_IDS
+    assert [c.id for c in grid.column_categories] == _COL_IDS
     assert len(grid.cells) == 9
     assert all(cell.is_empty for cell in grid.cells)
 
 
 def test_forced_grid_is_independent_of_seed() -> None:
     data = _crafted_data()
-    forced = ["race_A", "bounty_hi", "haki_x", "age_old", "height_tall", "origin_eb"]
 
-    a = generate_grid(data, category_ids=forced, seed=1)
-    b = generate_grid(data, category_ids=forced, seed=999)
+    a = generate_grid(data, category_ids=_FORCED, seed=1)
+    b = generate_grid(data, category_ids=_FORCED, seed=999)
 
-    assert _grid_ids(a) == _grid_ids(b) == tuple(forced)
+    assert _grid_ids(a) == _grid_ids(b) == tuple(_FORCED)
 
 
 def test_forced_grid_with_an_unsolvable_cell_is_rejected() -> None:
     data = _crafted_data()
-    # race_A (c1..c8) against race_far (c9..c11): empty intersection.
+    # race_A (c1..c6) against race_far (c10..c12): empty intersection.
     forced = ["race_A", "bounty_hi", "haki_x", "race_far", "height_tall", "origin_eb"]
 
     with pytest.raises(InvalidForcedGridError):
@@ -200,7 +218,7 @@ def test_forced_grid_with_an_unsolvable_cell_is_rejected() -> None:
 
 def test_forced_grid_with_an_unknown_category_id_is_rejected() -> None:
     data = _crafted_data()
-    forced = ["race_A", "bounty_hi", "haki_x", "age_old", "height_tall", "no_such_id"]
+    forced = [*_ROW_IDS, "age_old", "height_tall", "no_such_id"]
 
     with pytest.raises(InvalidForcedGridError):
         generate_grid(data, category_ids=forced)
@@ -210,7 +228,7 @@ def test_forced_grid_needs_exactly_six_ids() -> None:
     data = _crafted_data()
 
     with pytest.raises(InvalidForcedGridError):
-        generate_grid(data, category_ids=["race_A", "bounty_hi", "haki_x"])
+        generate_grid(data, category_ids=_ROW_IDS)
 
 
 def test_forced_grid_rejects_a_blocklisted_pair_that_is_not_a_subset() -> None:

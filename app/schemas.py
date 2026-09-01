@@ -21,7 +21,7 @@ class MatchCreate(BaseModel):
     request is rejected if that Grid is unsolvable.
     """
 
-    seed: int | str | None = None
+    seed: int | None = None
     category_ids: list[str] | None = None
 
 

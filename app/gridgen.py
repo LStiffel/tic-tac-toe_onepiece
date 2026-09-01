@@ -11,8 +11,10 @@ Creating a Match builds a fresh, playable :class:`~app.domain.Grid`:
 
    * every one of the nine Cells has a non-empty
      *row-Category ∩ column-Category* set over the Roster, and
-   * no row/column Category pair is subset-related (one playable set contained
-     in the other) or on the :data:`DEGENERATE_BLOCKLIST`.
+   * no pair among the six Categories is subset-related (one playable set
+     contained in the other) or on the :data:`DEGENERATE_BLOCKLIST` - so no
+     Cell, and no row against another row or column against another column,
+     is a gimme.
 
 Match creation also accepts a ``seed`` (making generation reproducible) and/or an
 explicit list of six Category ids (forcing a known Grid, or a clear rejection if
@@ -26,6 +28,7 @@ is ``None``), so it passes every Category through.
 
 from __future__ import annotations
 
+import itertools
 import random
 import uuid
 from collections import defaultdict
@@ -47,31 +50,24 @@ DEFAULT_MAX_ATTEMPTS = 10_000
 #: disabled, so :func:`is_trivial_category` is a pass-through.
 TRIVIAL_CATEGORY_MAX_ROSTER_FRACTION: float | None = None
 
-#: Row/column Category pairings that are degenerate without one playable set
-#: being a strict subset of the other: mutually exclusive or nested Bounty
-#: thresholds, and the "any Haki" / "all three Haki" umbrellas against a specific
-#: Haki type. Strict-subset and empty-intersection pairs are rejected
-#: structurally and need not be listed here.
+#: Category pairings that are degenerate even though neither playable set is a
+#: strict subset of the other. Kept small on purpose: strict-subset pairs (e.g.
+#: "Can use Haki" vs "Can use Armament Haki") and empty-intersection pairs (e.g.
+#: "Bounty >= 1B" vs "Bounty < 100M") are already rejected structurally by
+#: :func:`_pairing_is_valid`; this list is for combos that slip past both checks
+#: yet still make a Cell a gimme. A later ticket can grow it as such cases turn
+#: up in play.
 DEGENERATE_BLOCKLIST: frozenset[frozenset[str]] = frozenset(
     {
+        # The two examples issue #4 calls out, pinned explicitly so the rule
+        # survives any future data change that breaks the structural relation.
         frozenset({"haki_any", "haki_arm"}),
-        frozenset({"haki_any", "haki_obs"}),
-        frozenset({"haki_any", "haki_conq"}),
-        frozenset({"haki_any", "haki_all3"}),
+        frozenset({"bounty_1000000000", "bounty_under_100m"}),
+        # "All three Haki" against a single specific type: technically an
+        # overlap, always a gimme.
         frozenset({"haki_all3", "haki_arm"}),
         frozenset({"haki_all3", "haki_obs"}),
         frozenset({"haki_all3", "haki_conq"}),
-        frozenset({"bounty_1", "bounty_under_100m"}),
-        frozenset({"bounty_1", "bounty_100000000"}),
-        frozenset({"bounty_1", "bounty_500000000"}),
-        frozenset({"bounty_1", "bounty_1000000000"}),
-        frozenset({"bounty_1", "bounty_1500000000"}),
-        frozenset({"bounty_1", "bounty_3000000000"}),
-        frozenset({"bounty_under_100m", "bounty_100000000"}),
-        frozenset({"bounty_under_100m", "bounty_500000000"}),
-        frozenset({"bounty_under_100m", "bounty_1000000000"}),
-        frozenset({"bounty_under_100m", "bounty_1500000000"}),
-        frozenset({"bounty_under_100m", "bounty_3000000000"}),
     }
 )
 
@@ -122,16 +118,19 @@ def _is_subset_related(a: frozenset[str], b: frozenset[str]) -> bool:
 def _pairing_is_valid(
     rows: Sequence[LoadedCategory], columns: Sequence[LoadedCategory]
 ) -> bool:
-    """Whether every row/column Cell is solvable and no row/column pair is
-    subset-related or blocklisted. Assumes the six Categories are distinct."""
+    """Whether the six Categories form a playable Grid: no pair among them is
+    subset-related or blocklisted, and every row/column Cell has at least one
+    Character. Assumes the six Categories are already distinct by id."""
+
+    for a, b in itertools.combinations((*rows, *columns), 2):
+        if _is_subset_related(a.characters, b.characters):
+            return False
+        if is_degenerate_pair(a.category.id, b.category.id):
+            return False
 
     for row in rows:
         for column in columns:
             if not (row.characters & column.characters):
-                return False
-            if _is_subset_related(row.characters, column.characters):
-                return False
-            if is_degenerate_pair(row.category.id, column.category.id):
                 return False
     return True
 
@@ -169,6 +168,10 @@ def _forced_grid(data: GameData, category_ids: Sequence[str]) -> Grid:
             f"unknown or non-playable Category id(s): {', '.join(missing)}"
         )
 
+    # A forced Grid is a deliberate override, so it deliberately bypasses the
+    # trivial-Category filter (:func:`is_trivial_category`) - callers pinning a
+    # known Grid get exactly the Categories they name. It still has to be
+    # playable.
     chosen = [by_id[cid] for cid in category_ids]
     rows, columns = chosen[:3], chosen[3:]
     if not _pairing_is_valid(rows, columns):
@@ -182,7 +185,7 @@ def _forced_grid(data: GameData, category_ids: Sequence[str]) -> Grid:
 def generate_grid(
     data: GameData,
     *,
-    seed: int | str | None = None,
+    seed: int | None = None,
     category_ids: Sequence[str] | None = None,
     max_attempts: int = DEFAULT_MAX_ATTEMPTS,
 ) -> Grid:
@@ -228,7 +231,7 @@ def generate_grid(
 def new_match(
     data: GameData,
     *,
-    seed: int | str | None = None,
+    seed: int | None = None,
     category_ids: Sequence[str] | None = None,
     match_id: str | None = None,
     first_player: Player | None = None,
