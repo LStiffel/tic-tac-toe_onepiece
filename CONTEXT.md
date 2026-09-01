@@ -46,6 +46,22 @@ by a Category that does not resolve to a Roster entry is a data defect, not a
 playable Character.
 _Avoid_: Cast, Pool, Database
 
+**Playable set**:
+The Characters of a Category that resolve to a Roster entry by canonical name.
+Names a Category references that do not resolve are data defects: they are
+excluded from the playable set and recorded in the Data-quality report.
+_Avoid_: Answer key, Members
+
+**Viable threshold**:
+The minimum size of a Category's playable set — three — for the Category to be
+used in a Match. A Category with fewer resolved Characters is excluded from play.
+
+**Data-quality report**:
+The record, produced when the dataset loads, of the Category-referenced names
+that do not resolve to a Roster Character, together with the Categories excluded
+for falling below the Viable threshold. Logged at startup and served from a
+diagnostic endpoint.
+
 **Used pool**:
 The set of Characters already claimed in the current Match. It is shared by both
 players; a Character in the Used pool cannot be named again in that Match.

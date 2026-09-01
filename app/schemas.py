@@ -9,6 +9,7 @@ from __future__ import annotations
 
 from pydantic import BaseModel
 
+from app.dataset import DataQualityReport
 from app.domain import Category, Cell, Grid, Match
 
 
@@ -51,6 +52,30 @@ class GridOut(BaseModel):
                 CategoryOut.from_domain(c) for c in grid.column_categories
             ],
             cells=[CellOut.from_domain(c) for c in grid.cells],
+        )
+
+
+class DataQualityReportOut(BaseModel):
+    """The diagnostic view of what the dataset load could not resolve.
+
+    ``unresolved`` maps a Category id to the names it referenced that are not in
+    the Roster; ``excluded_categories`` lists Categories dropped from play for
+    having too few resolved Characters.
+    """
+
+    unresolved: dict[str, list[str]]
+    excluded_categories: list[str]
+    unresolved_name_count: int
+
+    @classmethod
+    def from_domain(cls, report: DataQualityReport) -> DataQualityReportOut:
+        return cls(
+            unresolved={
+                category_id: list(names)
+                for category_id, names in report.unresolved.items()
+            },
+            excluded_categories=list(report.excluded_categories),
+            unresolved_name_count=report.unresolved_name_count,
         )
 
 

@@ -12,6 +12,7 @@ from __future__ import annotations
 import pytest
 from fastapi.testclient import TestClient
 
+from app.dataset import GameData
 from app.main import create_app
 from app.storage import InMemoryMatchStore
 
@@ -22,7 +23,18 @@ def store() -> InMemoryMatchStore:
 
 
 @pytest.fixture
-def client(store: InMemoryMatchStore) -> TestClient:
+def game_data() -> GameData | None:
+    """The dataset the ``client`` app is built on. ``None`` means the real repo
+    dataset; a test module overrides this fixture to supply a small crafted
+    :class:`GameData` instead."""
+
+    return None
+
+
+@pytest.fixture
+def client(
+    store: InMemoryMatchStore, game_data: GameData | None
+) -> TestClient:
     """A ``TestClient`` backed by a fresh in-memory store per test."""
 
-    return TestClient(create_app(store))
+    return TestClient(create_app(store, game_data))

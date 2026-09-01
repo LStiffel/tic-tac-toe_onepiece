@@ -1,4 +1,5 @@
-"""FastAPI application: create a Match and read its state back.
+"""FastAPI application: create a Match, read its state, and serve the dataset
+surface the client legitimately needs.
 
 Run locally with::
 
@@ -7,19 +8,34 @@ Run locally with::
 
 from __future__ import annotations
 
+from collections.abc import AsyncIterator
+from contextlib import asynccontextmanager
+
 from fastapi import Depends, FastAPI, HTTPException, status
 
+from app.dataset import GameData, default_game_data, log_data_quality
 from app.domain import new_match
-from app.schemas import MatchOut
+from app.schemas import DataQualityReportOut, MatchOut
 from app.storage import InMemoryMatchStore, MatchStore
 
 
-def create_app(store: MatchStore | None = None) -> FastAPI:
+def create_app(
+    store: MatchStore | None = None, game_data: GameData | None = None
+) -> FastAPI:
     """Build the app around a :class:`MatchStore` (a fresh in-memory one by
-    default). Tests call this per-test to get an isolated store."""
+    default) and a :class:`GameData` (the repo dataset by default). Tests pass
+    both explicitly to get an isolated store and a small crafted dataset."""
 
-    app = FastAPI(title="One Piece Trivia Tic-Tac-Toe")
     match_store: MatchStore = store or InMemoryMatchStore()
+    data: GameData = game_data if game_data is not None else default_game_data()
+
+    @asynccontextmanager
+    async def lifespan(_app: FastAPI) -> AsyncIterator[None]:
+        # Runs when the server actually starts serving, not on every build.
+        log_data_quality(data)
+        yield
+
+    app = FastAPI(title="One Piece Trivia Tic-Tac-Toe", lifespan=lifespan)
 
     def get_store() -> MatchStore:
         return match_store
@@ -44,6 +60,22 @@ def create_app(store: MatchStore | None = None) -> FastAPI:
                 status_code=status.HTTP_404_NOT_FOUND, detail="Match not found"
             )
         return MatchOut.from_domain(match)
+
+    @app.get("/roster", response_model=list[str])
+    def get_roster() -> list[str]:
+        """The Roster as a flat list of canonical Character names, for
+        autocomplete. Deliberately excludes the Category-to-Characters answer
+        key."""
+
+        return data.roster_names
+
+    @app.get("/diagnostics/data-quality", response_model=DataQualityReportOut)
+    def get_data_quality() -> DataQualityReportOut:
+        """The data-quality report from the dataset load: Category-referenced
+        names that do not resolve to a Roster Character, and Categories excluded
+        from play for having too few resolved Characters."""
+
+        return DataQualityReportOut.from_domain(data.report)
 
     return app
 
