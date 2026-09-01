@@ -1,5 +1,6 @@
-"""FastAPI application: create a Match, read its state, and serve the dataset
-surface the client legitimately needs.
+"""FastAPI application: create a Match, read its state, serve the dataset
+surface the client legitimately needs, and host the single-screen frontend
+(``static/``) at ``/``.
 
 Run locally with::
 
@@ -10,8 +11,11 @@ from __future__ import annotations
 
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
+from pathlib import Path
 
 from fastapi import Depends, FastAPI, HTTPException, status
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 
 from app.dataset import GameData, default_game_data, log_data_quality
 from app.gridgen import GridGenerationError, InvalidForcedGridError, new_match
@@ -24,6 +28,11 @@ from app.schemas import (
 )
 from app.statemachine import claim_cell
 from app.storage import InMemoryMatchStore, MatchStore
+
+#: The no-build frontend (issue #9): ``<root>/static`` holds ``index.html`` plus
+#: its CSS/JS. Served at ``/`` with the assets mounted under ``/static``; the
+#: page talks to the same JSON API the rest of this module exposes.
+_STATIC_DIR = Path(__file__).resolve().parent.parent / "static"
 
 
 def create_app(
@@ -126,6 +135,19 @@ def create_app(
         from play for having too few resolved Characters."""
 
         return DataQualityReportOut.from_domain(data.report)
+
+    @app.get("/", include_in_schema=False)
+    def index() -> FileResponse:
+        """Serve the single-screen frontend: the Grid, the turn indicator, the
+        Cell-selection + autocomplete input and the feedback line (issue #9)."""
+
+        return FileResponse(_STATIC_DIR / "index.html")
+
+    app.mount(
+        "/static",
+        StaticFiles(directory=str(_STATIC_DIR)),
+        name="static",
+    )
 
     return app
 

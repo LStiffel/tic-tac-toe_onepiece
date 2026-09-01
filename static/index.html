@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>One Piece Trivia Tic-Tac-Toe</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <h1>One Piece Trivia Tic-Tac-Toe</h1>
+      <p id="turn-indicator" class="turn">Starting a Match&hellip;</p>
+    </header>
+
+    <main class="layout">
+      <section class="grid-wrap" aria-label="Grid">
+        <div id="grid" class="grid" role="grid"></div>
+      </section>
+
+      <section class="guess" aria-label="Guess">
+        <p id="selected-cell" class="selected-cell">
+          Select an empty Cell to guess.
+        </p>
+
+        <div class="guess-row">
+          <input
+            id="guess-input"
+            type="text"
+            list="roster-suggestions"
+            autocomplete="off"
+            spellcheck="false"
+            placeholder="Name a Character&hellip;"
+            aria-label="Character name"
+          />
+          <datalist id="roster-suggestions"></datalist>
+          <button id="guess-submit" type="button" disabled>Guess</button>
+        </div>
+
+        <p id="feedback" class="feedback" role="status" aria-live="polite"></p>
+      </section>
+    </main>
+
+    <script src="/static/app.js"></script>
+  </body>
+</html>

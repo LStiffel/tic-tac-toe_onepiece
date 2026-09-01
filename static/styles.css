@@ -1,0 +1,240 @@
+/* Frontend styling for issue #9. Plain CSS, no build step (ADR 0001). */
+
+:root {
+  --sea: #0b3d5c;
+  --sea-deep: #082a3f;
+  --sail: #f7f3e8;
+  --ink: #14202b;
+  --gold: #e8b13a;
+  --p1: #d64545;
+  --p2: #2f8f7f;
+  --line: #b9c9d3;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  color: var(--ink);
+  background: var(--sea);
+  min-height: 100vh;
+}
+
+.topbar {
+  background: var(--sea-deep);
+  color: var(--sail);
+  padding: 1rem 1.5rem;
+  border-bottom: 3px solid var(--gold);
+}
+
+.topbar h1 {
+  margin: 0;
+  font-size: 1.25rem;
+  letter-spacing: 0.02em;
+}
+
+.turn {
+  margin: 0.4rem 0 0;
+  font-weight: 600;
+}
+
+.turn.p1 {
+  color: var(--p1);
+}
+
+.turn.p2 {
+  color: var(--p2);
+}
+
+.turn.over {
+  color: var(--gold);
+}
+
+.layout {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  padding: 1.5rem;
+  align-items: flex-start;
+}
+
+/* --- Grid --------------------------------------------------------------- */
+
+.grid {
+  display: grid;
+  grid-template-columns: 1.15fr repeat(3, minmax(96px, 1fr));
+  grid-auto-rows: minmax(96px, auto);
+  gap: 6px;
+  background: var(--sea-deep);
+  padding: 6px;
+  border-radius: 10px;
+  max-width: 560px;
+}
+
+.corner {
+  background: transparent;
+}
+
+.category {
+  background: var(--gold);
+  color: var(--ink);
+  border-radius: 6px;
+  padding: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.15rem;
+  text-align: center;
+}
+
+.cat-label {
+  font-weight: 700;
+  font-size: 0.82rem;
+  line-height: 1.15;
+}
+
+.cat-group {
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  opacity: 0.75;
+}
+
+.cell {
+  background: var(--sail);
+  border: 2px solid transparent;
+  border-radius: 6px;
+  font: inherit;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  padding: 0.4rem;
+  transition: border-color 0.12s ease, background 0.12s ease;
+}
+
+.cell:hover:not(:disabled) {
+  background: #fff;
+  border-color: var(--gold);
+}
+
+.cell:disabled {
+  cursor: default;
+}
+
+.cell.selected {
+  border-color: var(--gold);
+  background: #fff8e8;
+}
+
+.cell.claimed .mark {
+  font-size: 1.6rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.cell.claimed .cell-name {
+  font-size: 0.72rem;
+  text-align: center;
+  line-height: 1.1;
+}
+
+.cell.claimed.p1 {
+  background: #fbe6e6;
+}
+
+.cell.claimed.p1 .mark {
+  color: var(--p1);
+}
+
+.cell.claimed.p2 {
+  background: #e2f1ee;
+}
+
+.cell.claimed.p2 .mark {
+  color: var(--p2);
+}
+
+/* --- Guess panel ------------------------------------------------------ */
+
+.guess {
+  background: var(--sail);
+  border-radius: 10px;
+  padding: 1rem 1.25rem;
+  min-width: 280px;
+  flex: 1 1 280px;
+  max-width: 420px;
+}
+
+.selected-cell {
+  margin-top: 0;
+  font-size: 0.9rem;
+  min-height: 2.4rem;
+}
+
+.axis-chip {
+  display: inline-block;
+  background: var(--sea);
+  color: var(--sail);
+  border-radius: 4px;
+  padding: 0.1rem 0.4rem;
+  font-size: 0.78rem;
+  margin: 0.1rem 0;
+}
+
+.guess-row {
+  display: flex;
+  gap: 0.5rem;
+}
+
+#guess-input {
+  flex: 1;
+  padding: 0.5rem 0.6rem;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  font: inherit;
+}
+
+#guess-submit {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 6px;
+  background: var(--sea-deep);
+  color: var(--sail);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+#guess-submit:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.feedback {
+  margin-bottom: 0;
+  min-height: 2.6rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.feedback.ok {
+  color: #1c7a3d;
+}
+
+.feedback.warn {
+  color: #9a6a00;
+}
+
+.feedback.error {
+  color: var(--p1);
+}
+
+.feedback.info {
+  color: var(--ink);
+}
