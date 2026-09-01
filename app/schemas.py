@@ -7,10 +7,11 @@ mirrors the domain: a Match has a Grid, a Grid has Categories and Cells.
 
 from __future__ import annotations
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from app.dataset import DataQualityReport
-from app.domain import Category, Cell, Grid, Match
+from app.domain import Category, Cell, Grid, Match, Player
+from app.statemachine import ClaimResult
 
 
 class MatchCreate(BaseModel):
@@ -23,6 +24,17 @@ class MatchCreate(BaseModel):
 
     seed: int | None = None
     category_ids: list[str] | None = None
+
+
+class GuessCreate(BaseModel):
+    """A claim attempt on ``POST /matches/{id}/guesses``: the acting player, the
+    Cell coordinates, and the Character named. ``player`` is explicit so the
+    server can enforce turn order (``not-your-turn``)."""
+
+    player: Player
+    row: int = Field(ge=0, le=2)
+    column: int = Field(ge=0, le=2)
+    character: str
 
 
 class CategoryOut(BaseModel):
@@ -96,6 +108,7 @@ class MatchOut(BaseModel):
     grid: GridOut
     active_player: str
     status: str
+    used_pool: list[str]
 
     @classmethod
     def from_domain(cls, match: Match) -> MatchOut:
@@ -104,4 +117,30 @@ class MatchOut(BaseModel):
             grid=GridOut.from_domain(match.grid),
             active_player=match.active_player.value,
             status=match.status.value,
+            used_pool=sorted(match.used_pool),
+        )
+
+
+class GuessResult(BaseModel):
+    """The outcome of a claim attempt plus the Match after it.
+
+    ``outcome`` is ``claimed`` | ``wrong`` | ``already-used`` | ``rejected``.
+    ``row`` / ``column`` carry the per-axis ``pass`` / ``fail`` for ``claimed``
+    and ``wrong``; ``reason`` carries the rejection reason for ``rejected``.
+    """
+
+    outcome: str
+    row: str | None = None
+    column: str | None = None
+    reason: str | None = None
+    match: MatchOut
+
+    @classmethod
+    def from_domain(cls, result: ClaimResult) -> GuessResult:
+        return cls(
+            outcome=result.outcome.value,
+            row=result.row.value if result.row else None,
+            column=result.column.value if result.column else None,
+            reason=result.reason.value if result.reason else None,
+            match=MatchOut.from_domain(result.match),
         )

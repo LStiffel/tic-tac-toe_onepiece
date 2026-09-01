@@ -39,7 +39,10 @@ def build_match() -> Callable[..., Match]:
     do not exercise real Grid generation (storage, wire mapping, ...)."""
 
     def _build(
-        *, match_id: str = "m", first_player: Player = Player.P1
+        *,
+        match_id: str = "m",
+        first_player: Player = Player.P1,
+        used_pool: frozenset[str] = frozenset(),
     ) -> Match:
         rows = tuple(
             Category(id=f"r{i}", label=f"Row {i}", group=CategoryGroup.RACE)
@@ -61,6 +64,7 @@ def build_match() -> Callable[..., Match]:
             grid=grid,
             active_player=first_player,
             status=MatchStatus.IN_PROGRESS,
+            used_pool=used_pool,
         )
 
     return _build

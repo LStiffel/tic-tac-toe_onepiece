@@ -15,7 +15,14 @@ from fastapi import Depends, FastAPI, HTTPException, status
 
 from app.dataset import GameData, default_game_data, log_data_quality
 from app.gridgen import GridGenerationError, InvalidForcedGridError, new_match
-from app.schemas import DataQualityReportOut, MatchCreate, MatchOut
+from app.schemas import (
+    DataQualityReportOut,
+    GuessCreate,
+    GuessResult,
+    MatchCreate,
+    MatchOut,
+)
+from app.statemachine import claim_cell
 from app.storage import InMemoryMatchStore, MatchStore
 
 
@@ -56,7 +63,7 @@ def create_app(
             )
         except InvalidForcedGridError as exc:
             raise HTTPException(
-                status_code=status.HTTP_422_UNPROCESSABLE_CONTENT, detail=str(exc)
+                status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=str(exc)
             ) from exc
         except GridGenerationError as exc:  # pragma: no cover - pool too thin
             raise HTTPException(
@@ -76,6 +83,33 @@ def create_app(
                 status_code=status.HTTP_404_NOT_FOUND, detail="Match not found"
             )
         return MatchOut.from_domain(match)
+
+    @app.post("/matches/{match_id}/guesses", response_model=GuessResult)
+    def submit_guess(
+        match_id: str,
+        body: GuessCreate,
+        store: MatchStore = Depends(get_store),
+    ) -> GuessResult:
+        """Attempt to claim a Cell by naming a Character. Returns exactly one
+        outcome (``claimed`` / ``wrong`` / ``already-used`` / ``rejected``) plus
+        the Match state after the attempt."""
+
+        match = store.get(match_id)
+        if match is None:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="Match not found"
+            )
+        result = claim_cell(
+            match,
+            data,
+            player=body.player,
+            row=body.row,
+            column=body.column,
+            character=body.character,
+        )
+        if result.match is not match:  # nothing to persist for a no-op outcome
+            store.add(result.match)
+        return GuessResult.from_domain(result)
 
     @app.get("/roster", response_model=list[str])
     def get_roster() -> list[str]:

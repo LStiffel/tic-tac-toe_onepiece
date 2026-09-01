@@ -5,7 +5,7 @@ The vocabulary here is CONTEXT.md's: a **Match** is played on a **Grid** of nine
 **Category Group**.
 
 These are pure data types. Real Grid generation lives in :mod:`app.gridgen`; the
-claim/Pass state machine lands in a later ticket, so no Cell is ever claimed yet.
+claim state machine that transitions a Match lives in :mod:`app.statemachine`.
 """
 
 from __future__ import annotations
@@ -22,7 +22,7 @@ class Player(str, Enum):
 
 
 class MatchStatus(str, Enum):
-    """Lifecycle of a Match. The won/draw states arrive with the state machine
+    """Lifecycle of a Match. The won/draw states arrive with win/draw detection
     in a later ticket; a Match is only ever ``IN_PROGRESS`` here."""
 
     IN_PROGRESS = "in-progress"
@@ -88,9 +88,17 @@ class Grid:
 
 @dataclass(frozen=True)
 class Match:
-    """One complete play session on a single Grid."""
+    """One complete play session on a single Grid.
+
+    ``used_pool`` is the set of canonical Character names already claimed in this
+    Match, shared by both players (CONTEXT.md). ``consecutive_passes`` counts
+    Passes made in immediate succession; a claim or a wrong guess resets it to
+    zero. The Pass path that increments it lands in a later ticket.
+    """
 
     id: str
     grid: Grid
     active_player: Player
     status: MatchStatus
+    used_pool: frozenset[str] = frozenset()
+    consecutive_passes: int = 0

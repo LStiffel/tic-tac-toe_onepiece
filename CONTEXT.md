@@ -71,3 +71,14 @@ _Avoid_: History, Claimed list
 A turn in which a player claims no Cell. Two Passes in immediate succession end the
 Match as a draw.
 _Avoid_: Skip, Forfeit
+
+**Guess**:
+An Active player's attempt to claim a Cell by naming a Character, identified by
+the Match, the Cell coordinates, and the acting player. It resolves to exactly
+one outcome: **claimed** (the Character satisfies both axes — the Cell is marked
+and the Character joins the Used pool), **wrong** (fails at least one axis — the
+turn is forfeited, with a per-axis row/column pass/fail), **already-used** (the
+Character is in the Used pool — the turn is not forfeited), or **rejected** with
+a reason (`not-your-turn`, `cell-taken`, `match-over`, `unknown-character` — no
+state change).
+_Avoid_: Move, Attempt, Submission

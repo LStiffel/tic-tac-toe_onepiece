@@ -1,0 +1,172 @@
+"""The claim state machine: an Active player attempts to claim a Cell.
+
+:func:`claim_cell` is a pure function - it takes a :class:`~app.domain.Match`
+and returns a :class:`ClaimResult` carrying one outcome plus the Match that
+results (the same, unchanged Match when the attempt changes nothing). The
+frozen domain dataclasses are never mutated.
+
+The outcomes are CONTEXT.md's and the v1 spec's (issue #5):
+
+* ``claimed`` - the canonical Character is in both the row Category's and the
+  column Category's resolved set. The Cell is marked for the Active player, the
+  Character joins the Used pool, the consecutive-Pass counter resets, and the
+  turn passes.
+* ``wrong`` - the Character fails at least one axis. ``row`` / ``column`` report
+  ``pass`` / ``fail`` per axis. The turn is forfeited (passes to the other
+  player), the Character is *not* added to the Used pool, and the
+  consecutive-Pass counter resets - a wrong guess is not a Pass.
+* ``already-used`` - the Character is already in the Used pool. The turn is
+  *not* forfeited and nothing changes.
+* ``rejected`` with a :class:`RejectionReason` - ``not-your-turn``,
+  ``cell-taken``, ``match-over`` or ``unknown-character``. Nothing changes.
+
+Win/draw detection is a later ticket (#6); a Match here stays ``in-progress``
+regardless of any line a claim forms.
+"""
+
+from __future__ import annotations
+
+from dataclasses import dataclass, replace
+from enum import Enum
+
+from app.dataset import GameData, canonical_name
+from app.domain import Cell, Grid, Match, MatchStatus, Player
+
+
+class ClaimOutcome(str, Enum):
+    """The one outcome a claim attempt produces."""
+
+    CLAIMED = "claimed"
+    WRONG = "wrong"
+    ALREADY_USED = "already-used"
+    REJECTED = "rejected"
+
+
+class RejectionReason(str, Enum):
+    """Why a claim attempt was ``rejected`` without touching Match state."""
+
+    NOT_YOUR_TURN = "not-your-turn"
+    CELL_TAKEN = "cell-taken"
+    MATCH_OVER = "match-over"
+    UNKNOWN_CHARACTER = "unknown-character"
+
+
+class AxisResult(str, Enum):
+    """Whether the named Character satisfies one axis (row or column) of a Cell."""
+
+    PASS = "pass"
+    FAIL = "fail"
+
+
+@dataclass(frozen=True)
+class ClaimResult:
+    """The outcome of :func:`claim_cell` plus the resulting Match.
+
+    ``row`` / ``column`` are set for ``claimed`` and ``wrong`` (the per-axis
+    verdict); ``reason`` is set for ``rejected``. ``match`` is the Match after
+    the attempt - identical to the input for ``rejected`` and ``already-used``.
+    """
+
+    outcome: ClaimOutcome
+    match: Match
+    row: AxisResult | None = None
+    column: AxisResult | None = None
+    reason: RejectionReason | None = None
+
+
+#: The Grid is 3x3; Cells are stored row-major (see :mod:`app.gridgen`).
+_GRID_SIZE = 3
+
+
+def _other(player: Player) -> Player:
+    return Player.P2 if player is Player.P1 else Player.P1
+
+
+def _cell_index(row: int, column: int) -> int:
+    return row * _GRID_SIZE + column
+
+
+def _cell_at(grid: Grid, row: int, column: int) -> Cell:
+    """The Cell at ``(row, column)`` - a direct index into the row-major Cells."""
+
+    return grid.cells[_cell_index(row, column)]
+
+
+def _with_claim(
+    match: Match, row: int, column: int, player: Player, character: str
+) -> Match:
+    """A copy of ``match`` with the Cell claimed, the Character in the Used
+    pool, the Pass counter reset, and the turn passed."""
+
+    cells = list(match.grid.cells)
+    index = _cell_index(row, column)
+    cells[index] = replace(
+        cells[index], claimed_by=player, character=character
+    )
+    return replace(
+        match,
+        grid=replace(match.grid, cells=tuple(cells)),
+        active_player=_other(player),
+        used_pool=match.used_pool | {character},
+        consecutive_passes=0,
+    )
+
+
+def claim_cell(
+    match: Match,
+    data: GameData,
+    *,
+    player: Player,
+    row: int,
+    column: int,
+    character: str,
+) -> ClaimResult:
+    """Resolve ``player``'s attempt to claim Cell ``(row, column)`` by naming
+    ``character``. See the module docstring for the full outcome table."""
+
+    if match.status is not MatchStatus.IN_PROGRESS:
+        return ClaimResult(
+            ClaimOutcome.REJECTED, match, reason=RejectionReason.MATCH_OVER
+        )
+    if player is not match.active_player:
+        return ClaimResult(
+            ClaimOutcome.REJECTED, match, reason=RejectionReason.NOT_YOUR_TURN
+        )
+    if not _cell_at(match.grid, row, column).is_empty:
+        return ClaimResult(
+            ClaimOutcome.REJECTED, match, reason=RejectionReason.CELL_TAKEN
+        )
+
+    name = canonical_name(character)
+    if name not in data.roster:
+        return ClaimResult(
+            ClaimOutcome.REJECTED,
+            match,
+            reason=RejectionReason.UNKNOWN_CHARACTER,
+        )
+    if name in match.used_pool:
+        return ClaimResult(ClaimOutcome.ALREADY_USED, match)
+
+    resolved = {lc.category.id: lc.characters for lc in data.categories}
+    # Every Grid Category is a playable, loaded Category (validated at Match
+    # creation), so a missing id here is a bug worth surfacing, not a silent
+    # fail.
+    row_ok = name in resolved[match.grid.row_categories[row].id]
+    column_ok = name in resolved[match.grid.column_categories[column].id]
+    row_result = AxisResult.PASS if row_ok else AxisResult.FAIL
+    column_result = AxisResult.PASS if column_ok else AxisResult.FAIL
+
+    if row_ok and column_ok:
+        return ClaimResult(
+            ClaimOutcome.CLAIMED,
+            _with_claim(match, row, column, player, name),
+            row=row_result,
+            column=column_result,
+        )
+
+    return ClaimResult(
+        ClaimOutcome.WRONG,
+        replace(match, active_player=_other(player), consecutive_passes=0),
+        row=row_result,
+        column=column_result,
+    )

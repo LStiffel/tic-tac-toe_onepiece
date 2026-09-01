@@ -38,12 +38,23 @@ def test_create_match_returns_wellformed_grid(client: TestClient) -> None:
         assert category["label"]
         assert category["group"] in VALID_GROUPS
 
+    assert body["used_pool"] == []
+
     assert len(grid["cells"]) == 9
     for cell in grid["cells"]:
         assert cell["claimed_by"] is None
         assert cell["character"] is None
     coordinates = {(cell["row"], cell["column"]) for cell in grid["cells"]}
     assert coordinates == {(r, c) for r in range(3) for c in range(3)}
+
+
+def test_first_player_is_chosen_automatically_and_varies(client: TestClient) -> None:
+    first_players = {
+        client.post("/matches", json={"seed": seed}).json()["active_player"]
+        for seed in range(20)
+    }
+
+    assert first_players == VALID_PLAYERS
 
 
 def test_create_then_fetch_returns_same_match(client: TestClient) -> None:
