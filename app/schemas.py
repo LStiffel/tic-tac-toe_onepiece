@@ -104,10 +104,15 @@ class DataQualityReportOut(BaseModel):
 
 
 class MatchOut(BaseModel):
+    """A Match on the wire. ``status`` is ``in-progress`` | ``won`` | ``draw``;
+    ``winner`` is ``P1`` / ``P2`` when ``status`` is ``won`` and ``null``
+    otherwise, so a completed Match reports its result unambiguously."""
+
     id: str
     grid: GridOut
     active_player: str
     status: str
+    winner: str | None = None
     used_pool: list[str]
 
     @classmethod
@@ -117,6 +122,7 @@ class MatchOut(BaseModel):
             grid=GridOut.from_domain(match.grid),
             active_player=match.active_player.value,
             status=match.status.value,
+            winner=match.winner.value if match.winner else None,
             used_pool=sorted(match.used_pool),
         )
 

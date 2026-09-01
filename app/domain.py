@@ -22,10 +22,14 @@ class Player(str, Enum):
 
 
 class MatchStatus(str, Enum):
-    """Lifecycle of a Match. The won/draw states arrive with win/draw detection
-    in a later ticket; a Match is only ever ``IN_PROGRESS`` here."""
+    """Lifecycle of a Match: ``IN_PROGRESS`` until a claim forms a Line
+    (``WON``, with :attr:`Match.winner` naming the Player) or fills the Grid
+    with no Line (``DRAW``). Both ``WON`` and ``DRAW`` are terminal: a Match in
+    either state is frozen and no further Guess or Pass changes it."""
 
     IN_PROGRESS = "in-progress"
+    WON = "won"
+    DRAW = "draw"
 
 
 class CategoryGroup(str, Enum):
@@ -94,11 +98,15 @@ class Match:
     Match, shared by both players (CONTEXT.md). ``consecutive_passes`` counts
     Passes made in immediate succession; a claim or a wrong guess resets it to
     zero. The Pass path that increments it lands in a later ticket.
+
+    ``winner`` is the Player who formed a Line, set only when ``status`` is
+    ``WON``; it stays ``None`` for an in-progress Match and for a ``DRAW``.
     """
 
     id: str
     grid: Grid
     active_player: Player
     status: MatchStatus
+    winner: Player | None = None
     used_pool: frozenset[str] = frozenset()
     consecutive_passes: int = 0

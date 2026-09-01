@@ -20,8 +20,10 @@ The outcomes are CONTEXT.md's and the v1 spec's (issue #5):
 * ``rejected`` with a :class:`RejectionReason` - ``not-your-turn``,
   ``cell-taken``, ``match-over`` or ``unknown-character``. Nothing changes.
 
-Win/draw detection is a later ticket (#6); a Match here stays ``in-progress``
-regardless of any line a claim forms.
+After a ``claimed`` outcome the Match is resolved (issue #6): if the claim
+completed one of the eight Lines the Match ends ``won`` by that player, and if
+it filled the Grid with no Line the Match ends in a ``draw``. Both are terminal
+- any later Guess on a finished Match is ``rejected`` with ``match-over``.
 """
 
 from __future__ import annotations
@@ -77,9 +79,52 @@ class ClaimResult:
 #: The Grid is 3x3; Cells are stored row-major (see :mod:`app.gridgen`).
 _GRID_SIZE = 3
 
+#: The eight Lines, as triples of row-major Cell indices: three rows, three
+#: columns, then the two diagonals.
+_LINES: tuple[tuple[int, int, int], ...] = (
+    (0, 1, 2),
+    (3, 4, 5),
+    (6, 7, 8),
+    (0, 3, 6),
+    (1, 4, 7),
+    (2, 5, 8),
+    (0, 4, 8),
+    (2, 4, 6),
+)
+
 
 def _other(player: Player) -> Player:
     return Player.P2 if player is Player.P1 else Player.P1
+
+
+def winning_player(grid: Grid) -> Player | None:
+    """The Player who holds a full Line on ``grid`` - three Cells claimed by the
+    same Player across any row, column or diagonal - or ``None`` if no Line is
+    complete. The first Line found wins; a well-formed Match can only ever have
+    one."""
+
+    for a, b, c in _LINES:
+        owner = grid.cells[a].claimed_by
+        if (
+            owner is not None
+            and grid.cells[b].claimed_by is owner
+            and grid.cells[c].claimed_by is owner
+        ):
+            return owner
+    return None
+
+
+def _resolve(match: Match) -> Match:
+    """``match`` with its terminal status applied after a claim: ``WON`` (with
+    ``winner``) if a Line is now complete, ``DRAW`` if every Cell is claimed and
+    no Line is, otherwise ``match`` unchanged."""
+
+    winner = winning_player(match.grid)
+    if winner is not None:
+        return replace(match, status=MatchStatus.WON, winner=winner)
+    if all(not cell.is_empty for cell in match.grid.cells):
+        return replace(match, status=MatchStatus.DRAW)
+    return match
 
 
 def _cell_index(row: int, column: int) -> int:
@@ -159,7 +204,7 @@ def claim_cell(
     if row_ok and column_ok:
         return ClaimResult(
             ClaimOutcome.CLAIMED,
-            _with_claim(match, row, column, player, name),
+            _resolve(_with_claim(match, row, column, player, name)),
             row=row_result,
             column=column_result,
         )

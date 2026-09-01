@@ -243,3 +243,60 @@ def test_malformed_guess_bodies_are_422(
     response = client.post(f"/matches/{match_id}/guesses", json=payload)
 
     assert response.status_code == 422
+
+
+# --- win / draw + match-over lock (issue #6) --------------------------
+
+
+def _play_row_0(
+    client: TestClient, match_id: str, active: str, other: str
+) -> dict:
+    """Alternate turns until ``active`` holds all of row 0; return the response
+    to the winning claim."""
+
+    _guess(client, match_id, player=active, row=0, column=0, character="Zoro")
+    _guess(client, match_id, player=other, row=1, column=2, character="Franky")
+    _guess(client, match_id, player=active, row=0, column=1, character="Luffy")
+    _guess(client, match_id, player=other, row=2, column=0, character="Robin")
+    return _guess(
+        client, match_id, player=active, row=0, column=2, character="Nami"
+    )
+
+
+def test_completing_a_line_ends_the_match_and_names_the_winner(
+    client: TestClient,
+) -> None:
+    match_id, active = _new_match(client)
+
+    body = _play_row_0(client, match_id, active, _other(active))
+
+    assert body["outcome"] == "claimed"
+    assert body["match"]["status"] == "won"
+    assert body["match"]["winner"] == active
+
+
+def test_no_guess_is_accepted_once_the_match_is_over(client: TestClient) -> None:
+    match_id, active = _new_match(client)
+    other = _other(active)
+    _play_row_0(client, match_id, active, other)
+
+    # A move that would otherwise be legal - empty Cell, correct turn.
+    body = _guess(
+        client, match_id, player=other, row=1, column=1, character="Brook"
+    )
+
+    assert body["outcome"] == "rejected"
+    assert body["reason"] == "match-over"
+    assert body["match"]["status"] == "won"
+
+
+def test_a_completed_match_reports_its_result_on_refetch(
+    client: TestClient,
+) -> None:
+    match_id, active = _new_match(client)
+    _play_row_0(client, match_id, active, _other(active))
+
+    match = client.get(f"/matches/{match_id}").json()
+
+    assert match["status"] == "won"
+    assert match["winner"] == active

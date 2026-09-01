@@ -21,6 +21,12 @@ One position on the Grid, defined by the intersection of its row Category and it
 column Category. Claimed by naming a Character that satisfies both.
 _Avoid_: Square, Tile, Box
 
+**Line**:
+Three Cells in a straight run on the Grid — one of the eight: three rows, three
+columns, two diagonals. A Match is won the moment one player holds a full Line;
+the player who does is the winner.
+_Avoid_: Row (a Line may be a column or diagonal), Streak, Run
+
 **Category**:
 A predicate over the Roster (e.g. "Race: Fish-man", "Bounty ≥ 1,000,000,000"),
 paired with the list of Characters that satisfy it. Every Category belongs to one

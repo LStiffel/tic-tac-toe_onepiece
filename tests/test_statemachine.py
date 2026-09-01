@@ -16,6 +16,7 @@ from app.statemachine import (
     ClaimOutcome,
     RejectionReason,
     claim_cell,
+    winning_player,
 )
 from tests.support import CRAFTED_CATEGORIES, crafted_game_data
 
@@ -32,11 +33,17 @@ def _match(
     active_player: Player = Player.P1,
     used_pool: frozenset[str] = frozenset(),
     status: MatchStatus = MatchStatus.IN_PROGRESS,
+    claims: dict[tuple[int, int], Player] | None = None,
 ) -> Match:
+    claimed = claims or {}
     grid = Grid(
         row_categories=(_ROWS[0].category, _ROWS[1].category, _ROWS[2].category),
         column_categories=(_COLS[0].category, _COLS[1].category, _COLS[2].category),
-        cells=tuple(Cell(row=r, column=c) for r in range(3) for c in range(3)),
+        cells=tuple(
+            Cell(row=r, column=c, claimed_by=claimed.get((r, c)))
+            for r in range(3)
+            for c in range(3)
+        ),
     )
     return Match(
         id="m",
@@ -283,3 +290,134 @@ def test_unknown_character_reason_covers_blank_and_junk_input(bad_name: str) -> 
 
     assert result.outcome is ClaimOutcome.REJECTED
     assert result.reason is RejectionReason.UNKNOWN_CHARACTER
+
+
+# --- win / draw resolution (issue #6) --------------------------------
+
+#: Each of the eight Lines, as the (row, column) coordinates of its three Cells.
+_LINE_CASES: dict[str, tuple[tuple[int, int], ...]] = {
+    "row-0": ((0, 0), (0, 1), (0, 2)),
+    "row-1": ((1, 0), (1, 1), (1, 2)),
+    "row-2": ((2, 0), (2, 1), (2, 2)),
+    "column-0": ((0, 0), (1, 0), (2, 0)),
+    "column-1": ((0, 1), (1, 1), (2, 1)),
+    "column-2": ((0, 2), (1, 2), (2, 2)),
+    "diagonal-main": ((0, 0), (1, 1), (2, 2)),
+    "diagonal-anti": ((0, 2), (1, 1), (2, 0)),
+}
+
+
+@pytest.mark.parametrize(
+    "line", list(_LINE_CASES.values()), ids=list(_LINE_CASES)
+)
+def test_win_is_detected_on_each_of_the_eight_lines(
+    line: tuple[tuple[int, int], ...],
+) -> None:
+    grid = _match(claims={cell: Player.P2 for cell in line}).grid
+
+    assert winning_player(grid) is Player.P2
+
+
+def test_no_winner_while_a_line_is_incomplete_or_mixed() -> None:
+    assert winning_player(_match().grid) is None
+    assert (
+        winning_player(
+            _match(claims={(0, 0): Player.P1, (0, 1): Player.P1}).grid
+        )
+        is None
+    )
+    assert (
+        winning_player(
+            _match(
+                claims={
+                    (0, 0): Player.P1,
+                    (0, 1): Player.P1,
+                    (0, 2): Player.P2,
+                }
+            ).grid
+        )
+        is None
+    )
+
+
+def test_a_claim_that_completes_a_line_ends_the_match_won_by_that_player() -> None:
+    # Cells (0, 0) and (0, 1) already belong to P1; P1 now claims (0, 2) with
+    # "Nami" (race_a INTERSECT origin_gl), completing row 0.
+    match = _match(
+        active_player=Player.P1,
+        used_pool=frozenset({"Zoro", "Luffy"}),
+        claims={(0, 0): Player.P1, (0, 1): Player.P1},
+    )
+
+    result = claim_cell(
+        match, _data(), player=Player.P1, row=0, column=2, character="Nami"
+    )
+
+    assert result.outcome is ClaimOutcome.CLAIMED
+    assert result.match.status is MatchStatus.WON
+    assert result.match.winner is Player.P1
+
+
+def test_no_cell_can_be_claimed_once_the_match_is_won() -> None:
+    won = claim_cell(
+        _match(
+            active_player=Player.P1,
+            used_pool=frozenset({"Zoro", "Luffy"}),
+            claims={(0, 0): Player.P1, (0, 1): Player.P1},
+        ),
+        _data(),
+        player=Player.P1,
+        row=0,
+        column=2,
+        character="Nami",
+    ).match
+
+    after = claim_cell(
+        won, _data(), player=Player.P2, row=1, column=1, character="Brook"
+    )
+
+    assert after.outcome is ClaimOutcome.REJECTED
+    assert after.reason is RejectionReason.MATCH_OVER
+    assert after.match is won
+
+
+def test_filling_the_grid_with_no_line_ends_the_match_as_a_draw() -> None:
+    # A full board with no three-in-a-row; Cell (2, 2) is the last gap.
+    #   P1 P1 P2
+    #   P2 P2 P1
+    #   P1 P2 .
+    claims = {
+        (0, 0): Player.P1,
+        (0, 1): Player.P1,
+        (0, 2): Player.P2,
+        (1, 0): Player.P2,
+        (1, 1): Player.P2,
+        (1, 2): Player.P1,
+        (2, 0): Player.P1,
+        (2, 1): Player.P2,
+    }
+    match = _match(
+        active_player=Player.P1,
+        used_pool=frozenset({"Luffy", "Zoro", "Robin", "Franky", "Brook"}),
+        claims=claims,
+    )
+
+    result = claim_cell(
+        match, _data(), player=Player.P1, row=2, column=2, character="Nami"
+    )
+
+    assert result.outcome is ClaimOutcome.CLAIMED
+    assert result.match.status is MatchStatus.DRAW
+    assert result.match.winner is None
+
+
+def test_a_guess_after_the_match_has_ended_is_rejected_and_changes_nothing() -> None:
+    ended = _match(active_player=Player.P1, status=MatchStatus.DRAW)
+
+    result = claim_cell(
+        ended, _data(), player=Player.P1, row=1, column=1, character="Robin"
+    )
+
+    assert result.outcome is ClaimOutcome.REJECTED
+    assert result.reason is RejectionReason.MATCH_OVER
+    assert result.match is ended
