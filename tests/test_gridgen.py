@@ -19,6 +19,7 @@ from app.dataset import (
 )
 from app.domain import Category, CategoryGroup, Grid, MatchStatus, Player
 from app.gridgen import (
+    MIN_VALID_PARTNERS,
     TRIVIAL_CATEGORY_MAX_ROSTER_FRACTION,
     GridGenerationError,
     InvalidForcedGridError,
@@ -161,13 +162,23 @@ def test_category_groups_are_distributed_roughly_evenly() -> None:
     total = sum(counts.values())
     assert total == sample * 6
 
-    # Tolerance-based: sampling is uniform-with-replacement before the
-    # solvability filter, so shares are not equal (a uniform draw over ~12
-    # Groups would be ~8% each), but no Group should dominate and every Group
-    # with playable Categories should show up.
-    top_share = max(counts.values()) / total
-    assert top_share < 0.20, counts
-    assert len(counts) >= len(groups_with_categories) - 1, counts
+    shares = {group: n / total for group, n in counts.items()}
+    top_share = max(shares.values())
+    floor_share = min(shares.values())
+
+    # Groups are drawn uniformly; within a Group the draw is weighted toward
+    # Categories with more Valid partners and the Dead Category prune trims the
+    # tail, so the solvability filter no longer collapses the thin Groups (issue
+    # #12). A uniform draw over the 12 Groups would be ~8.3% each; the weighting
+    # leaves a real spread but a bounded one. Numbers measured in
+    # docs/measurements/category-group-sampling.md (300 seeds): top ~12%
+    # (Misc), floor ~3.7% (Affiliation), top/floor ~3.2. The bounds below carry
+    # margin for dataset drift while still failing if a Group slides back toward
+    # the pre-#12 ~1% floor or a Group runs away past ~16%.
+    assert len(counts) == len(groups_with_categories), counts
+    assert top_share < 0.16, shares
+    assert floor_share >= 0.025, shares
+    assert top_share / floor_share < 5.0, shares
 
 
 def test_group_sampling_is_with_replacement() -> None:
@@ -182,6 +193,46 @@ def test_group_sampling_is_with_replacement() -> None:
         return len(set(groups)) < 6
 
     assert any(has_repeated_group(s) for s in range(60))
+
+
+def test_no_generated_grid_uses_a_dead_category() -> None:
+    """A Dead Category (CONTEXT.md) has fewer than ``MIN_VALID_PARTNERS`` Valid
+    partners - Categories it could share a Cell with: non-empty intersection,
+    neither playable set a subset of the other, pair not blocklisted. It cannot
+    sit in any solvable Grid, so issue #12 drops it from the candidate pool
+    before sampling (mirrors ``test_no_generated_grid_uses_a_trivial_category``).
+    """
+
+    data = default_game_data()
+    roster_size = len(data.roster)
+    pool = [c for c in data.categories if not is_trivial_category(c, roster_size)]
+
+    def valid_partner_count(cat: LoadedCategory) -> int:
+        count = 0
+        for other in pool:
+            if other.category.id == cat.category.id:
+                continue
+            if not (cat.characters & other.characters):
+                continue
+            if (
+                cat.characters <= other.characters
+                or other.characters <= cat.characters
+            ):
+                continue
+            if is_degenerate_pair(cat.category.id, other.category.id):
+                continue
+            count += 1
+        return count
+
+    dead = {
+        c.category.id for c in pool
+        if valid_partner_count(c) < MIN_VALID_PARTNERS
+    }
+    assert dead, "expected some Category too sparsely connected to keep"
+
+    for seed in range(300):
+        grid = generate_grid(data, seed=seed)
+        assert not (set(_grid_ids(grid)) & dead), (seed, sorted(dead))
 
 
 # --- forced Grids -------------------------------------------------------

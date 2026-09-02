@@ -36,8 +36,12 @@ _Avoid_: Criterion, Tag, Clue
 **Category Group**:
 One of the twelve top-level clusters a Category belongs to: Bounty, Race, Status,
 Affiliation, Origin sea, Devil Fruit, Haki, Height, Age, Debut chapter,
-Visited (journey), Misc. Grid generation samples Groups uniformly before choosing
-a Category within each, so Groups appear about equally often across Matches.
+Visited (journey), Misc. Grid generation samples Groups uniformly, then picks a
+Category within each Group weighted toward the ones with more Valid partners, so
+Groups show up roughly evenly across Matches — not perfectly even (Groups whose
+Categories are all small, like Affiliation and Race, still land a little below
+the others), but no Group dominates or is squeezed out. See
+`docs/adr/0003-even-category-group-sampling.md`.
 _Avoid_: Theme, Section
 
 **Character**:
@@ -70,6 +74,22 @@ generated. A forced Grid (an explicit Category list) is an override and keeps
 them. The fraction and the decision are recorded in
 `docs/adr/0002-trivial-category-exclusion.md`.
 _Avoid_: Gimme Category (a gimme is a Cell, not a Category), Broad tag
+
+**Valid partner**:
+Of a Category, another Category it could sit opposite on a Grid and still make a
+playable Cell: their playable sets intersect, neither is a subset of the other,
+and the pair is not a known gimme. A Category's count of valid partners predicts
+how often it survives Grid generation, so it drives both the Dead Category prune
+and the weighting of the within-Group Category draw
+(`docs/adr/0003-even-category-group-sampling.md`).
+
+**Dead Category**:
+A Category with fewer than three Valid partners. A row needs three Categories for
+its columns (and a column three for its rows), so a Dead Category cannot appear
+in any solvable Grid; it is dropped from the candidate pool before a Grid is
+generated. As with a Trivial Category, a forced Grid is an override and keeps
+them. Decided in `docs/adr/0003-even-category-group-sampling.md`.
+_Avoid_: Orphan Category, Isolated Category
 
 **Data-quality report**:
 The record, produced when the dataset loads, of the Category-referenced names
