@@ -20,13 +20,13 @@ dev = [
 ]
 
 [tool.setuptools]
-packages = ["app"]
+packages = ["app", "scripts"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-ra"
 
 [tool.mypy]
-files = ["app"]
+files = ["app", "scripts"]
 python_version = "3.11"
 strict = true
