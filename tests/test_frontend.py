@@ -52,3 +52,30 @@ def test_frontend_static_assets_are_served(client: TestClient) -> None:
 
         assert response.status_code == 200, path
         assert expected_type in response.headers["content-type"], path
+
+
+def test_frontend_assets_send_no_cache(client: TestClient) -> None:
+    """Issue #13: a browser holding an earlier screen kept running a stale
+    ``app.js`` with no Pass / Rematch wiring. ``GET /`` and every ``/static``
+    asset send ``Cache-Control: no-cache`` so the browser rechecks each load."""
+
+    for path in ("/", "/static/app.js", "/static/styles.css"):
+        response = client.get(path)
+
+        assert response.headers.get("cache-control") == "no-cache", path
+
+
+def test_frontend_static_assets_still_answer_304_when_unchanged(
+    client: TestClient,
+) -> None:
+    """``no-cache`` is revalidate, not refetch: with the ETag Starlette sends,
+    an unchanged ``/static`` asset is a cheap conditional 304 that still
+    carries the header."""
+
+    first = client.get("/static/app.js")
+    revalidated = client.get(
+        "/static/app.js", headers={"If-None-Match": first.headers["etag"]}
+    )
+
+    assert revalidated.status_code == 304
+    assert revalidated.headers.get("cache-control") == "no-cache"

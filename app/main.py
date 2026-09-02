@@ -14,8 +14,9 @@ from contextlib import asynccontextmanager
 from pathlib import Path
 
 from fastapi import Depends, FastAPI, HTTPException, status
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, Response
 from fastapi.staticfiles import StaticFiles
+from starlette.types import Scope
 
 from app.dataset import GameData, default_game_data, log_data_quality
 from app.domain import Match
@@ -37,6 +38,23 @@ from app.storage import InMemoryMatchStore, MatchStore
 #: its CSS/JS. Served at ``/`` with the assets mounted under ``/static``; the
 #: page talks to the same JSON API the rest of this module exposes.
 _STATIC_DIR = Path(__file__).resolve().parent.parent / "static"
+
+#: ``Cache-Control`` for the frontend assets. ``no-cache`` = the browser may
+#: keep a copy but must revalidate before every use; paired with the ``ETag``
+#: Starlette sends for ``/static``, an unchanged asset then comes back as a
+#: cheap 304. Without it a browser holding an earlier screen kept running a
+#: stale ``app.js`` — no Pass / Rematch wiring — for the whole Match (issue #13).
+_ASSET_CACHE_CONTROL = "no-cache"
+
+
+class RevalidatedStaticFiles(StaticFiles):
+    """A ``/static`` mount that stamps every response — 200 or 304 — with
+    ``Cache-Control: no-cache`` (see ``_ASSET_CACHE_CONTROL``)."""
+
+    async def get_response(self, path: str, scope: Scope) -> Response:
+        response = await super().get_response(path, scope)
+        response.headers["Cache-Control"] = _ASSET_CACHE_CONTROL
+        return response
 
 
 def create_app(
@@ -207,13 +225,18 @@ def create_app(
     @app.get("/", include_in_schema=False)
     def index() -> FileResponse:
         """Serve the single-screen frontend: the Grid, the turn indicator, the
-        Cell-selection + autocomplete input and the feedback line (issue #9)."""
+        Cell-selection + autocomplete input and the feedback line (issue #9).
+        ``no-cache`` so the page — and the ``app.js`` it pulls — is re-fetched
+        on every load rather than served stale from an earlier screen (#13)."""
 
-        return FileResponse(_STATIC_DIR / "index.html")
+        return FileResponse(
+            _STATIC_DIR / "index.html",
+            headers={"Cache-Control": _ASSET_CACHE_CONTROL},
+        )
 
     app.mount(
         "/static",
-        StaticFiles(directory=str(_STATIC_DIR)),
+        RevalidatedStaticFiles(directory=str(_STATIC_DIR)),
         name="static",
     )
 

@@ -63,13 +63,25 @@ Each step maps to an acceptance criterion on the ticket.
    and the feedback line reads "Rematch. Fresh Grid, empty Used pool. Player N …
    to move." Play a move to confirm the new Match is live.
 
+8. **No stale `app.js` (issue #13 regression).** In a browser that has loaded an
+   older version of the app, open the page again (a plain reload, *not* a hard
+   reload). Pass and Rematch must reach their enabled state on the acting
+   player's turn — never stuck disabled for the whole Match. DevTools → Network:
+   `app.js` shows `Cache-Control: no-cache` and either `200` or a `304`, not
+   `(from disk cache)`. The fix is purely the response header; triage confirmed
+   the `static/app.js` logic itself is sound (buttons end up `disabled = false`
+   in a headless harness), so `render()` was left as-is rather than hardened.
+
 ## Status
 
 - **Automated** (`tests/test_frontend.py`, part of `pytest`): `GET /` serves the
   page; `/static/app.js` and `/static/styles.css` are served; the page carries
   the `banner`, `pass-btn`, `rematch-btn`, `used-pool-list` and `art` ids the
-  script binds to. `GET /characters` shape is covered by
-  `tests/test_roster_api.py`.
+  script binds to; `GET /` and every `/static` asset send
+  `Cache-Control: no-cache` so a browser can't keep running a stale `app.js`
+  from an earlier screen (issue #13) — an unchanged `/static` asset then
+  revalidates to a cheap `304`, while `GET /` is re-fetched fresh each load.
+  `GET /characters` shape is covered by `tests/test_roster_api.py`.
 - **Steps 1–7 above**: pending a human run in a real browser — they exercise DOM
   rendering and interaction that the automated checks do not cover. Record the
   date and outcome here after running them.
