@@ -18,6 +18,7 @@ from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
 from app.dataset import GameData, default_game_data, log_data_quality
+from app.domain import Match
 from app.gridgen import GridGenerationError, InvalidForcedGridError, new_match
 from app.schemas import (
     DataQualityReportOut,
@@ -58,18 +59,14 @@ def create_app(
     def get_store() -> MatchStore:
         return match_store
 
-    @app.post(
-        "/matches",
-        response_model=MatchOut,
-        status_code=status.HTTP_201_CREATED,
-    )
-    def create_match(
-        body: MatchCreate | None = None,
-        store: MatchStore = Depends(get_store),
-    ) -> MatchOut:
-        params = body or MatchCreate()
+    def build_match(params: MatchCreate) -> Match:
+        """A fresh in-progress Match on a newly generated Grid, mapping the
+        Grid-generation failures onto HTTP status codes. Shared by ``POST
+        /matches`` and ``POST /matches/{id}/rematch`` so both create a Match the
+        exact same way."""
+
         try:
-            match = new_match(
+            return new_match(
                 data, seed=params.seed, category_ids=params.category_ids
             )
         except InvalidForcedGridError as exc:
@@ -81,6 +78,41 @@ def create_app(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail=str(exc),
             ) from exc
+
+    @app.post(
+        "/matches",
+        response_model=MatchOut,
+        status_code=status.HTTP_201_CREATED,
+    )
+    def create_match(
+        body: MatchCreate | None = None,
+        store: MatchStore = Depends(get_store),
+    ) -> MatchOut:
+        match = build_match(body or MatchCreate())
+        store.add(match)
+        return MatchOut.from_domain(match)
+
+    @app.post(
+        "/matches/{match_id}/rematch",
+        response_model=MatchOut,
+        status_code=status.HTTP_201_CREATED,
+    )
+    def rematch(
+        match_id: str,
+        body: MatchCreate | None = None,
+        store: MatchStore = Depends(get_store),
+    ) -> MatchOut:
+        """Start a fresh Match once a previous one is done (issue #8): a newly
+        generated Grid, an empty Used pool, a zeroed consecutive-Pass counter and
+        a first player chosen anew at random. The new Match gets its own id and
+        is stored alongside the previous one, which is left untouched (its id may
+        simply be dropped by the client)."""
+
+        if store.get(match_id) is None:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="Match not found"
+            )
+        match = build_match(body or MatchCreate())
         store.add(match)
         return MatchOut.from_domain(match)
 
