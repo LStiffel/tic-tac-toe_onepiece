@@ -22,6 +22,7 @@ from tests.support import (
     new_forced_match,
     other_player,
     post_guess,
+    post_pass,
 )
 
 VALID_PLAYERS = {"P1", "P2"}
@@ -37,14 +38,6 @@ def _rematch(client: TestClient, match_id: str, **body: object) -> dict:
         f"/matches/{match_id}/rematch", json=body or None
     )
     assert response.status_code == 201, response.text
-    return response.json()
-
-
-def _pass(client: TestClient, match_id: str, *, player: str) -> dict:
-    response = client.post(
-        f"/matches/{match_id}/passes", json={"player": player}
-    )
-    assert response.status_code == 200, response.text
     return response.json()
 
 
@@ -127,13 +120,13 @@ def test_the_consecutive_pass_counter_is_zeroed_in_the_rematch(
     # One Pass in the source Match leaves its counter at 1. If that carried into
     # the Rematch, a single Pass there would immediately draw it.
     source_id, active = new_forced_match(client)
-    _pass(client, source_id, player=active)
+    post_pass(client, source_id, player=active)
 
     rematch_id = _rematch(client, source_id, category_ids=CRAFTED_CATEGORY_IDS)[
         "id"
     ]
     rematch_active = client.get(f"/matches/{rematch_id}").json()["active_player"]
-    body = _pass(client, rematch_id, player=rematch_active)
+    body = post_pass(client, rematch_id, player=rematch_active)
 
     assert body["outcome"] == "passed"
     assert body["match"]["status"] == "in-progress"

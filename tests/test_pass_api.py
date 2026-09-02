@@ -17,6 +17,7 @@ from tests.support import (
     new_forced_match,
     other_player,
     post_guess,
+    post_pass,
 )
 
 
@@ -25,21 +26,13 @@ def game_data() -> GameData:
     return crafted_game_data()
 
 
-def _pass(client: TestClient, match_id: str, *, player: str) -> dict:
-    response = client.post(
-        f"/matches/{match_id}/passes", json={"player": player}
-    )
-    assert response.status_code == 200, response.text
-    return response.json()
-
-
 # --- a single Pass ---------------------------------------------------
 
 
 def test_a_single_pass_passes_the_turn(client: TestClient) -> None:
     match_id, active = new_forced_match(client)
 
-    body = _pass(client, match_id, player=active)
+    body = post_pass(client, match_id, player=active)
 
     assert body["outcome"] == "passed"
     assert body["reason"] is None
@@ -50,7 +43,7 @@ def test_a_single_pass_passes_the_turn(client: TestClient) -> None:
 
 def test_the_passed_turn_survives_a_refetch(client: TestClient) -> None:
     match_id, active = new_forced_match(client)
-    _pass(client, match_id, player=active)
+    post_pass(client, match_id, player=active)
 
     match = client.get(f"/matches/{match_id}").json()
 
@@ -65,9 +58,9 @@ def test_two_passes_in_immediate_succession_end_the_match_as_a_draw(
     client: TestClient,
 ) -> None:
     match_id, active = new_forced_match(client)
-    _pass(client, match_id, player=active)
+    post_pass(client, match_id, player=active)
 
-    body = _pass(client, match_id, player=other_player(active))
+    body = post_pass(client, match_id, player=other_player(active))
 
     assert body["outcome"] == "passed"
     assert body["match"]["status"] == "draw"
@@ -78,8 +71,8 @@ def test_the_draw_from_a_double_pass_survives_a_refetch(
     client: TestClient,
 ) -> None:
     match_id, active = new_forced_match(client)
-    _pass(client, match_id, player=active)
-    _pass(client, match_id, player=other_player(active))
+    post_pass(client, match_id, player=active)
+    post_pass(client, match_id, player=other_player(active))
 
     match = client.get(f"/matches/{match_id}").json()
 
@@ -95,10 +88,10 @@ def test_a_claim_between_two_passes_keeps_the_next_pass_from_drawing(
 ) -> None:
     match_id, active = new_forced_match(client)
     other = other_player(active)
-    _pass(client, match_id, player=active)
+    post_pass(client, match_id, player=active)
     post_guess(client, match_id, player=other, row=0, column=0, character="Zoro")
 
-    body = _pass(client, match_id, player=active)
+    body = post_pass(client, match_id, player=active)
 
     assert body["outcome"] == "passed"
     assert body["match"]["status"] == "in-progress"
@@ -109,11 +102,11 @@ def test_a_wrong_guess_between_two_passes_keeps_the_next_pass_from_drawing(
 ) -> None:
     match_id, active = new_forced_match(client)
     other = other_player(active)
-    _pass(client, match_id, player=active)
+    post_pass(client, match_id, player=active)
     # "Nami" is in race_a (row 0) but not haki_arm (column 0) - a wrong guess.
     post_guess(client, match_id, player=other, row=0, column=0, character="Nami")
 
-    body = _pass(client, match_id, player=active)
+    body = post_pass(client, match_id, player=active)
 
     assert body["outcome"] == "passed"
     assert body["match"]["status"] == "in-progress"
@@ -127,7 +120,7 @@ def test_a_pass_out_of_turn_is_rejected_with_no_state_change(
 ) -> None:
     match_id, active = new_forced_match(client)
 
-    body = _pass(client, match_id, player=other_player(active))
+    body = post_pass(client, match_id, player=other_player(active))
 
     assert body["outcome"] == "rejected"
     assert body["reason"] == "not-your-turn"
@@ -139,10 +132,10 @@ def test_a_pass_out_of_turn_is_rejected_with_no_state_change(
 def test_a_pass_on_a_finished_match_is_rejected(client: TestClient) -> None:
     match_id, active = new_forced_match(client)
     other = other_player(active)
-    _pass(client, match_id, player=active)
-    _pass(client, match_id, player=other)  # draw
+    post_pass(client, match_id, player=active)
+    post_pass(client, match_id, player=other)  # draw
 
-    body = _pass(client, match_id, player=active)
+    body = post_pass(client, match_id, player=active)
 
     assert body["outcome"] == "rejected"
     assert body["reason"] == "match-over"

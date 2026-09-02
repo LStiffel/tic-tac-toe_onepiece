@@ -59,7 +59,7 @@ def create_app(
     def get_store() -> MatchStore:
         return match_store
 
-    def build_match(params: MatchCreate) -> Match:
+    def generate_match(params: MatchCreate) -> Match:
         """A fresh in-progress Match on a newly generated Grid, mapping the
         Grid-generation failures onto HTTP status codes. Shared by ``POST
         /matches`` and ``POST /matches/{id}/rematch`` so both create a Match the
@@ -88,7 +88,7 @@ def create_app(
         body: MatchCreate | None = None,
         store: MatchStore = Depends(get_store),
     ) -> MatchOut:
-        match = build_match(body or MatchCreate())
+        match = generate_match(body or MatchCreate())
         store.add(match)
         return MatchOut.from_domain(match)
 
@@ -102,17 +102,17 @@ def create_app(
         body: MatchCreate | None = None,
         store: MatchStore = Depends(get_store),
     ) -> MatchOut:
-        """Start a fresh Match once a previous one is done (issue #8): a newly
-        generated Grid, an empty Used pool, a zeroed consecutive-Pass counter and
-        a first player chosen anew at random. The new Match gets its own id and
-        is stored alongside the previous one, which is left untouched (its id may
-        simply be dropped by the client)."""
+        """Start a fresh Match from an existing one (issue #8): a newly generated
+        Grid, an empty Used pool, a zeroed consecutive-Pass counter and a first
+        player chosen anew at random. The new Match gets its own id and is stored
+        alongside the source Match, which is left untouched (its id may simply be
+        dropped by the client). 404 if the source Match id is unknown."""
 
         if store.get(match_id) is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND, detail="Match not found"
             )
-        match = build_match(body or MatchCreate())
+        match = generate_match(body or MatchCreate())
         store.add(match)
         return MatchOut.from_domain(match)
 

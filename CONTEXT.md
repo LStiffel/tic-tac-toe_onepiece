@@ -94,9 +94,9 @@ state change).
 _Avoid_: Move, Attempt, Submission
 
 **Rematch**:
-Starting a fresh Match once a previous one is done, without restarting the
-server. It is a plain new Match — a newly generated Grid, an empty Used pool, a
-zeroed consecutive-Pass counter, `in-progress` status, and a first player chosen
-anew at random — with its own game id. The previous Match is left untouched; its
-id may simply be dropped.
+Starting a fresh Match from an existing one, without restarting the server. It is
+a plain new Match — a newly generated Grid, an empty Used pool, a zeroed
+consecutive-Pass counter, `in-progress` status, and a first player chosen anew at
+random — with its own id. The previous Match is left untouched; its id may simply
+be dropped.
 _Avoid_: Restart, Replay, New round

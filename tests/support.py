@@ -65,10 +65,10 @@ def crafted_game_data() -> GameData:
     )
 
 
-# --- HTTP-seam helpers (shared by the claim and Pass API tests) -------
+# --- HTTP-seam helpers (shared by the claim, Pass and Rematch API tests) ---
 #
-# Both API test modules override the ``game_data`` fixture with
-# :func:`crafted_game_data` and force this exact Grid via ``category_ids``.
+# Every API test module overrides the ``game_data`` fixture with
+# :func:`crafted_game_data` and forces this exact Grid via ``category_ids``.
 
 
 def new_forced_match(client: TestClient) -> tuple[str, str]:
@@ -106,6 +106,16 @@ def post_guess(
             "column": column,
             "character": character,
         },
+    )
+    assert response.status_code == 200, response.text
+    return response.json()
+
+
+def post_pass(client: TestClient, match_id: str, *, player: str) -> dict:
+    """POST a Pass and return the decoded body, asserting a 200 response."""
+
+    response = client.post(
+        f"/matches/{match_id}/passes", json={"player": player}
     )
     assert response.status_code == 200, response.text
     return response.json()
