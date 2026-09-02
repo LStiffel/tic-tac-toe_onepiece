@@ -82,10 +82,9 @@ Each step maps to an acceptance criterion on the ticket.
   from an earlier screen (issue #13) — an unchanged `/static` asset then
   revalidates to a cheap `304`, while `GET /` is re-fetched fresh each load.
   `GET /characters` shape is covered by `tests/test_roster_api.py`.
-- **Steps 1–7 above**: pending a human run in a real browser — they exercise DOM
-  rendering and interaction that the automated checks do not cover. Record the
-  date and outcome here after running them.
+- **Steps 1–8 above**: exercised in a real browser — DOM rendering and
+  interaction the automated checks do not cover. Record each run below.
 
-| Date | Runner | Result |
-| ---- | ------ | ------ |
-|      |        |        |
+| Date       | Runner     | Result |
+| ---------- | ---------- | ------ |
+| 2026-09-02 | Maintainer | Pass — steps 1–7 all as described; step 8 (issue #13/#14 regression) confirmed after the `Cache-Control: no-cache` fix: Pass, Rematch and the Used-pool view all work on a plain reload. |
