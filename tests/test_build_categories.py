@@ -492,8 +492,9 @@ def test_bounty_predicate_parses_int_and_string_bounty_fields() -> None:
 
 def test_debut_chapter_predicate_parses_first_appearance_arc() -> None:
     # A representative Debut chapter predicate over a hand-built Roster. The
-    # chapter is the first run of digits in ``first_appearance_arc``; a value
-    # with no digits ("Monsters") and a missing field both resolve to no debut
+    # chapter is read from a value that opens with "Chapter <n>" (a trailing
+    # note like "(cover)" or "(flashback)" is fine); a value with no chapter
+    # reference ("Monsters") and a missing field both resolve to no debut
     # chapter, so those Characters fall out of every Debut chapter Category.
     roster = [
         _character("Luffy", first_appearance_arc="Chapter 1"),
@@ -531,44 +532,28 @@ def test_debut_chapter_predicate_parses_first_appearance_arc() -> None:
             assert "Imu" not in entry["characters"]
 
 
-def test_debut_chapter_parse_reads_an_incidental_number_from_a_non_chapter_value() -> None:
-    # The parse is deliberately naive - the first run of digits anywhere in the
-    # string - because that is what produced the committed ``categories.json``
-    # (pinned by the golden test). So a value that is not a chapter reference at
-    # all but happens to contain a number, like "SBS Volume 105", still resolves
-    # to chapter 105 and keeps the Character in every matching Debut chapter
-    # Category. Only a genuinely digit-free value drops out.
+def test_non_chapter_first_appearance_values_yield_no_debut_chapter() -> None:
+    # Only a value that opens with "Chapter <n>" is a chapter debut. A value that
+    # merely contains a number - an SBS Q&A volume, a spin-off novel or magazine
+    # volume, a movie / special credit - is not, so the Character joins no Debut
+    # chapter Category. Every Character here also has a real chapter debut, which
+    # is the only thing that places them.
     roster = [
-        _character("Roronoa Arashi", first_appearance_arc="SBS Volume 105 (mentioned)"),
-        _character("Tera", first_appearance_arc="SBS Volume 105 (mentioned)"),
-        _character("Fukumi", first_appearance_arc="SBS Volume 103"),
-        _character("Ryuma", first_appearance_arc="Monsters"),
+        _character("Roronoa Arashi", first_appearance_arc="SBS Volume 105 (mentioned)", status="Alive"),
+        _character("Draw", first_appearance_arc="One Piece novel A - Vol. 1", status="Alive"),
+        _character("Charlotte Gala", first_appearance_arc="One Piece Magazine Vol.5", status="Alive"),
+        _character("Shiki", first_appearance_arc="Strong World: Chap. 0", status="Alive"),
+        _character("Ryuma", first_appearance_arc="Monsters", status="Alive"),
     ]
 
     result = build_categories(roster, [], [])
     by_id = {entry["id"]: entry for entry in result.categories_json}
 
-    # 103 and 105 both land in the 1-300 and 1-597 bands...
-    assert by_id["debut_1_300"]["characters"] == ["Fukumi", "Roronoa Arashi", "Tera"]
-    assert by_id["debut_1_597"]["characters"] == ["Fukumi", "Roronoa Arashi", "Tera"]
-    # ...but not the 1-100 band, and the digit-free "Monsters" is nowhere.
-    assert "debut_1_100" not in by_id
-    for entry in result.categories_json:
-        assert "Ryuma" not in entry["characters"]
-
-
-def test_debut_chapter_zero_falls_below_every_debut_category() -> None:
-    # "Strong World: Chap. 0" parses to chapter 0, which is below the floor of
-    # every Debut chapter Category (all start at 1), so it joins none of them.
-    roster = [
-        _character("Shiki", first_appearance_arc="Strong World: Chap. 0"),
-        _character("Indigo", first_appearance_arc="Strong World: Chap. 0"),
-        _character("Scarlet", first_appearance_arc="Strong World: Chap. 0"),
-    ]
-
-    result = build_categories(roster, [], [])
-
-    assert list(result.categories_json) == []
+    # The Roster still loads (they keep every Category that does not need a
+    # chapter)...
+    assert by_id["status_Alive"]["count"] == 5
+    # ...but no Debut chapter Category is emitted at all.
+    assert not any(entry["id"].startswith("debut_") for entry in result.categories_json)
 
 
 def test_new_field_predicate_groups_keep_the_build_order_deterministic() -> None:

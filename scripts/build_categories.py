@@ -125,8 +125,12 @@ def _match_field(field_name: str, value: str) -> Predicate:
 #: First run of digits (with thousands commas) in a prose ``bounty`` string.
 _BOUNTY_FIGURE = re.compile(r"[0-9][0-9,]*")
 
-#: First run of digits anywhere in a ``first_appearance_arc`` string.
-_CHAPTER_NUMBER = re.compile(r"[0-9]+")
+#: A ``first_appearance_arc`` that is a genuine chapter reference: the string
+#: opens with ``Chapter <number>``. A trailing note (``" (cover)"``,
+#: ``" (mentioned)"``, ``",Episode 345"``) is fine; anything that does not start
+#: this way (``"SBS Volume 105"``, ``"One Piece novel A - Vol. 1"``,
+#: ``"Strong World: Chap. 0"``, ``"Monsters"``) is not a chapter debut.
+_CHAPTER_REFERENCE = re.compile(r"Chapter\s+([0-9]+)")
 
 
 def _parse_bounty(value: object) -> int | None:
@@ -156,25 +160,24 @@ def _parse_bounty(value: object) -> int | None:
 
 def _parse_debut_chapter(value: object) -> int | None:
     """The chapter number a Character debuted in, parsed from a Raw
-    ``first_appearance_arc`` value, or ``None`` when none can be read.
+    ``first_appearance_arc`` value, or ``None`` when it is not a chapter debut.
 
-    The usual form is ``"Chapter 551"`` or ``"Chapter 487 (cover)"``; the parse
-    takes the first run of digits anywhere in the string. This is deliberately
-    the same naive parse that produced the committed ``categories.json`` (the
-    golden test pins it byte-for-byte): a value with an incidental number such as
-    ``"SBS Volume 105"`` or ``"One Piece novel A - Vol. 1"`` therefore resolves
-    to a chapter as well, while a digit-free value (``"Monsters"``,
-    ``"Loguetown Arc (Novel)"``) or a missing field resolves to no debut chapter
-    and drops out of every Debut chapter Category. ``"Strong World: Chap. 0"``
-    parses to ``0``, which sits below every Debut chapter Category's floor.
+    Only a value that *opens* with ``"Chapter <number>"`` counts —
+    ``"Chapter 551"``, ``"Chapter 487 (cover)"``, ``"Chapter 451,Episode 345"``.
+    A value that merely contains a number without being a chapter reference
+    (``"SBS Volume 105"``, ``"One Piece novel A - Vol. 1"``,
+    ``"One Piece Magazine Vol.5"``), a movie / special credit
+    (``"Strong World: Chap. 0"``), a digit-free value (``"Monsters"``,
+    ``"Loguetown Arc (Novel)"``), and a missing field all resolve to no debut
+    chapter, so those Characters fall out of every Debut chapter Category.
     """
 
     if not isinstance(value, str):
         return None
-    match = _CHAPTER_NUMBER.search(value)
+    match = _CHAPTER_REFERENCE.match(value)
     if match is None:
         return None
-    return int(match.group(0))
+    return int(match.group(1))
 
 
 def _has_known_bounty(character: RawCharacter) -> bool:

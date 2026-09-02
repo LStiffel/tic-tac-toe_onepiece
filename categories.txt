@@ -194,12 +194,12 @@ Age  (4 categories)
 Debut chapter  (7 categories)
 ======================================================================
   Debuted after the timeskip (ch. ≥ 598)    797 characters
-  Debuted before the timeskip (ch. ≤ 597)   721 characters
+  Debuted before the timeskip (ch. ≤ 597)   692 characters
   Debut chapter ≥ 900                       413 characters
-  Debut chapter 1–300                       353 characters
-  Debut chapter 1–100                       136 characters
+  Debut chapter 1–300                       324 characters
   Debut chapter ≥ 1000                      132 characters
-  Debuted in Chapter 1                       19 characters
+  Debut chapter 1–100                       119 characters
+  Debuted in Chapter 1                       17 characters
 
 ======================================================================
 Visited (journey)  (28 categories)
