@@ -11,6 +11,23 @@ Both round-trips are asserted in `tests/test_build_categories.py`: parsing a
 committed file and re-serialising it through the matching helper reproduces the
 file byte-for-byte.
 
+## The two payloads
+
+`build_categories` returns one payload per derived file (plus the build report):
+
+- **`categories_json`** — a list of `CategoryEntry` (`id`, `label`, `count`,
+  `characters`). This is what `dump_categories_json` serialises, and the shape
+  `json.loads(categories.json)` already has.
+- **`categories_txt`** — a list of `TxtCategory` (`id`, `label`, `count`,
+  `group`). No `characters`: `categories.txt` shows only counts. It carries the
+  Category's **Category Group** instead, which `dump_categories_txt` groups on
+  directly.
+
+`to_txt_payload` converts the first shape into the second by dropping
+`characters` and attaching each Category's Group from `CATEGORY_SPECS` — so a
+plain `categories.json` payload (e.g. the committed file) can be rendered to
+`categories.txt` without a rebuild.
+
 ## Line endings
 
 Both files are stored with **`\n`** line endings. `categories.json` has **no
