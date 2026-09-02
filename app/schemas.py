@@ -44,6 +44,16 @@ class PassCreate(BaseModel):
     player: Player
 
 
+class CharacterOut(BaseModel):
+    """A Roster Character on the wire: its canonical name and the ``image`` path
+    from the dataset (``""`` when the dataset carries none). The frontend
+    references the path as-is in an ``<img>`` tag and falls back to a placeholder
+    when the file is absent."""
+
+    name: str
+    image: str
+
+
 class CategoryOut(BaseModel):
     id: str
     label: str

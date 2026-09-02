@@ -12,8 +12,9 @@ and keeps the result in memory (ADR 0001). The vocabulary is CONTEXT.md's:
 * a Category whose playable set is below :data:`VIABLE_THRESHOLD` after
   resolution is excluded from play.
 
-Only :attr:`GameData.roster_names` is meant to reach the client (for
-autocomplete); the Category-to-Characters answer key stays server-side.
+Only :attr:`GameData.roster_names` and :attr:`GameData.character_images` are
+meant to reach the client (autocomplete and Character art); the
+Category-to-Characters answer key stays server-side.
 """
 
 from __future__ import annotations
@@ -66,6 +67,26 @@ def canonical_name(raw: str) -> str:
     """
 
     return unicodedata.normalize("NFC", " ".join(raw.split()))
+
+
+def build_character_images(
+    raw_characters: Iterable[Mapping[str, Any]],
+) -> dict[str, str]:
+    """Map each canonical Character name to its ``image`` path from
+    ``characters.json`` (e.g. ``/images/characters/Nami.webp``).
+
+    The first entry seen for a canonical name wins, matching
+    :func:`build_roster`'s collapse of whitespace-only variants. An entry with no
+    ``image`` maps to ``""`` - the frontend treats that the same as a missing
+    file and shows its placeholder.
+    """
+
+    images: dict[str, str] = {}
+    for entry in raw_characters:
+        name = canonical_name(entry["name"])
+        if name not in images:
+            images[name] = str(entry.get("image") or "")
+    return images
 
 
 def group_for_id(category_id: str) -> CategoryGroup:
@@ -173,19 +194,32 @@ def resolve_categories(
 
 @dataclass(frozen=True)
 class GameData:
-    """The in-memory dataset: the Roster, the playable Categories, and the
-    data-quality report from the load."""
+    """The in-memory dataset: the Roster, the playable Categories, the
+    data-quality report from the load, and each Character's art path."""
 
     roster: frozenset[str]
     categories: tuple[LoadedCategory, ...]
     report: DataQualityReport
+    # Defaulted (unlike its siblings) so Grid-generation tests can build a
+    # GameData from a hand-made Roster without also supplying art paths.
+    character_images: Mapping[str, str] = field(default_factory=dict)
 
     @property
     def roster_names(self) -> list[str]:
-        """The Roster as a sorted flat list of canonical names - the only part
-        of the dataset the client is given (for autocomplete)."""
+        """The Roster as a sorted flat list of canonical names - given to the
+        client for autocomplete."""
 
         return sorted(self.roster)
+
+    @property
+    def character_art(self) -> list[tuple[str, str]]:
+        """Every Roster Character as ``(name, image path)``, sorted by name.
+        ``image`` is ``""`` when the dataset carries no art for that Character.
+        Shipped to the client for the Cell / detail-area ``<img>`` tags."""
+
+        return [
+            (name, self.character_images.get(name, "")) for name in self.roster_names
+        ]
 
     @classmethod
     def from_raw(
@@ -195,9 +229,15 @@ class GameData:
     ) -> GameData:
         """Build :class:`GameData` from already-parsed JSON structures."""
 
-        roster = build_roster(raw_characters)
+        characters = list(raw_characters)  # read twice: roster and art paths
+        roster = build_roster(characters)
         categories, report = resolve_categories(raw_categories, roster)
-        return cls(roster=roster, categories=categories, report=report)
+        return cls(
+            roster=roster,
+            categories=categories,
+            report=report,
+            character_images=build_character_images(characters),
+        )
 
 
 def load_game_data(

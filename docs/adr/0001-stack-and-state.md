@@ -17,7 +17,8 @@ two separate browsers share a live Match.
   interface.** Zero setup for v1; the interface lets SQLite or Redis slot in later
   without touching game logic.
 - **Data: category and character JSON loaded into memory at startup.** Only
-  character names ship to the client (for autocomplete); the
+  character names (for autocomplete) and their `/images/…webp` art paths (for the
+  Cell / detail-area `<img>` tags, added in issue #10) ship to the client; the
   Category-to-Characters answer key stays server-side.
 
 ## Considered options

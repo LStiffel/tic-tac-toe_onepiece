@@ -1,14 +1,14 @@
 "use strict";
 
 /*
- * Thin hotseat frontend for issue #9: render the Grid, let whoever's turn it is
- * pick an empty Cell and name a Character, and report the claim outcome. Every
- * rule lives server-side (app/statemachine.py) - this script only draws Match
- * state and relays Guesses, so a hand-crafted request cannot bypass the Roster
- * check. No build step, no framework (ADR 0001).
+ * Thin hotseat frontend. It renders Match state and relays moves; every rule
+ * lives server-side (app/statemachine.py), so a hand-crafted request cannot
+ * bypass the Roster check. No build step, no framework (ADR 0001).
  *
- * The end-of-Match banner, Pass, the Used-pool view and Rematch are issue #10;
- * this screen only degrades gracefully when a Match happens to end.
+ * Issue #9 built the Grid + claim interaction. Issue #10 completes the screen:
+ * an end-of-Match banner, a Pass button, a live Used-pool view, a Rematch
+ * button, and Character art that falls back to a placeholder when the
+ * `/images/...webp` file is absent (which, in text-only v1, is always).
  */
 
 const MARKS = { P1: "X", P2: "O" };
@@ -18,17 +18,28 @@ const state = {
   matchId: null,
   match: null, // the latest MatchOut from the server
   roster: [], // canonical Character names, for autocomplete
+  images: {}, // canonical name -> "/images/...webp" (or "" when unknown)
   selected: null, // { row, column } of the Cell being guessed, or null
+  lastClaim: null, // { name } of the most recently claimed Character, or null
 };
 
 const els = {
   turn: document.getElementById("turn-indicator"),
+  banner: document.getElementById("banner"),
   grid: document.getElementById("grid"),
   selectedCell: document.getElementById("selected-cell"),
   input: document.getElementById("guess-input"),
   suggestions: document.getElementById("roster-suggestions"),
   submit: document.getElementById("guess-submit"),
+  passBtn: document.getElementById("pass-btn"),
+  rematchBtn: document.getElementById("rematch-btn"),
   feedback: document.getElementById("feedback"),
+  art: document.getElementById("art"),
+  artPortrait: document.getElementById("art-portrait"),
+  artCaption: document.getElementById("art-caption"),
+  usedCount: document.getElementById("used-count"),
+  usedPoolEmpty: document.getElementById("used-pool-empty"),
+  usedPoolList: document.getElementById("used-pool-list"),
 };
 
 // --- API --------------------------------------------------------------------
@@ -40,7 +51,7 @@ async function api(method, path, body) {
     opts.body = JSON.stringify(body);
   }
   const res = await fetch(path, opts);
-  // A Guess rejection (not-your-turn, unknown-character, ...) comes back as
+  // A Guess/Pass rejection (not-your-turn, unknown-character, ...) comes back as
   // 200 with an outcome in the body; a non-OK status here is a real error.
   if (!res.ok) {
     let detail = res.statusText;
@@ -58,15 +69,38 @@ async function loadRoster() {
   state.roster = await api("GET", "/roster");
 }
 
-async function startMatch() {
-  const match = await api("POST", "/matches", {});
+async function loadCharacterArt() {
+  const characters = await api("GET", "/characters");
+  state.images = Object.fromEntries(characters.map((c) => [c.name, c.image]));
+}
+
+function applyNewMatch(match, message) {
   state.matchId = match.id;
   state.match = match;
   state.selected = null;
+  state.lastClaim = null;
   els.input.value = "";
   updateSuggestions();
   render();
-  setFeedback(`New Match. ${turnLabel(match)} to move.`, "info");
+  setFeedback(message, "info");
+}
+
+async function startMatch() {
+  const match = await api("POST", "/matches", {});
+  applyNewMatch(match, `New Match. ${toMoveLine(match)}`);
+}
+
+async function rematch() {
+  els.rematchBtn.disabled = true;
+  let match;
+  try {
+    match = await api("POST", `/matches/${state.matchId}/rematch`, {});
+  } catch (err) {
+    setFeedback(`Could not start a rematch: ${err.message || err}`, "error");
+    els.rematchBtn.disabled = false;
+    return;
+  }
+  applyNewMatch(match, `Rematch. Fresh Grid, empty Used pool. ${toMoveLine(match)}`);
 }
 
 async function submitGuess() {
@@ -86,7 +120,7 @@ async function submitGuess() {
     });
   } catch (err) {
     setFeedback(String(err.message || err), "error");
-    syncSubmit();
+    syncControls();
     return;
   }
 
@@ -94,6 +128,37 @@ async function submitGuess() {
   applyOutcome(result, character);
   els.input.value = "";
   updateSuggestions();
+  render();
+}
+
+async function submitPass() {
+  if (els.passBtn.disabled) return;
+  const player = state.match.active_player;
+
+  els.passBtn.disabled = true;
+  let result;
+  try {
+    result = await api("POST", `/matches/${state.matchId}/passes`, { player });
+  } catch (err) {
+    setFeedback(String(err.message || err), "error");
+    syncControls();
+    return;
+  }
+
+  state.match = result.match;
+  state.selected = null;
+  els.input.value = "";
+  updateSuggestions();
+
+  if (result.outcome === "passed") {
+    if (result.match.status === "draw") {
+      setFeedback("Two Passes in immediate succession — the Match is a draw.", "warn");
+    } else {
+      setFeedback(`Turn passed. ${toMoveLine(result.match)}`, "info");
+    }
+  } else {
+    setFeedback(rejectionPhrase(result.reason), "error");
+  }
   render();
 }
 
@@ -106,9 +171,10 @@ function applyOutcome(result, character) {
 
   switch (result.outcome) {
     case "claimed": {
+      state.lastClaim = { name: character };
       const next =
         result.match.status === "in-progress"
-          ? `${turnLabel(result.match)} to move.`
+          ? toMoveLine(result.match)
           : "Match over.";
       setFeedback(`${character} claimed ${cell}. ${next}`, "ok");
       state.selected = null;
@@ -117,7 +183,7 @@ function applyOutcome(result, character) {
     case "wrong":
       setFeedback(
         `${character}: ${axisPhrase(result.row, result.column)}. ` +
-          `Turn forfeited — ${turnLabel(result.match)} to move.`,
+          `Turn forfeited — ${toMoveLine(result.match)}`,
         "error",
       );
       state.selected = null;
@@ -169,14 +235,24 @@ function rejectionPhrase(reason) {
 
 function render() {
   renderTurn();
+  renderBanner();
   renderGrid();
   renderSelected();
-  syncSubmit();
+  renderArt();
+  renderUsedPool();
+  syncControls();
+}
+
+function playerLabel(player) {
+  return `Player ${player.slice(1)} (${MARKS[player]})`;
 }
 
 function turnLabel(match) {
-  const n = match.active_player.slice(1);
-  return `Player ${n} (${MARKS[match.active_player]})`;
+  return playerLabel(match.active_player);
+}
+
+function toMoveLine(match) {
+  return `${turnLabel(match)} to move.`;
 }
 
 function renderTurn() {
@@ -186,13 +262,29 @@ function renderTurn() {
     return;
   }
   if (m.status !== "in-progress") {
-    // Win/draw detection is live (issue #6) so a Match can end on this screen.
-    // The banner that announces the result is issue #10; here we just stop.
     els.turn.textContent = "Match over";
     els.turn.className = "turn over";
   } else {
     els.turn.textContent = `${turnLabel(m)} to move`;
     els.turn.className = `turn ${m.active_player.toLowerCase()}`;
+  }
+}
+
+function renderBanner() {
+  const m = state.match;
+  if (!m || m.status === "in-progress") {
+    els.banner.hidden = true;
+    els.banner.textContent = "";
+    els.banner.className = "banner";
+    return;
+  }
+  els.banner.hidden = false;
+  if (m.status === "won") {
+    els.banner.textContent = `${playerLabel(m.winner)} wins the Match!`;
+    els.banner.className = "banner banner-win";
+  } else {
+    els.banner.textContent = "The Match is a draw.";
+    els.banner.className = "banner banner-draw";
   }
 }
 
@@ -252,7 +344,7 @@ function cellButton(cell, inProgress) {
     const name = document.createElement("span");
     name.className = "cell-name";
     name.textContent = cell.character;
-    btn.append(mark, name);
+    btn.append(mark, portrait(cell.character, "sm"), name);
     return btn;
   }
 
@@ -300,13 +392,85 @@ function axisChip(axis, cat) {
   return span;
 }
 
-function syncSubmit() {
+// --- Character art ------------------------------------------------------
+
+// A portrait node: an <img> pointing at the known `/images/...webp` path, or a
+// styled placeholder when there is no path or the file 404s — so the text-only
+// v1 still looks deliberate. `size` is "sm" or "lg".
+function portrait(name, size) {
+  const wrap = document.createElement("span");
+  wrap.className = `portrait portrait-${size}`;
+  const src = state.images[name] || "";
+  if (src) {
+    const img = document.createElement("img");
+    img.src = src;
+    img.alt = "";
+    img.loading = "lazy";
+    img.addEventListener("error", () => {
+      wrap.classList.add("portrait-missing");
+      wrap.replaceChildren(placeholderGlyph());
+    });
+    wrap.appendChild(img);
+  } else {
+    wrap.classList.add("portrait-missing");
+    wrap.appendChild(placeholderGlyph());
+  }
+  return wrap;
+}
+
+function placeholderGlyph() {
+  const glyph = document.createElement("span");
+  glyph.className = "portrait-glyph";
+  glyph.textContent = "☠";
+  glyph.setAttribute("aria-hidden", "true");
+  return glyph;
+}
+
+function renderArt() {
+  if (!state.lastClaim) {
+    els.art.hidden = true;
+    return;
+  }
+  const { name } = state.lastClaim;
+  els.art.hidden = false;
+  // Insert the portrait node itself (not its children) so its own `error`
+  // handler still points at a node that is in the DOM — otherwise a 404 on the
+  // large art would leave a broken <img> instead of the placeholder.
+  els.artPortrait.replaceChildren(portrait(name, "lg"));
+  els.artCaption.textContent = `Last claimed: ${name}`;
+}
+
+// --- Used-pool view ---------------------------------------------------
+
+function renderUsedPool() {
+  const used = (state.match && state.match.used_pool) || [];
+  els.usedCount.textContent = String(used.length);
+  els.usedPoolEmpty.hidden = used.length > 0;
+  els.usedPoolList.replaceChildren(
+    ...used.map((name) => {
+      const li = document.createElement("li");
+      li.className = "used-entry";
+      const label = document.createElement("span");
+      label.className = "used-name";
+      label.textContent = name;
+      li.append(portrait(name, "sm"), label);
+      return li;
+    }),
+  );
+}
+
+// --- controls -------------------------------------------------------
+
+function syncControls() {
+  const m = state.match;
+  const inProgress = Boolean(m && m.status === "in-progress");
   els.submit.disabled = !(
+    inProgress &&
     state.selected &&
-    state.match &&
-    state.match.status === "in-progress" &&
     els.input.value.trim().length > 0
   );
+  els.passBtn.disabled = !inProgress;
+  els.rematchBtn.disabled = !m;
 }
 
 // --- autocomplete -------------------------------------------------------
@@ -342,7 +506,7 @@ function setFeedback(text, kind) {
 
 els.input.addEventListener("input", () => {
   updateSuggestions();
-  syncSubmit();
+  syncControls();
 });
 els.input.addEventListener("keydown", (event) => {
   if (event.key === "Enter") {
@@ -351,10 +515,12 @@ els.input.addEventListener("keydown", (event) => {
   }
 });
 els.submit.addEventListener("click", submitGuess);
+els.passBtn.addEventListener("click", submitPass);
+els.rematchBtn.addEventListener("click", rematch);
 
 async function init() {
   try {
-    await loadRoster();
+    await Promise.all([loadRoster(), loadCharacterArt()]);
     await startMatch();
   } catch (err) {
     setFeedback(`Could not start: ${err.message || err}`, "error");

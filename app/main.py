@@ -21,6 +21,7 @@ from app.dataset import GameData, default_game_data, log_data_quality
 from app.domain import Match
 from app.gridgen import GridGenerationError, InvalidForcedGridError, new_match
 from app.schemas import (
+    CharacterOut,
     DataQualityReportOut,
     GuessCreate,
     GuessResult,
@@ -181,6 +182,19 @@ def create_app(
         key."""
 
         return data.roster_names
+
+    @app.get("/characters", response_model=list[CharacterOut])
+    def get_characters() -> list[CharacterOut]:
+        """The Roster as ``{name, image}`` records, sorted by name, for the
+        Character-art ``<img>`` tags (issue #10). ``image`` is ``""`` when the
+        dataset has no art for that Character; the client shows a placeholder for
+        both an empty path and a 404. Like ``/roster`` it excludes the
+        Category-to-Characters answer key."""
+
+        return [
+            CharacterOut(name=name, image=image)
+            for name, image in data.character_art
+        ]
 
     @app.get("/diagnostics/data-quality", response_model=DataQualityReportOut)
     def get_data_quality() -> DataQualityReportOut:

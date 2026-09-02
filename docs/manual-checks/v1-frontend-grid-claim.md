@@ -62,5 +62,4 @@ Each step maps to an acceptance criterion on the ticket.
 ## Out of scope here (issue #10)
 
 End-of-Match banner, Pass button, Used-pool view, Rematch button, and
-`/images/…webp` fallbacks. This screen only degrades gracefully if a Match ends:
-the turn line switches to "Match over — …" and the Grid stops taking input.
+`/images/…webp` fallbacks are checked in `v1-frontend-complete-match.md`.

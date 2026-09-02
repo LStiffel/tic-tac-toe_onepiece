@@ -14,6 +14,7 @@
 
     <main class="layout">
       <section class="grid-wrap" aria-label="Grid">
+        <p id="banner" class="banner" role="status" aria-live="polite" hidden></p>
         <div id="grid" class="grid" role="grid"></div>
       </section>
 
@@ -36,7 +37,27 @@
           <button id="guess-submit" type="button" disabled>Guess</button>
         </div>
 
+        <div class="actions">
+          <button id="pass-btn" type="button" disabled>Pass</button>
+          <button id="rematch-btn" type="button" disabled>Rematch</button>
+        </div>
+
         <p id="feedback" class="feedback" role="status" aria-live="polite"></p>
+
+        <figure id="art" class="art" hidden>
+          <span id="art-portrait" class="art-portrait"></span>
+          <figcaption id="art-caption"></figcaption>
+        </figure>
+      </section>
+
+      <section class="used-pool" aria-label="Used pool">
+        <h2 class="used-pool-title">
+          Used pool (<span id="used-count">0</span>)
+        </h2>
+        <p id="used-pool-empty" class="used-pool-empty">
+          No Characters used yet.
+        </p>
+        <ul id="used-pool-list" class="used-pool-list"></ul>
       </section>
     </main>
 

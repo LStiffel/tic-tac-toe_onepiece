@@ -15,6 +15,7 @@ import pytest
 from app.dataset import (
     VIABLE_THRESHOLD,
     GameData,
+    build_character_images,
     build_roster,
     canonical_name,
     group_for_id,
@@ -54,6 +55,38 @@ def test_build_roster_collapses_names_that_differ_only_by_whitespace() -> None:
     roster = build_roster([{"name": "Bjorn"}, {"name": "Bjorn "}])
 
     assert roster == {"Bjorn"}
+
+
+# --- build_character_images -------------------------------------------
+
+
+def test_build_character_images_maps_canonical_name_to_image_path() -> None:
+    images = build_character_images(
+        [
+            {"name": "Nami", "image": "/images/characters/Nami.webp"},
+            {"name": "  Roronoa  Zoro ", "image": "/images/characters/Zoro.webp"},
+        ]
+    )
+
+    assert images == {
+        "Nami": "/images/characters/Nami.webp",
+        "Roronoa Zoro": "/images/characters/Zoro.webp",
+    }
+
+
+def test_build_character_images_keeps_the_first_entry_for_a_canonical_name() -> None:
+    images = build_character_images(
+        [
+            {"name": "Bjorn", "image": "/images/characters/Bjorn.webp"},
+            {"name": "Bjorn ", "image": "/images/characters/other.webp"},
+        ]
+    )
+
+    assert images == {"Bjorn": "/images/characters/Bjorn.webp"}
+
+
+def test_build_character_images_tolerates_a_missing_image() -> None:
+    assert build_character_images([{"name": "Nami"}]) == {"Nami": ""}
 
 
 # --- group_for_id -------------------------------------------------------
@@ -233,6 +266,17 @@ def test_game_data_from_raw_wires_roster_categories_and_report() -> None:
     assert [c.category.id for c in data.categories] == ["aff_Playable"]
     assert data.report.unresolved == {"aff_Playable": ("Missing",)}
     assert data.report.excluded_categories == ("aff_TooSmall",)
+
+
+def test_game_data_from_raw_carries_character_image_paths() -> None:
+    characters = [
+        {"name": "A", "image": "/images/characters/A.webp"},
+        {"name": "B"},
+    ]
+
+    data = GameData.from_raw(characters, [])
+
+    assert data.character_images == {"A": "/images/characters/A.webp", "B": ""}
 
 
 # --- log_data_quality -------------------------------------------------

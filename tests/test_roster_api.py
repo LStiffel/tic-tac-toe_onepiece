@@ -1,5 +1,5 @@
-"""Seam 1 - HTTP behaviour of the dataset surface: ``/roster`` and the
-data-quality diagnostic. The app is built on a tiny crafted dataset (the
+"""Seam 1 - HTTP behaviour of the dataset surface: ``/roster``, ``/characters``
+and the data-quality diagnostic. The app is built on a tiny crafted dataset (the
 ``game_data`` fixture below overrides the one in ``conftest.py``) so the
 responses are exact."""
 
@@ -15,12 +15,12 @@ from app.main import create_app
 from app.storage import InMemoryMatchStore
 
 CHARACTERS = [
-    {"name": "Monkey D. Luffy"},
-    {"name": "Roronoa Zoro"},
-    {"name": "Nami"},
-    {"name": "Usopp"},
-    {"name": "Bjorn"},
-    {"name": "Bjorn "},  # collapses onto "Bjorn"
+    {"name": "Monkey D. Luffy", "image": "/images/characters/Luffy.webp"},
+    {"name": "Roronoa Zoro", "image": "/images/characters/Zoro.webp"},
+    {"name": "Nami"},  # no image in the source -> "" on the wire
+    {"name": "Usopp", "image": "/images/characters/Usopp.webp"},
+    {"name": "Bjorn", "image": "/images/characters/Bjorn.webp"},
+    {"name": "Bjorn ", "image": "/images/characters/ignored.webp"},  # collapses
 ]
 
 CATEGORIES = [
@@ -65,6 +65,30 @@ def test_roster_does_not_expose_the_category_answer_key(client: TestClient) -> N
     assert "Affiliation" not in body
     assert "characters" not in body
     assert "count" not in body
+
+
+def test_characters_endpoint_lists_name_and_image_sorted_by_name(
+    client: TestClient,
+) -> None:
+    response = client.get("/characters")
+
+    assert response.status_code == 200
+    assert response.json() == [
+        {"name": "Bjorn", "image": "/images/characters/Bjorn.webp"},
+        {"name": "Monkey D. Luffy", "image": "/images/characters/Luffy.webp"},
+        {"name": "Nami", "image": ""},
+        {"name": "Roronoa Zoro", "image": "/images/characters/Zoro.webp"},
+        {"name": "Usopp", "image": "/images/characters/Usopp.webp"},
+    ]
+
+
+def test_characters_endpoint_does_not_expose_the_category_answer_key(
+    client: TestClient,
+) -> None:
+    body = client.get("/characters").text
+
+    assert "aff_Straw Hat Pirates" not in body
+    assert "Affiliation" not in body
 
 
 def test_data_quality_endpoint_reports_unresolved_names_and_exclusions(
