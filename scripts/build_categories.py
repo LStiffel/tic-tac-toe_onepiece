@@ -11,16 +11,20 @@ This module holds:
 * :data:`CATEGORY_SPECS` — the ~195 Category predicates and their **Category
   Group** assignment, reverse-engineered from the currently committed
   ``categories.json`` + ``categories.txt``. Each row carries an ``id``, a
-  ``label``, a :class:`~app.domain.CategoryGroup`, and a *predicate* over a Raw
-  Character. **Only the Status and Race rows carry a predicate in this slice**
-  (issue #24 / #19a); every other row's predicate is ``None`` until the join
-  (#19b) and field-parsing (#19c) slices land. A Status / Race predicate is a
-  plain equality on the Character's ``status`` / ``race`` field — no join, no
-  parsing.
+  ``label``, a :class:`~app.domain.CategoryGroup`, and an optional *predicate*
+  over a Raw Character. Two kinds of row are built so far:
+    - **Status / Race** (issue #24 / #19a) — the row carries a ``predicate``: a
+      plain equality on the Character's ``status`` / ``race`` field, no join.
+    - **Devil Fruit / Visited** (issue #25 / #19b) — the row's ``predicate`` is
+      ``None``; membership comes from the ``devil_fruits.json`` /
+      ``islands.json`` join (:func:`_fruit_category_ids`,
+      :func:`_visited_category_ids`). Both sides of a join are compared on
+      :func:`_join_key`.
+  Every other row's predicate is ``None`` until the field-parsing slice (#19c).
 * :func:`build_categories` — a pure, deterministic function from the three Raw
   structures to a :class:`BuildResult`: the ``categories.json`` payload, the
-  ``categories.txt`` payload, and a :class:`BuildReport`, each covering the rows
-  it can build.
+  ``categories.txt`` payload, and a :class:`BuildReport` of the values that would
+  not join. Each payload covers only the rows the builder can build.
 * :func:`dump_categories_json` / :func:`dump_categories_txt` — serialisers that
   reproduce the committed files byte-for-byte from those payloads. The exact
   normalisation is recorded in ``docs/measurements/categories-serialisation.md``.
@@ -28,10 +32,10 @@ This module holds:
   ``categories.txt`` one by attaching each Category's Group.
 
 Run ``python -m scripts.build_categories`` to rebuild both files in place: the
-Status / Race Categories are rebuilt from the Raw dataset, every other Category
-is carried over from the committed ``categories.json`` unchanged (the builder is
-not yet the source of the whole file), and both files are re-serialised through
-the helpers above.
+Status / Race / Devil Fruit / Visited Categories are rebuilt from the Raw
+dataset, every other Category is carried over from the committed
+``categories.json`` unchanged (the builder is not yet the source of the whole
+file), and both files are re-serialised through the helpers above.
 """
 
 from __future__ import annotations
@@ -42,6 +46,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, TypedDict, TypeVar
 
+from app.dataset import canonical_name
 from app.domain import CategoryGroup
 
 # Repo root: this file is ``<root>/scripts/build_categories.py``.
@@ -109,6 +114,22 @@ def _match_field(field_name: str, value: str) -> Predicate:
         return character.get(field_name) == value
 
     return predicate
+
+
+def _join_key(raw: str) -> str:
+    """The key both sides of the Devil Fruit and journey/island joins are
+    compared on: the *canonical name* (:func:`app.dataset.canonical_name` -
+    leading/trailing whitespace trimmed, internal runs collapsed, NFC) folded to
+    lower case.
+
+    The canonical step alone lets the leading space in Upstream fruit names
+    (``" Bara Bara no Mi"``) join cleanly, so the notebook's ``" " + name`` hack
+    is gone. The case fold absorbs the last of the noise: Blackbeard's second
+    fruit is spelled ``" Gura Gura No Mi"`` on the Character but
+    ``" Gura Gura no Mi"`` in ``devil_fruits.json``.
+    """
+
+    return canonical_name(raw).casefold()
 
 
 @dataclass(frozen=True)
@@ -346,19 +367,204 @@ CATEGORY_SPECS: tuple[CategorySpec, ...] = (
 #: :func:`to_txt_payload` to tag a ``categories.json`` entry with its Group.
 _GROUP_BY_ID: dict[str, CategoryGroup] = {spec.id: spec.group for spec in CATEGORY_SPECS}
 
-#: The ``id``s this builder owns — the rows with a predicate. A rebuild replaces
-#: the committed entries for exactly these ids (dropping any that no longer meet
-#: :data:`MIN_CHARACTERS`); every other id is carried over untouched.
-_REBUILT_IDS: frozenset[str] = frozenset(
-    spec.id for spec in CATEGORY_SPECS if spec.predicate is not None
+#: Category Groups this builder populates through a join rather than a per-field
+#: predicate (issue #25). Every :data:`CATEGORY_SPECS` row in one of these Groups
+#: is built from the ``devil_fruits.json`` / ``islands.json`` join below; its
+#: ``predicate`` stays ``None``.
+_JOIN_GROUPS: frozenset[CategoryGroup] = frozenset(
+    {CategoryGroup.DEVIL_FRUIT, CategoryGroup.VISITED}
 )
+
+
+def _is_rebuilt(spec: CategorySpec) -> bool:
+    """Whether this slice can build ``spec`` from the Raw dataset: a static
+    field predicate (Status / Race, issue #24) or a join-backed Devil Fruit /
+    Visited row (issue #25)."""
+
+    return spec.predicate is not None or spec.group in _JOIN_GROUPS
+
+
+#: The ``id``s this builder owns. A rebuild replaces the committed entries for
+#: exactly these ids (dropping any that no longer meet :data:`MIN_CHARACTERS`);
+#: every other id is carried over untouched.
+_REBUILT_IDS: frozenset[str] = frozenset(
+    spec.id for spec in CATEGORY_SPECS if _is_rebuilt(spec)
+)
+
+#: Devil Fruit ``type`` value → the ``df_*`` Category id. A fruit whose ``type``
+#: is anything else (``"Unknown"``) still joins — it just adds no ``df_*``
+#: membership.
+_DF_TYPE_IDS: dict[str, str] = {
+    "Zoan": "df_Zoan",
+    "Paramecia": "df_Paramecia",
+    "Logia": "df_Logia",
+}
+
+#: Devil Fruit ``subtype`` value → the ``df_sub_*`` Category id.
+_DF_SUBTYPE_IDS: dict[str, str] = {
+    "Artificial": "df_sub_Artificial",
+    "Mythical": "df_sub_Mythical",
+    "Ancient": "df_sub_Ancient",
+}
+
+#: The Category id every Character with a ``devil_fruit`` value joins — before
+#: any lookup, so an unjoinable value never costs a Character this membership.
+_HAS_DF_ID = "has_df"
+
+#: ``visited_*`` Category id → the :func:`_join_key` of the journey ``location``
+#: that places a Character in it. The id's suffix is that location verbatim, so
+#: the same key derivation used everywhere else applies here too.
+_VISITED_LOCATION_IDS: dict[str, str] = {
+    spec.id: _join_key(spec.id[len("visited_") :])
+    for spec in CATEGORY_SPECS
+    if spec.group is CategoryGroup.VISITED
+}
+
+
+def _devil_fruit_index(
+    raw_devil_fruits: Iterable[Mapping[str, Any]],
+) -> dict[str, Mapping[str, Any]]:
+    """``devil_fruits.json`` keyed by :func:`_join_key` of each fruit's
+    ``name``."""
+
+    return {_join_key(str(fruit["name"])): fruit for fruit in raw_devil_fruits}
+
+
+def _devil_fruit_values(character: RawCharacter) -> tuple[str, ...]:
+    """A Character's ``devil_fruit`` as a tuple of individual fruit names: ``()``
+    when absent, one element for the common single-fruit case, and every element
+    of the one multi-type value (Blackbeard's Logia + Paramecia pair)."""
+
+    value = character.get("devil_fruit")
+    if not value:
+        return ()
+    if isinstance(value, list):
+        return tuple(str(item) for item in value)
+    return (str(value),)
+
+
+def _fruit_category_ids(
+    character: RawCharacter, fruit_index: Mapping[str, Mapping[str, Any]]
+) -> frozenset[str]:
+    """The Devil Fruit Category ids ``character`` belongs to. ``has_df`` for any
+    ``devil_fruit`` value; plus the ``df_*`` / ``df_sub_*`` id of every value
+    that joins. An unjoinable value is skipped here and surfaces in the build
+    report instead — the Character keeps ``has_df`` and every non-join
+    Category."""
+
+    values = _devil_fruit_values(character)
+    if not values:
+        return frozenset()
+
+    ids = {_HAS_DF_ID}
+    for value in values:
+        fruit = fruit_index.get(_join_key(value))
+        if fruit is None:
+            continue
+        type_id = _DF_TYPE_IDS.get(str(fruit.get("type")))
+        if type_id is not None:
+            ids.add(type_id)
+        subtype_id = _DF_SUBTYPE_IDS.get(str(fruit.get("subtype")))
+        if subtype_id is not None:
+            ids.add(subtype_id)
+    return frozenset(ids)
+
+
+def _journey_location_values(character: RawCharacter) -> tuple[str, ...]:
+    """Every ``journey[].location`` value on a Character, verbatim, in order.
+    The single spelling of the journey walk both the Visited join and the
+    unresolved-location report go through."""
+
+    return tuple(
+        str(step["location"])
+        for step in character.get("journey") or []
+        if step.get("location")
+    )
+
+
+def _visited_category_ids(character: RawCharacter) -> frozenset[str]:
+    """The ``visited_*`` Category ids ``character`` belongs to: one per journey
+    ``location`` whose :func:`_join_key` matches a Visited Category."""
+
+    location_keys = {_join_key(value) for value in _journey_location_values(character)}
+    return frozenset(
+        category_id
+        for category_id, location_key in _VISITED_LOCATION_IDS.items()
+        if location_key in location_keys
+    )
+
+
+def _unjoinable_devil_fruit_values(
+    characters: Iterable[RawCharacter],
+    fruit_index: Mapping[str, Mapping[str, Any]],
+) -> tuple[str, ...]:
+    """Every distinct ``devil_fruit`` value (verbatim) with no ``devil_fruits.json``
+    row, sorted — the ADR 0004 "reported, never silently dropped" list."""
+
+    return tuple(
+        sorted(
+            {
+                value
+                for character in characters
+                for value in _devil_fruit_values(character)
+                if _join_key(value) not in fruit_index
+            }
+        )
+    )
+
+
+def _is_unlocated(location: str) -> bool:
+    """Whether ``location`` is Upstream's sentinel for a journey step it
+    deliberately cannot place on a map — ``"Unknown island"`` on its own or
+    ``"Unknown island - <what happened>"`` — rather than the name of a place
+    that failed to join. The sentinel never names a real island, so it is not a
+    join failure and is kept out of the build report."""
+
+    key = _join_key(location)
+    return key == "unknown island" or key.startswith("unknown island - ")
+
+
+def _unresolved_journey_locations(
+    characters: Iterable[RawCharacter], island_keys: frozenset[str]
+) -> tuple[str, ...]:
+    """Every distinct journey ``location`` (verbatim, sorted) that names a place
+    with no matching island in ``islands.json``. Upstream's ``"Unknown island"``
+    sentinel (:func:`_is_unlocated`) is excluded — it is intentionally unplaced,
+    not a failed join."""
+
+    return tuple(
+        sorted(
+            {
+                value
+                for character in characters
+                for value in _journey_location_values(character)
+                if not _is_unlocated(value) and _join_key(value) not in island_keys
+            }
+        )
+    )
+
+
+def _island_keys(raw_islands: Iterable[Mapping[str, Any]]) -> frozenset[str]:
+    """Every island's :func:`_join_key` from ``islands.json`` — the set a
+    journey ``location`` must hit to count as resolved."""
+
+    return frozenset(_join_key(str(island["name"])) for island in raw_islands)
 
 
 @dataclass(frozen=True)
 class BuildReport:
     """What the build could not join, per ADR 0004 ("reported, never silently
-    dropped"). Both lists are necessarily empty in this slice — no Category
-    Group with a predicate here needs a join."""
+    dropped"). Each list is the distinct offending values, verbatim and sorted;
+    the Character keeps every Category that does not depend on the failed join.
+
+    * :attr:`unjoinable_devil_fruits` — ``devil_fruit`` values with no
+      ``devil_fruits.json`` row (so no ``df_*`` type/subtype membership; the
+      Character still counts for ``has_df``).
+    * :attr:`unjoinable_journey_locations` — journey ``location`` values that
+      name a place with no matching island in ``islands.json``. Upstream's
+      ``"Unknown island[ - …]"`` sentinel is intentionally unplaced, not a
+      failed join, and is not listed.
+    """
 
     unjoinable_devil_fruits: tuple[str, ...] = ()
     unjoinable_journey_locations: tuple[str, ...] = ()
@@ -366,8 +572,8 @@ class BuildReport:
 
 @dataclass(frozen=True)
 class BuildResult:
-    """The output of :func:`build_categories`, each field covering only the rows
-    the builder can currently produce (Status and Race):
+    """The output of :func:`build_categories`, each field covering the Category
+    Groups this builder owns (Status, Race, Devil Fruit, Visited):
 
     * :attr:`categories_json` — the ``categories.json`` payload, for
       :func:`dump_categories_json`.
@@ -381,6 +587,46 @@ class BuildResult:
     report: BuildReport
 
 
+def _category_ids_for(
+    character: RawCharacter, fruit_index: Mapping[str, Mapping[str, Any]]
+) -> frozenset[str]:
+    """Every Category id ``character`` belongs to across the Groups this builder
+    owns: the static field predicates (Status / Race) plus the Devil Fruit and
+    journey/island joins."""
+
+    predicate_ids = frozenset(
+        spec.id
+        for spec in CATEGORY_SPECS
+        if spec.predicate is not None and spec.predicate(character)
+    )
+    return (
+        predicate_ids
+        | _fruit_category_ids(character, fruit_index)
+        | _visited_category_ids(character)
+    )
+
+
+def _collect_member_names(
+    characters: Iterable[RawCharacter],
+    fruit_index: Mapping[str, Mapping[str, Any]],
+) -> dict[str, list[str]]:
+    """``id`` → the sorted Raw ``name`` of every Character in that Category, in
+    one pass over the Roster.
+
+    Names are kept verbatim and are *not* de-duplicated, so two Raw entries that
+    share a name are both listed — matching the committed files.
+    """
+
+    names_by_id: dict[str, list[str]] = {}
+    for character in characters:
+        name = str(character["name"])
+        for category_id in _category_ids_for(character, fruit_index):
+            names_by_id.setdefault(category_id, []).append(name)
+    for names in names_by_id.values():
+        names.sort()
+    return names_by_id
+
+
 def build_categories(
     raw_characters: Iterable[RawCharacter],
     raw_devil_fruits: Iterable[Mapping[str, Any]],
@@ -390,24 +636,25 @@ def build_categories(
     three Raw dataset structures.
 
     Pure and deterministic: the same Raw input always yields byte-identical
-    output. Only :data:`CATEGORY_SPECS` rows that carry a predicate (Status,
-    Race) are produced; a Category matched by fewer than :data:`MIN_CHARACTERS`
-    Characters is omitted. ``raw_devil_fruits`` / ``raw_islands`` are accepted
-    now so the signature is stable for the join (#19b) and parsing (#19c)
-    slices; they are unused here.
+    output. Produces every :data:`CATEGORY_SPECS` row this builder owns — the
+    Status / Race field predicates (issue #24) and the Devil Fruit / Visited
+    rows the ``devil_fruits.json`` and ``islands.json`` joins populate (issue
+    #25). A Category matched by fewer than :data:`MIN_CHARACTERS` Characters is
+    omitted. An unjoinable ``devil_fruit`` value or journey location is recorded
+    in the :class:`BuildReport`, never silently dropped.
     """
 
-    del raw_devil_fruits, raw_islands  # join inputs for #19b / #19c; unused here
-
     characters = list(raw_characters)
+    fruit_index = _devil_fruit_index(raw_devil_fruits)
+    island_keys = _island_keys(raw_islands)
+
+    names_by_id = _collect_member_names(characters, fruit_index)
+
     json_payload: list[CategoryEntry] = []
     txt_payload: list[TxtCategory] = []
     for spec in CATEGORY_SPECS:
-        predicate = spec.predicate
-        if predicate is None:
-            continue
-        names = sorted(str(c["name"]) for c in characters if predicate(c))
-        if len(names) < MIN_CHARACTERS:
+        names = names_by_id.get(spec.id)
+        if names is None or len(names) < MIN_CHARACTERS:
             continue
         json_payload.append(
             CategoryEntry(
@@ -426,10 +673,18 @@ def build_categories(
             )
         )
 
+    report = BuildReport(
+        unjoinable_devil_fruits=_unjoinable_devil_fruit_values(
+            characters, fruit_index
+        ),
+        unjoinable_journey_locations=_unresolved_journey_locations(
+            characters, island_keys
+        ),
+    )
     return BuildResult(
         categories_json=tuple(json_payload),
         categories_txt=tuple(txt_payload),
-        report=BuildReport(),
+        report=report,
     )
 
 
@@ -528,7 +783,7 @@ def _merge_into_committed(
     ``categories.json`` or a ``categories.txt`` payload alike).
 
     Every id in :data:`_REBUILT_IDS` is dropped from the committed payload and
-    replaced by whatever ``built`` produced for it — so a Status / Race Category
+    replaced by whatever ``built`` produced for it — so a builder-owned Category
     that fell below :data:`MIN_CHARACTERS` is removed, not left stale. Ids the
     builder does not yet own are carried over untouched: the builder is not yet
     the source of the whole file (ADR 0004 rollout step 1).

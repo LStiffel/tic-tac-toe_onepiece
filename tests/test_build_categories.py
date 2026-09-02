@@ -19,7 +19,6 @@ from scripts.build_categories import (
     DEVIL_FRUITS_PATH,
     ISLANDS_PATH,
     MIN_CHARACTERS,
-    BuildReport,
     BuildResult,
     CategoryEntry,
     _merge_into_committed,
@@ -38,7 +37,7 @@ _COMMITTED_TXT_TEXT = CATEGORIES_TXT_PATH.read_text(encoding="utf-8")
 _COMMITTED_CATEGORIES: list[CategoryEntry] = json.loads(_COMMITTED_JSON_TEXT)
 
 
-def _character(name: str, **fields: str) -> dict[str, str]:
+def _character(name: str, **fields: object) -> dict[str, object]:
     return {"name": name, **fields}
 
 
@@ -117,7 +116,21 @@ def test_builder_reproduces_every_committed_status_and_race_category() -> None:
     built = {entry["id"]: entry for entry in _build_from_repo_dataset().categories_json}
     committed = _committed_status_and_race()
 
-    assert set(built) == set(committed)
+    assert set(committed) <= set(built)
+    for category_id, committed_entry in committed.items():
+        assert built[category_id] == committed_entry
+
+
+def test_builder_reproduces_every_committed_devil_fruit_and_visited_category() -> None:
+    built = {entry["id"]: entry for entry in _build_from_repo_dataset().categories_json}
+    committed = {
+        entry["id"]: entry
+        for entry in _COMMITTED_CATEGORIES
+        if entry["id"] == "has_df" or entry["id"].startswith(("df_", "visited_"))
+    }
+
+    assert committed, "the fixture must cover the join-backed Categories"
+    assert set(committed) <= set(built)
     for category_id, committed_entry in committed.items():
         assert built[category_id] == committed_entry
 
@@ -134,12 +147,29 @@ def test_txt_payload_carries_the_group_and_drops_the_character_list() -> None:
     assert by_id["race_Fish-man"]["group"] is CategoryGroup.RACE
 
 
-def test_builder_reports_nothing_unjoinable_in_this_slice() -> None:
+def test_repo_build_report_lists_the_known_unjoinable_values() -> None:
     report = _build_from_repo_dataset().report
 
-    assert report == BuildReport()
-    assert report.unjoinable_devil_fruits == ()
-    assert report.unjoinable_journey_locations == ()
+    # The one Upstream ``devil_fruit`` value with no ``devil_fruits.json`` row.
+    assert "Jiki Jiki no Mi" in report.unjoinable_devil_fruits
+    # Blackbeard's two fruits DO join (canonical name + case-folded), so the
+    # multi-type value is not reported as unjoinable.
+    assert " Gura Gura No Mi" not in report.unjoinable_devil_fruits
+    # A journey location that names a real place with no island in
+    # ``islands.json`` (Mary Geoise sits on the Red Line; the Baratie is a ship).
+    assert "Mary Geoise" in report.unjoinable_journey_locations
+    assert "Baratie" in report.unjoinable_journey_locations
+    # Upstream's "Unknown island" sentinel is intentionally unplaced, not a
+    # failed join, so it is kept out of the report.
+    assert not any(
+        location.startswith("Unknown island")
+        for location in report.unjoinable_journey_locations
+    )
+    # Both lists are sorted and de-duplicated.
+    assert list(report.unjoinable_devil_fruits) == sorted(set(report.unjoinable_devil_fruits))
+    assert list(report.unjoinable_journey_locations) == sorted(
+        set(report.unjoinable_journey_locations)
+    )
 
 
 # --- membership fixtures ------------------------------------------------
@@ -188,6 +218,200 @@ def test_race_predicate_is_plain_equality_on_the_race_field() -> None:
     # Two Giants is below MIN_CHARACTERS.
     assert MIN_CHARACTERS == 3
     assert "race_Giant" not in by_id
+
+
+# --- Devil Fruit + island joins (issue #25) ---------------------------
+
+
+def test_devil_fruit_join_matches_across_surrounding_whitespace() -> None:
+    # The Raw ``devil_fruits.json`` names each carry a leading space; the
+    # Character values here carry none, one, or a trailing space. ``canonical_name``
+    # on both sides joins them all - the notebook's ``" " + name`` hack is gone.
+    roster = [
+        _character("Buggy", devil_fruit="Bara Bara no Mi "),
+        _character("Alvida", devil_fruit=" Sube Sube no Mi"),
+        _character("Mr. 5", devil_fruit="Bomu Bomu no Mi"),
+    ]
+    devil_fruits = [
+        {"name": " Bara Bara no Mi", "type": "Paramecia"},
+        {"name": " Sube Sube no Mi", "type": "Paramecia"},
+        {"name": " Bomu Bomu no Mi", "type": "Paramecia"},
+    ]
+
+    result = build_categories(roster, devil_fruits, [])
+    by_id = {entry["id"]: entry for entry in result.categories_json}
+
+    assert by_id["df_Paramecia"]["characters"] == ["Alvida", "Buggy", "Mr. 5"]
+    assert by_id["has_df"]["characters"] == ["Alvida", "Buggy", "Mr. 5"]
+    assert result.report.unjoinable_devil_fruits == ()
+
+
+def test_multi_type_devil_fruit_value_joins_to_each_devil_fruit_category() -> None:
+    # Blackbeard's ``devil_fruit`` is a two-element list spanning two types; the
+    # second value (``" Gura Gura No Mi"``) differs from the Raw fruit name by a
+    # leading space and a capital - it still joins, and he lands in BOTH the
+    # Logia and the Paramecia Category.
+    roster = [
+        _character("Blackbeard", devil_fruit=["Yami Yami no Mi", " Gura Gura No Mi"]),
+        _character("Ace", devil_fruit="Mera Mera no Mi"),
+        _character("Aokiji", devil_fruit="Hie Hie no Mi"),
+        _character("Luffy", devil_fruit="Gomu Gomu no Mi"),
+        _character("Robin", devil_fruit="Hana Hana no Mi"),
+    ]
+    devil_fruits = [
+        {"name": " Yami Yami no Mi", "type": "Logia"},
+        {"name": " Gura Gura no Mi", "type": "Paramecia"},
+        {"name": " Mera Mera no Mi", "type": "Logia"},
+        {"name": " Hie Hie no Mi", "type": "Logia"},
+        {"name": " Gomu Gomu no Mi", "type": "Paramecia"},
+        {"name": " Hana Hana no Mi", "type": "Paramecia"},
+    ]
+
+    result = build_categories(roster, devil_fruits, [])
+    by_id = {entry["id"]: entry for entry in result.categories_json}
+
+    assert "Blackbeard" in by_id["df_Logia"]["characters"]
+    assert "Blackbeard" in by_id["df_Paramecia"]["characters"]
+    assert result.report.unjoinable_devil_fruits == ()
+
+
+def test_unjoinable_devil_fruit_is_reported_and_join_free_categories_kept() -> None:
+    roster = [
+        _character("John", devil_fruit="Jiki Jiki no Mi", status="Alive"),
+        _character("Buggy", devil_fruit="Bara Bara no Mi", status="Alive"),
+        _character("Alvida", devil_fruit="Sube Sube no Mi", status="Alive"),
+        _character("Cabaji", devil_fruit="Bara Bara no Mi", status="Alive"),
+    ]
+    devil_fruits = [
+        {"name": " Bara Bara no Mi", "type": "Paramecia"},
+        {"name": " Sube Sube no Mi", "type": "Paramecia"},
+    ]
+
+    result = build_categories(roster, devil_fruits, [])
+    by_id = {entry["id"]: entry for entry in result.categories_json}
+
+    assert result.report.unjoinable_devil_fruits == ("Jiki Jiki no Mi",)
+    # John keeps every Category that does not depend on the fruit-type join:
+    # the Status Category (no join) and ``has_df`` (join-free - he has a value).
+    assert "John" in by_id["status_Alive"]["characters"]
+    assert "John" in by_id["has_df"]["characters"]
+    # Only the join-dependent ``df_*`` Category cannot place him.
+    assert "John" not in by_id["df_Paramecia"]["characters"]
+
+
+def test_devil_fruit_subtype_categories_are_populated_from_the_join() -> None:
+    roster = [
+        _character("Kaido", devil_fruit="Uo Uo no Mi, Model: Seiryu"),
+        _character("Marco", devil_fruit="Tori Tori no Mi, Model: Phoenix"),
+        _character("Yamato", devil_fruit="Inu Inu no Mi, Model: Okuchi no Makami"),
+    ]
+    devil_fruits = [
+        {"name": " Uo Uo no Mi, Model: Seiryu", "type": "Zoan", "subtype": "Mythical"},
+        {"name": " Tori Tori no Mi, Model: Phoenix", "type": "Zoan", "subtype": "Mythical"},
+        {
+            "name": " Inu Inu no Mi, Model: Okuchi no Makami",
+            "type": "Zoan",
+            "subtype": "Mythical",
+        },
+    ]
+
+    result = build_categories(roster, devil_fruits, [])
+    by_id = {entry["id"]: entry for entry in result.categories_json}
+
+    assert by_id["df_sub_Mythical"]["characters"] == ["Kaido", "Marco", "Yamato"]
+    assert by_id["df_Zoan"]["characters"] == ["Kaido", "Marco", "Yamato"]
+
+
+def test_hand_built_journey_yields_expected_visited_membership() -> None:
+    roster = [
+        _character(
+            "Luffy",
+            journey=[
+                {"location": "Marineford"},
+                {"location": "Dressrosa"},
+                {"location": "Zou"},
+            ],
+        ),
+        _character(
+            "Law", journey=[{"location": "Dressrosa"}, {"location": "Zou"}]
+        ),
+        _character(
+            "Kin'emon",
+            journey=[
+                {"location": "Dressrosa"},
+                {"location": "Zou"},
+                {"location": "Wano Country's Island"},
+            ],
+        ),
+    ]
+    islands = [
+        {"name": name}
+        for name in ("Marineford", "Dressrosa", "Zou", "Wano Country's Island")
+    ]
+
+    result = build_categories(roster, [], islands)
+    by_id = {entry["id"]: entry for entry in result.categories_json}
+
+    assert by_id["visited_Dressrosa"]["characters"] == ["Kin'emon", "Law", "Luffy"]
+    assert by_id["visited_Zou"]["characters"] == ["Kin'emon", "Law", "Luffy"]
+    # One visitor each - below the threshold, so not emitted.
+    assert "visited_Marineford" not in by_id
+    assert "visited_Wano Country's Island" not in by_id
+    assert result.report.unjoinable_journey_locations == ()
+
+
+def test_unresolved_journey_location_is_reported_and_other_categories_kept() -> None:
+    # Every Character also visited Dressrosa; Judge's second step is a place with
+    # no island. The unresolved step is reported, and it costs Judge nothing -
+    # he keeps his Status Category and his ``visited_Dressrosa`` membership.
+    dressrosa = {"location": "Dressrosa"}
+    roster = [
+        _character(
+            "Judge",
+            status="Alive",
+            journey=[dressrosa, {"location": "Atlantis"}],
+        ),
+        _character("Nami", status="Alive", journey=[dressrosa]),
+        _character("Zoro", status="Alive", journey=[dressrosa]),
+    ]
+    islands = [{"name": "Dressrosa", "notable_locations": []}]
+
+    result = build_categories(roster, [], islands)
+    by_id = {entry["id"]: entry for entry in result.categories_json}
+
+    assert result.report.unjoinable_journey_locations == ("Atlantis",)
+    assert "Judge" in by_id["status_Alive"]["characters"]
+    assert by_id["visited_Dressrosa"]["characters"] == ["Judge", "Nami", "Zoro"]
+
+
+def test_visited_join_matches_journey_location_regardless_of_case() -> None:
+    # A journey location that differs from the Visited Category's location only
+    # in case still lands the Character in the Category - the Visited join uses
+    # the same case-folded key as every other join, so nothing is silently
+    # dropped.
+    roster = [
+        _character("Luffy", journey=[{"location": "DRESSROSA"}]),
+        _character("Law", journey=[{"location": "dressrosa"}]),
+        _character("Kin'emon", journey=[{"location": "Dressrosa"}]),
+    ]
+    islands = [{"name": "Dressrosa"}]
+
+    result = build_categories(roster, [], islands)
+    by_id = {entry["id"]: entry for entry in result.categories_json}
+
+    assert by_id["visited_Dressrosa"]["characters"] == ["Kin'emon", "Law", "Luffy"]
+    assert result.report.unjoinable_journey_locations == ()
+
+
+def test_unknown_island_sentinel_is_not_reported_as_unjoinable() -> None:
+    roster = [
+        _character("Roger", journey=[{"location": "Unknown island - met Rayleigh"}]),
+        _character("Rayleigh", journey=[{"location": "Unknown island"}]),
+    ]
+
+    report = build_categories(roster, [], []).report
+
+    assert report.unjoinable_journey_locations == ()
 
 
 def test_builder_lists_raw_names_verbatim_sorted_and_not_de_duplicated() -> None:
