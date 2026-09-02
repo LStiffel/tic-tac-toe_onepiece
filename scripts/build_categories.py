@@ -18,11 +18,14 @@ This module holds:
   plain equality on the Character's ``status`` / ``race`` field — no join, no
   parsing.
 * :func:`build_categories` — a pure, deterministic function from the three Raw
-  structures to a ``categories.json`` payload (for the rows it can build) plus a
-  :class:`BuildReport`. The one payload feeds both serialisers below.
+  structures to a :class:`BuildResult`: the ``categories.json`` payload, the
+  ``categories.txt`` payload, and a :class:`BuildReport`, each covering the rows
+  it can build.
 * :func:`dump_categories_json` / :func:`dump_categories_txt` — serialisers that
-  reproduce the committed files byte-for-byte. The exact normalisation is
-  recorded in ``docs/measurements/categories-serialisation.md``.
+  reproduce the committed files byte-for-byte from those payloads. The exact
+  normalisation is recorded in ``docs/measurements/categories-serialisation.md``.
+  :func:`to_txt_payload` turns a ``categories.json`` payload into a
+  ``categories.txt`` one by attaching each Category's Group.
 
 Run ``python -m scripts.build_categories`` to rebuild both files in place: the
 Status / Race Categories are rebuilt from the Raw dataset, every other Category
@@ -37,7 +40,7 @@ import json
 from collections.abc import Callable, Iterable, Mapping
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, TypedDict
+from typing import Any, TypedDict, TypeVar
 
 from app.domain import CategoryGroup
 
@@ -70,14 +73,32 @@ RawCharacter = Mapping[str, Any]
 Predicate = Callable[[RawCharacter], bool]
 
 
-class CategoryEntry(TypedDict):
-    """One ``categories.json`` array element: a Category paired with its
-    resolved Character list. ``count`` always equals ``len(characters)``."""
+class _CategoryHeader(TypedDict):
+    """The fields both derived files share for a Category: enough to order it
+    (:func:`_sort_key` uses ``count`` then ``id``) and to label it."""
 
     id: str
     label: str
     count: int
+
+
+class CategoryEntry(_CategoryHeader):
+    """One ``categories.json`` array element: a Category paired with its
+    resolved Character list. ``count`` always equals ``len(characters)``."""
+
     characters: list[str]
+
+
+class TxtCategory(_CategoryHeader):
+    """One ``categories.txt`` line's data: a Category's **Category Group**,
+    label and size. No Character list — the txt file shows only counts."""
+
+    group: CategoryGroup
+
+
+#: Bound to a concrete ``_CategoryHeader`` subclass so :func:`_merge_into_committed`
+#: keeps the payload shape it is handed.
+_Header = TypeVar("_Header", bound=_CategoryHeader)
 
 
 def _match_field(field_name: str, value: str) -> Predicate:
@@ -321,8 +342,8 @@ CATEGORY_SPECS: tuple[CategorySpec, ...] = (
     CategorySpec("name_boa", "Boa family (by name)", CategoryGroup.MISC, None),
 )
 
-#: ``id`` → **Category Group**, from :data:`CATEGORY_SPECS`. Drives the group
-#: headers in :func:`dump_categories_txt`.
+#: ``id`` → **Category Group**, from :data:`CATEGORY_SPECS`. Used by
+#: :func:`to_txt_payload` to tag a ``categories.json`` entry with its Group.
 _GROUP_BY_ID: dict[str, CategoryGroup] = {spec.id: spec.group for spec in CATEGORY_SPECS}
 
 #: The ``id``s this builder owns — the rows with a predicate. A rebuild replaces
@@ -345,12 +366,18 @@ class BuildReport:
 
 @dataclass(frozen=True)
 class BuildResult:
-    """The output of :func:`build_categories`: the ``categories.json`` payload
-    for the rows the builder can currently produce (Status and Race), plus the
-    :class:`BuildReport`. :attr:`categories` is the single payload consumed by
-    both :func:`dump_categories_json` and :func:`dump_categories_txt`."""
+    """The output of :func:`build_categories`, each field covering only the rows
+    the builder can currently produce (Status and Race):
 
-    categories: tuple[CategoryEntry, ...]
+    * :attr:`categories_json` — the ``categories.json`` payload, for
+      :func:`dump_categories_json`.
+    * :attr:`categories_txt` — the ``categories.txt`` payload (each Category's
+      Group, label and count, no Character list), for :func:`dump_categories_txt`.
+    * :attr:`report` — the :class:`BuildReport`.
+    """
+
+    categories_json: tuple[CategoryEntry, ...]
+    categories_txt: tuple[TxtCategory, ...]
     report: BuildReport
 
 
@@ -359,8 +386,8 @@ def build_categories(
     raw_devil_fruits: Iterable[Mapping[str, Any]],
     raw_islands: Iterable[Mapping[str, Any]],
 ) -> BuildResult:
-    """Build the ``categories.json`` payload from the three Raw dataset
-    structures.
+    """Build the ``categories.json`` and ``categories.txt`` payloads from the
+    three Raw dataset structures.
 
     Pure and deterministic: the same Raw input always yields byte-identical
     output. Only :data:`CATEGORY_SPECS` rows that carry a predicate (Status,
@@ -373,7 +400,8 @@ def build_categories(
     del raw_devil_fruits, raw_islands  # join inputs for #19b / #19c; unused here
 
     characters = list(raw_characters)
-    built: list[CategoryEntry] = []
+    json_payload: list[CategoryEntry] = []
+    txt_payload: list[TxtCategory] = []
     for spec in CATEGORY_SPECS:
         predicate = spec.predicate
         if predicate is None:
@@ -381,7 +409,7 @@ def build_categories(
         names = sorted(str(c["name"]) for c in characters if predicate(c))
         if len(names) < MIN_CHARACTERS:
             continue
-        built.append(
+        json_payload.append(
             CategoryEntry(
                 id=spec.id,
                 label=spec.label,
@@ -389,11 +417,23 @@ def build_categories(
                 characters=names,
             )
         )
+        txt_payload.append(
+            TxtCategory(
+                id=spec.id,
+                label=spec.label,
+                count=len(names),
+                group=spec.group,
+            )
+        )
 
-    return BuildResult(categories=tuple(built), report=BuildReport())
+    return BuildResult(
+        categories_json=tuple(json_payload),
+        categories_txt=tuple(txt_payload),
+        report=BuildReport(),
+    )
 
 
-def _sort_key(entry: CategoryEntry) -> tuple[int, str]:
+def _sort_key(entry: _CategoryHeader) -> tuple[int, str]:
     """Categories sort by descending ``count``, then ``id`` ascending — the
     order both committed files use."""
 
@@ -418,7 +458,23 @@ def dump_categories_json(payload: Iterable[CategoryEntry]) -> str:
     return json.dumps(normalised, indent=2, ensure_ascii=False)
 
 
-def dump_categories_txt(payload: Iterable[CategoryEntry]) -> str:
+def to_txt_payload(payload: Iterable[CategoryEntry]) -> list[TxtCategory]:
+    """Turn a ``categories.json`` payload into a ``categories.txt`` one: drop
+    the Character list and attach each Category's **Category Group** from
+    :data:`CATEGORY_SPECS`."""
+
+    return [
+        TxtCategory(
+            id=entry["id"],
+            label=entry["label"],
+            count=entry["count"],
+            group=_GROUP_BY_ID[entry["id"]],
+        )
+        for entry in payload
+    ]
+
+
+def dump_categories_txt(payload: Iterable[TxtCategory]) -> str:
     """Serialise the human-readable ``categories.txt`` exactly as committed:
     the fixed four-line header, then one block per **Category Group** in
     ``CategoryGroup`` order — a 70-``=`` rule, ``<Group>  (N categories)``, the
@@ -442,9 +498,9 @@ def dump_categories_txt(payload: Iterable[CategoryEntry]) -> str:
         ]
     )
 
-    by_group: dict[CategoryGroup, list[CategoryEntry]] = {}
+    by_group: dict[CategoryGroup, list[TxtCategory]] = {}
     for entry in entries:
-        by_group.setdefault(_GROUP_BY_ID[entry["id"]], []).append(entry)
+        by_group.setdefault(entry["group"], []).append(entry)
 
     blocks = [header]
     rule = "=" * _RULE_WIDTH
@@ -466,9 +522,10 @@ def dump_categories_txt(payload: Iterable[CategoryEntry]) -> str:
 
 
 def _merge_into_committed(
-    committed: Iterable[CategoryEntry], built: Iterable[CategoryEntry]
-) -> list[CategoryEntry]:
-    """Overlay the freshly built entries onto the committed payload.
+    committed: Iterable[_Header], built: Iterable[_Header]
+) -> list[_Header]:
+    """Overlay the freshly built entries onto the committed payload (works on a
+    ``categories.json`` or a ``categories.txt`` payload alike).
 
     Every id in :data:`_REBUILT_IDS` is dropped from the committed payload and
     replaced by whatever ``built`` produced for it — so a Status / Race Category
@@ -496,19 +553,21 @@ def main() -> None:
         read_json(DEVIL_FRUITS_PATH),
         read_json(ISLANDS_PATH),
     )
-    payload = _merge_into_committed(read_json(CATEGORIES_JSON_PATH), result.categories)
+    committed = read_json(CATEGORIES_JSON_PATH)
+    json_payload = _merge_into_committed(committed, result.categories_json)
+    txt_payload = _merge_into_committed(to_txt_payload(committed), result.categories_txt)
 
     CATEGORIES_JSON_PATH.write_text(
-        dump_categories_json(payload), encoding="utf-8", newline="\n"
+        dump_categories_json(json_payload), encoding="utf-8", newline="\n"
     )
     CATEGORIES_TXT_PATH.write_text(
-        dump_categories_txt(payload), encoding="utf-8", newline="\n"
+        dump_categories_txt(txt_payload), encoding="utf-8", newline="\n"
     )
 
-    built_ids = ", ".join(sorted(entry["id"] for entry in result.categories))
+    built_ids = ", ".join(sorted(entry["id"] for entry in result.categories_json))
     print(
         f"Rebuilt {CATEGORIES_JSON_PATH.name} and {CATEGORIES_TXT_PATH.name} "
-        f"({len(result.categories)} Categories rebuilt: {built_ids})."
+        f"({len(result.categories_json)} Categories rebuilt: {built_ids})."
     )
     for value in result.report.unjoinable_devil_fruits:
         print(f"  unjoinable devil_fruit: {value}")

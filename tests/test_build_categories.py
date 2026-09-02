@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import json
 
+from app.domain import CategoryGroup
 from scripts.build_categories import (
     CATEGORIES_JSON_PATH,
     CATEGORIES_TXT_PATH,
@@ -26,6 +27,7 @@ from scripts.build_categories import (
     dump_categories_json,
     dump_categories_txt,
     read_json,
+    to_txt_payload,
 )
 
 # ``read_text`` translates the checkout's line endings to ``\n``, so the
@@ -62,7 +64,9 @@ def test_dump_categories_json_reproduces_the_committed_file_byte_for_byte() -> N
 
 
 def test_dump_categories_txt_reproduces_the_committed_file_byte_for_byte() -> None:
-    assert dump_categories_txt(_COMMITTED_CATEGORIES) == _COMMITTED_TXT_TEXT
+    txt_payload = to_txt_payload(_COMMITTED_CATEGORIES)
+
+    assert dump_categories_txt(txt_payload) == _COMMITTED_TXT_TEXT
 
 
 def test_dump_categories_json_is_independent_of_input_order() -> None:
@@ -95,7 +99,7 @@ def test_dump_categories_json_sorts_each_characters_list() -> None:
 
 def test_rebuild_leaves_categories_json_byte_for_byte_identical() -> None:
     merged = _merge_into_committed(
-        _COMMITTED_CATEGORIES, _build_from_repo_dataset().categories
+        _COMMITTED_CATEGORIES, _build_from_repo_dataset().categories_json
     )
 
     assert dump_categories_json(merged) == _COMMITTED_JSON_TEXT
@@ -103,19 +107,31 @@ def test_rebuild_leaves_categories_json_byte_for_byte_identical() -> None:
 
 def test_rebuild_leaves_categories_txt_byte_for_byte_identical() -> None:
     merged = _merge_into_committed(
-        _COMMITTED_CATEGORIES, _build_from_repo_dataset().categories
+        to_txt_payload(_COMMITTED_CATEGORIES), _build_from_repo_dataset().categories_txt
     )
 
     assert dump_categories_txt(merged) == _COMMITTED_TXT_TEXT
 
 
 def test_builder_reproduces_every_committed_status_and_race_category() -> None:
-    built = {entry["id"]: entry for entry in _build_from_repo_dataset().categories}
+    built = {entry["id"]: entry for entry in _build_from_repo_dataset().categories_json}
     committed = _committed_status_and_race()
 
     assert set(built) == set(committed)
     for category_id, committed_entry in committed.items():
         assert built[category_id] == committed_entry
+
+
+def test_txt_payload_carries_the_group_and_drops_the_character_list() -> None:
+    by_id = {entry["id"]: entry for entry in _build_from_repo_dataset().categories_txt}
+
+    assert by_id["status_Alive"] == {
+        "id": "status_Alive",
+        "label": "Status: Alive",
+        "count": 1211,
+        "group": CategoryGroup.STATUS,
+    }
+    assert by_id["race_Fish-man"]["group"] is CategoryGroup.RACE
 
 
 def test_builder_reports_nothing_unjoinable_in_this_slice() -> None:
@@ -141,7 +157,7 @@ def test_status_predicate_is_plain_equality_on_the_status_field() -> None:
     ]
 
     result = build_categories(roster, [], [])
-    by_id = {entry["id"]: entry for entry in result.categories}
+    by_id = {entry["id"]: entry for entry in result.categories_json}
 
     assert by_id["status_Alive"]["characters"] == ["Luffy", "Nami", "Zoro"]
     assert by_id["status_Alive"]["count"] == 3
@@ -164,7 +180,7 @@ def test_race_predicate_is_plain_equality_on_the_race_field() -> None:
     ]
 
     result = build_categories(roster, [], [])
-    by_id = {entry["id"]: entry for entry in result.categories}
+    by_id = {entry["id"]: entry for entry in result.categories_json}
 
     assert by_id["race_Human"]["characters"] == ["Luffy", "Nami", "Sanji", "Usopp"]
     assert by_id["race_Fish-man"]["characters"] == ["Arlong", "Hachi", "Jinbe"]
@@ -182,7 +198,7 @@ def test_builder_lists_raw_names_verbatim_sorted_and_not_de_duplicated() -> None
     ]
 
     result = build_categories(roster, [], [])
-    (alive,) = result.categories
+    (alive,) = result.categories_json
 
     assert alive["id"] == "status_Alive"
     assert alive["characters"] == ["Aphelandra", "Bjorn", "Bjorn "]
@@ -196,9 +212,10 @@ def test_build_is_deterministic_across_repeated_runs() -> None:
     first = _build_from_repo_dataset()
     second = _build_from_repo_dataset()
 
-    assert first.categories == second.categories
-    assert dump_categories_json(first.categories) == dump_categories_json(
-        second.categories
+    assert first.categories_json == second.categories_json
+    assert first.categories_txt == second.categories_txt
+    assert dump_categories_json(first.categories_json) == dump_categories_json(
+        second.categories_json
     )
 
 
@@ -212,6 +229,6 @@ def test_build_output_order_is_independent_of_raw_character_order() -> None:
     forward = build_categories(roster, [], [])
     reverse = build_categories(list(reversed(roster)), [], [])
 
-    assert forward.categories == reverse.categories
-    (human,) = forward.categories
+    assert forward.categories_json == reverse.categories_json
+    (human,) = forward.categories_json
     assert human["characters"] == ["Luffy", "Nami", "Zoro"]
