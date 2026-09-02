@@ -12,7 +12,7 @@ This module holds:
   Group** assignment, reverse-engineered from the currently committed
   ``categories.json`` + ``categories.txt``. Each row carries an ``id``, a
   ``label``, a :class:`~app.domain.CategoryGroup`, and an optional *predicate*
-  over a Raw Character. Two kinds of row are built so far:
+  over a Raw Character. Three kinds of row are built so far:
     - **Status / Race** (issue #24 / #19a) — the row carries a ``predicate``: a
       plain equality on the Character's ``status`` / ``race`` field, no join.
     - **Devil Fruit / Visited** (issue #25 / #19b) — the row's ``predicate`` is
@@ -20,7 +20,12 @@ This module holds:
       ``islands.json`` join (:func:`_fruit_category_ids`,
       :func:`_visited_category_ids`). Both sides of a join are compared on
       :func:`_join_key`.
-  Every other row's predicate is ``None`` until the field-parsing slice (#19c).
+    - **Bounty / Debut chapter** (issue #26 / #19c) — the row carries a
+      ``predicate`` that first *parses* a number out of the Raw field
+      (:func:`_parse_bounty` off ``bounty``, :func:`_parse_debut_chapter` off
+      ``first_appearance_arc``) and then tests it against a threshold or range.
+      No join.
+  Every other row's predicate is ``None`` until a later slice fills it in.
 * :func:`build_categories` — a pure, deterministic function from the three Raw
   structures to a :class:`BuildResult`: the ``categories.json`` payload, the
   ``categories.txt`` payload, and a :class:`BuildReport` of the values that would
@@ -32,15 +37,16 @@ This module holds:
   ``categories.txt`` one by attaching each Category's Group.
 
 Run ``python -m scripts.build_categories`` to rebuild both files in place: the
-Status / Race / Devil Fruit / Visited Categories are rebuilt from the Raw
-dataset, every other Category is carried over from the committed
-``categories.json`` unchanged (the builder is not yet the source of the whole
-file), and both files are re-serialised through the helpers above.
+Status / Race / Bounty / Debut chapter / Devil Fruit / Visited Categories are
+rebuilt from the Raw dataset, every other Category is carried over from the
+committed ``categories.json`` unchanged (the builder is not yet the source of
+the whole file), and both files are re-serialised through the helpers above.
 """
 
 from __future__ import annotations
 
 import json
+import re
 from collections.abc import Callable, Iterable, Mapping
 from dataclasses import dataclass
 from pathlib import Path
@@ -116,6 +122,112 @@ def _match_field(field_name: str, value: str) -> Predicate:
     return predicate
 
 
+#: First run of digits (with thousands commas) in a prose ``bounty`` string.
+_BOUNTY_FIGURE = re.compile(r"[0-9][0-9,]*")
+
+#: First run of digits anywhere in a ``first_appearance_arc`` string.
+_CHAPTER_NUMBER = re.compile(r"[0-9]+")
+
+
+def _parse_bounty(value: object) -> int | None:
+    """The Berry figure of a Raw ``bounty`` field, or ``None`` for "no known
+    bounty".
+
+    Upstream stores it as an ``int`` (``138000000``), as a prose ``str``
+    (``"At least 100,000,000"``, ``"80,060,000 (former)"``,
+    ``"500,000,000 [Cross Guild]"``, ``"Less than 15,000,000"``), or omits it
+    entirely. From a string the first run of digits and thousands commas is taken
+    and the commas dropped, so a qualifier like "At least" or "Less than" is
+    ignored and the figure it modifies is used as-is — matching the committed
+    ``categories.json``. A value with no digits yields ``None``.
+    """
+
+    if isinstance(value, bool):
+        return None
+    if isinstance(value, int):
+        return value
+    if not isinstance(value, str):
+        return None
+    match = _BOUNTY_FIGURE.search(value)
+    if match is None:
+        return None
+    return int(match.group(0).replace(",", ""))
+
+
+def _parse_debut_chapter(value: object) -> int | None:
+    """The chapter number a Character debuted in, parsed from a Raw
+    ``first_appearance_arc`` value, or ``None`` when none can be read.
+
+    The usual form is ``"Chapter 551"`` or ``"Chapter 487 (cover)"``; the parse
+    takes the first run of digits anywhere in the string. This is deliberately
+    the same naive parse that produced the committed ``categories.json`` (the
+    golden test pins it byte-for-byte): a value with an incidental number such as
+    ``"SBS Volume 105"`` or ``"One Piece novel A - Vol. 1"`` therefore resolves
+    to a chapter as well, while a digit-free value (``"Monsters"``,
+    ``"Loguetown Arc (Novel)"``) or a missing field resolves to no debut chapter
+    and drops out of every Debut chapter Category. ``"Strong World: Chap. 0"``
+    parses to ``0``, which sits below every Debut chapter Category's floor.
+    """
+
+    if not isinstance(value, str):
+        return None
+    match = _CHAPTER_NUMBER.search(value)
+    if match is None:
+        return None
+    return int(match.group(0))
+
+
+def _has_known_bounty(character: RawCharacter) -> bool:
+    """True when ``bounty`` parses to any figure — the ``bounty_1`` Category."""
+
+    return _parse_bounty(character.get("bounty")) is not None
+
+
+def _number_field_in_band(
+    parse: Callable[[object], int | None],
+    field_name: str,
+    low: int | None,
+    high: int | None,
+) -> Predicate:
+    """A predicate true when ``parse`` reads a number out of ``field_name`` that
+    lies in the half-open band ``[low, high)``. A ``None`` bound is open, so
+    ``(None, None)`` is a bare "the field parses to a number" test. A Character
+    whose field does not parse is never in it.
+
+    The single shape behind both the Bounty thresholds (:func:`_bounty_in_berries`)
+    and the Debut chapter ranges (:func:`_debut_chapter_in`).
+    """
+
+    def predicate(character: RawCharacter) -> bool:
+        number = parse(character.get(field_name))
+        if number is None:
+            return False
+        return (low is None or number >= low) and (high is None or number < high)
+
+    return predicate
+
+
+def _bounty_in_berries(low: int | None, high: int | None) -> Predicate:
+    """A predicate over the ``bounty`` field for the half-open Berry band
+    ``[low, high)`` — ``_bounty_in_berries(500_000_000, None)`` is "≥ 500,000,000",
+    ``_bounty_in_berries(None, 100_000_000)`` is "below 100,000,000 (but has
+    one)". The upper bound is exclusive so a figure of exactly ``high`` belongs to
+    the next threshold up, not this band."""
+
+    return _number_field_in_band(_parse_bounty, "bounty", low, high)
+
+
+def _debut_chapter_in(low: int, high: int) -> Predicate:
+    """A predicate true when the parsed debut chapter is within ``[low, high]``
+    *inclusive* — the bounds read the same as the Category id (``debut_1_597`` is
+    ``_debut_chapter_in(1, 597)``). A Character with no parseable chapter is never
+    in it."""
+
+    return _number_field_in_band(
+        _parse_debut_chapter, "first_appearance_arc", low, high + 1
+    )
+
+
 def _join_key(raw: str) -> str:
     """The key both sides of the Devil Fruit and journey/island joins are
     compared on: the *canonical name* (:func:`app.dataset.canonical_name` -
@@ -155,13 +267,13 @@ class CategorySpec:
 # that file.
 CATEGORY_SPECS: tuple[CategorySpec, ...] = (
     # Bounty
-    CategorySpec("bounty_1", "Has a known bounty", CategoryGroup.BOUNTY, None),
-    CategorySpec("bounty_100000000", "Bounty ≥ 100,000,000", CategoryGroup.BOUNTY, None),
-    CategorySpec("bounty_under_100m", "Bounty below 100,000,000 (but has one)", CategoryGroup.BOUNTY, None),
-    CategorySpec("bounty_500000000", "Bounty ≥ 500,000,000", CategoryGroup.BOUNTY, None),
-    CategorySpec("bounty_1000000000", "Bounty ≥ 1,000,000,000", CategoryGroup.BOUNTY, None),
-    CategorySpec("bounty_1500000000", "Bounty ≥ 1,500,000,000", CategoryGroup.BOUNTY, None),
-    CategorySpec("bounty_3000000000", "Bounty ≥ 3,000,000,000", CategoryGroup.BOUNTY, None),
+    CategorySpec("bounty_1", "Has a known bounty", CategoryGroup.BOUNTY, _has_known_bounty),
+    CategorySpec("bounty_100000000", "Bounty ≥ 100,000,000", CategoryGroup.BOUNTY, _bounty_in_berries(100_000_000, None)),
+    CategorySpec("bounty_under_100m", "Bounty below 100,000,000 (but has one)", CategoryGroup.BOUNTY, _bounty_in_berries(None, 100_000_000)),
+    CategorySpec("bounty_500000000", "Bounty ≥ 500,000,000", CategoryGroup.BOUNTY, _bounty_in_berries(500_000_000, None)),
+    CategorySpec("bounty_1000000000", "Bounty ≥ 1,000,000,000", CategoryGroup.BOUNTY, _bounty_in_berries(1_000_000_000, None)),
+    CategorySpec("bounty_1500000000", "Bounty ≥ 1,500,000,000", CategoryGroup.BOUNTY, _bounty_in_berries(1_500_000_000, None)),
+    CategorySpec("bounty_3000000000", "Bounty ≥ 3,000,000,000", CategoryGroup.BOUNTY, _bounty_in_berries(3_000_000_000, None)),
     # Race
     CategorySpec("race_Human", "Race: Human", CategoryGroup.RACE, _match_field("race", "Human")),
     CategorySpec("race_Animal", "Race: Animal", CategoryGroup.RACE, _match_field("race", "Animal")),
@@ -315,13 +427,13 @@ CATEGORY_SPECS: tuple[CategorySpec, ...] = (
     CategorySpec("age_under_18", "Age under 18", CategoryGroup.AGE, None),
     CategorySpec("age_over_100", "Age over 100", CategoryGroup.AGE, None),
     # Debut chapter
-    CategorySpec("debut_598_9999", "Debuted after the timeskip (ch. ≥ 598)", CategoryGroup.DEBUT_CHAPTER, None),
-    CategorySpec("debut_1_597", "Debuted before the timeskip (ch. ≤ 597)", CategoryGroup.DEBUT_CHAPTER, None),
-    CategorySpec("debut_900_9999", "Debut chapter ≥ 900", CategoryGroup.DEBUT_CHAPTER, None),
-    CategorySpec("debut_1_300", "Debut chapter 1–300", CategoryGroup.DEBUT_CHAPTER, None),
-    CategorySpec("debut_1_100", "Debut chapter 1–100", CategoryGroup.DEBUT_CHAPTER, None),
-    CategorySpec("debut_1000_9999", "Debut chapter ≥ 1000", CategoryGroup.DEBUT_CHAPTER, None),
-    CategorySpec("debut_ch1", "Debuted in Chapter 1", CategoryGroup.DEBUT_CHAPTER, None),
+    CategorySpec("debut_598_9999", "Debuted after the timeskip (ch. ≥ 598)", CategoryGroup.DEBUT_CHAPTER, _debut_chapter_in(598, 9999)),
+    CategorySpec("debut_1_597", "Debuted before the timeskip (ch. ≤ 597)", CategoryGroup.DEBUT_CHAPTER, _debut_chapter_in(1, 597)),
+    CategorySpec("debut_900_9999", "Debut chapter ≥ 900", CategoryGroup.DEBUT_CHAPTER, _debut_chapter_in(900, 9999)),
+    CategorySpec("debut_1_300", "Debut chapter 1–300", CategoryGroup.DEBUT_CHAPTER, _debut_chapter_in(1, 300)),
+    CategorySpec("debut_1_100", "Debut chapter 1–100", CategoryGroup.DEBUT_CHAPTER, _debut_chapter_in(1, 100)),
+    CategorySpec("debut_1000_9999", "Debut chapter ≥ 1000", CategoryGroup.DEBUT_CHAPTER, _debut_chapter_in(1000, 9999)),
+    CategorySpec("debut_ch1", "Debuted in Chapter 1", CategoryGroup.DEBUT_CHAPTER, _debut_chapter_in(1, 1)),
     # Visited (journey)
     CategorySpec("visited_Wano Country's Island", "Visited Wano Country's Island", CategoryGroup.VISITED, None),
     CategorySpec("visited_Marineford", "Visited Marineford", CategoryGroup.VISITED, None),
@@ -377,9 +489,10 @@ _JOIN_GROUPS: frozenset[CategoryGroup] = frozenset(
 
 
 def _is_rebuilt(spec: CategorySpec) -> bool:
-    """Whether this slice can build ``spec`` from the Raw dataset: a static
-    field predicate (Status / Race, issue #24) or a join-backed Devil Fruit /
-    Visited row (issue #25)."""
+    """Whether the builder can build ``spec`` from the Raw dataset: any row that
+    carries a ``predicate`` — the plain field equalities of Status / Race (issue
+    #24) and the parse-then-compare predicates of Bounty / Debut chapter (issue
+    #26) — or a join-backed Devil Fruit / Visited row (issue #25)."""
 
     return spec.predicate is not None or spec.group in _JOIN_GROUPS
 
@@ -573,7 +686,8 @@ class BuildReport:
 @dataclass(frozen=True)
 class BuildResult:
     """The output of :func:`build_categories`, each field covering the Category
-    Groups this builder owns (Status, Race, Devil Fruit, Visited):
+    Groups this builder owns (Status, Race, Bounty, Debut chapter, Devil Fruit,
+    Visited):
 
     * :attr:`categories_json` — the ``categories.json`` payload, for
       :func:`dump_categories_json`.
@@ -591,8 +705,8 @@ def _category_ids_for(
     character: RawCharacter, fruit_index: Mapping[str, Mapping[str, Any]]
 ) -> frozenset[str]:
     """Every Category id ``character`` belongs to across the Groups this builder
-    owns: the static field predicates (Status / Race) plus the Devil Fruit and
-    journey/island joins."""
+    owns: the field predicates (Status / Race equalities, Bounty / Debut chapter
+    parse-and-compare) plus the Devil Fruit and journey/island joins."""
 
     predicate_ids = frozenset(
         spec.id
@@ -637,7 +751,8 @@ def build_categories(
 
     Pure and deterministic: the same Raw input always yields byte-identical
     output. Produces every :data:`CATEGORY_SPECS` row this builder owns — the
-    Status / Race field predicates (issue #24) and the Devil Fruit / Visited
+    Status / Race field predicates (issue #24), the Bounty / Debut chapter
+    parse-then-compare predicates (issue #26), and the Devil Fruit / Visited
     rows the ``devil_fruits.json`` and ``islands.json`` joins populate (issue
     #25). A Category matched by fewer than :data:`MIN_CHARACTERS` Characters is
     omitted. An unjoinable ``devil_fruit`` value or journey location is recorded

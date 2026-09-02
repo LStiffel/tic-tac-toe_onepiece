@@ -1,10 +1,13 @@
 """Seam 2 - the deterministic Category builder, no HTTP.
 
-Covers the ADR 0004 / issue #24 contract: the serialisers reproduce the
-committed ``categories.json`` / ``categories.txt`` byte-for-byte, and the
-builder reproduces the Status and Race Categories from the Raw dataset. The
-membership fixtures build a tiny Roster by hand so the assertions are exact
-(``docs/agents/testing.md``).
+Covers the ADR 0004 contract as it has grown across the #19 slices: the
+serialisers reproduce the committed ``categories.json`` / ``categories.txt``
+byte-for-byte, and the builder reproduces from the Raw dataset the Status / Race
+Categories (issue #24), the Devil Fruit / Visited Categories the
+``devil_fruits.json`` and ``islands.json`` joins populate (issue #25), and the
+Bounty / Debut chapter Categories whose predicates parse a number out of a Raw
+field (issue #26). The membership fixtures build a tiny Roster by hand so the
+assertions are exact (``docs/agents/testing.md``).
 """
 
 from __future__ import annotations
@@ -130,6 +133,23 @@ def test_builder_reproduces_every_committed_devil_fruit_and_visited_category() -
     }
 
     assert committed, "the fixture must cover the join-backed Categories"
+    assert set(committed) <= set(built)
+    for category_id, committed_entry in committed.items():
+        assert built[category_id] == committed_entry
+
+
+def test_builder_reproduces_every_committed_bounty_and_debut_chapter_category() -> None:
+    # Golden: the field-predicate slice (issue #26). Parsing a bounty figure and
+    # a debut chapter out of the Raw dataset reproduces each ``bounty_*`` /
+    # ``debut_*`` Category's Character list and count byte-for-byte.
+    built = {entry["id"]: entry for entry in _build_from_repo_dataset().categories_json}
+    committed = {
+        entry["id"]: entry
+        for entry in _COMMITTED_CATEGORIES
+        if entry["id"].startswith(("bounty_", "debut_"))
+    }
+
+    assert committed, "the fixture must cover the Bounty and Debut chapter Categories"
     assert set(committed) <= set(built)
     for category_id, committed_entry in committed.items():
         assert built[category_id] == committed_entry
@@ -427,6 +447,157 @@ def test_builder_lists_raw_names_verbatim_sorted_and_not_de_duplicated() -> None
     assert alive["id"] == "status_Alive"
     assert alive["characters"] == ["Aphelandra", "Bjorn", "Bjorn "]
     assert alive["count"] == 3
+
+
+# --- Bounty + Debut chapter field predicates (issue #26) -------------
+
+
+def test_bounty_predicate_parses_int_and_string_bounty_fields() -> None:
+    # A representative Bounty predicate over a hand-built Roster. ``bounty`` is an
+    # ``int`` for most Characters and a prose ``str`` for a few; the parse reads
+    # the leading figure out of the string and drops the thousands commas, so
+    # Buggy's "At least 3,189,000,000 [Cross Guild]" clears the 1,000,000,000
+    # line. A Character with no ``bounty`` field is in no Bounty Category.
+    roster = [
+        _character("Luffy", bounty=3_000_000_000),
+        _character("Zoro", bounty=1_111_000_000),
+        _character("Sanji", bounty=1_032_000_000),
+        _character("Buggy", bounty="At least 3,189,000,000 [Cross Guild]"),
+        _character("Nami", bounty=66_000_000),
+        _character("Usopp", bounty=30_000_000),
+        _character("Chopper", bounty=1_000),
+        _character("Vivi"),
+    ]
+
+    result = build_categories(roster, [], [])
+    by_id = {entry["id"]: entry for entry in result.categories_json}
+
+    # "Has a known bounty" is every Character with a parseable figure - the
+    # no-bounty Vivi is excluded.
+    assert by_id["bounty_1"]["characters"] == [
+        "Buggy",
+        "Chopper",
+        "Luffy",
+        "Nami",
+        "Sanji",
+        "Usopp",
+        "Zoro",
+    ]
+    assert "Vivi" not in by_id["bounty_1"]["characters"]
+    # Buggy's string bounty parses to 3,189,000,000, so he sits with the billions.
+    assert by_id["bounty_1000000000"]["characters"] == ["Buggy", "Luffy", "Sanji", "Zoro"]
+    # "has one, but below the line".
+    assert by_id["bounty_under_100m"]["characters"] == ["Chopper", "Nami", "Usopp"]
+
+
+def test_debut_chapter_predicate_parses_first_appearance_arc() -> None:
+    # A representative Debut chapter predicate over a hand-built Roster. The
+    # chapter is the first run of digits in ``first_appearance_arc``; a value
+    # with no digits ("Monsters") and a missing field both resolve to no debut
+    # chapter, so those Characters fall out of every Debut chapter Category.
+    roster = [
+        _character("Luffy", first_appearance_arc="Chapter 1"),
+        _character("Shanks", first_appearance_arc="Chapter 1"),
+        _character("Coby", first_appearance_arc="Chapter 1"),
+        _character("Zoro", first_appearance_arc="Chapter 3"),
+        _character("Nami", first_appearance_arc="Chapter 8"),
+        _character("Kid", first_appearance_arc="Chapter 98"),
+        _character("Law", first_appearance_arc="Chapter 498 (cover)"),
+        _character("Jinbe", first_appearance_arc="Chapter 528"),
+        _character("Carrot", first_appearance_arc="Chapter 804"),
+        _character("Yamato", first_appearance_arc="Chapter 984"),
+        _character("Momonosuke", first_appearance_arc="Chapter 685 (flashback)"),
+        _character("Ryuma", first_appearance_arc="Monsters"),
+        _character("Imu"),
+    ]
+
+    result = build_categories(roster, [], [])
+    by_id = {entry["id"]: entry for entry in result.categories_json}
+
+    assert by_id["debut_ch1"]["characters"] == ["Coby", "Luffy", "Shanks"]
+    assert by_id["debut_1_100"]["characters"] == [
+        "Coby",
+        "Kid",
+        "Luffy",
+        "Nami",
+        "Shanks",
+        "Zoro",
+    ]
+    assert by_id["debut_598_9999"]["characters"] == ["Carrot", "Momonosuke", "Yamato"]
+    # No parseable chapter -> in no Debut chapter Category.
+    for entry in result.categories_json:
+        if entry["id"].startswith("debut_"):
+            assert "Ryuma" not in entry["characters"]
+            assert "Imu" not in entry["characters"]
+
+
+def test_debut_chapter_parse_reads_an_incidental_number_from_a_non_chapter_value() -> None:
+    # The parse is deliberately naive - the first run of digits anywhere in the
+    # string - because that is what produced the committed ``categories.json``
+    # (pinned by the golden test). So a value that is not a chapter reference at
+    # all but happens to contain a number, like "SBS Volume 105", still resolves
+    # to chapter 105 and keeps the Character in every matching Debut chapter
+    # Category. Only a genuinely digit-free value drops out.
+    roster = [
+        _character("Roronoa Arashi", first_appearance_arc="SBS Volume 105 (mentioned)"),
+        _character("Tera", first_appearance_arc="SBS Volume 105 (mentioned)"),
+        _character("Fukumi", first_appearance_arc="SBS Volume 103"),
+        _character("Ryuma", first_appearance_arc="Monsters"),
+    ]
+
+    result = build_categories(roster, [], [])
+    by_id = {entry["id"]: entry for entry in result.categories_json}
+
+    # 103 and 105 both land in the 1-300 and 1-597 bands...
+    assert by_id["debut_1_300"]["characters"] == ["Fukumi", "Roronoa Arashi", "Tera"]
+    assert by_id["debut_1_597"]["characters"] == ["Fukumi", "Roronoa Arashi", "Tera"]
+    # ...but not the 1-100 band, and the digit-free "Monsters" is nowhere.
+    assert "debut_1_100" not in by_id
+    for entry in result.categories_json:
+        assert "Ryuma" not in entry["characters"]
+
+
+def test_debut_chapter_zero_falls_below_every_debut_category() -> None:
+    # "Strong World: Chap. 0" parses to chapter 0, which is below the floor of
+    # every Debut chapter Category (all start at 1), so it joins none of them.
+    roster = [
+        _character("Shiki", first_appearance_arc="Strong World: Chap. 0"),
+        _character("Indigo", first_appearance_arc="Strong World: Chap. 0"),
+        _character("Scarlet", first_appearance_arc="Strong World: Chap. 0"),
+    ]
+
+    result = build_categories(roster, [], [])
+
+    assert list(result.categories_json) == []
+
+
+def test_new_field_predicate_groups_keep_the_build_order_deterministic() -> None:
+    # With the Bounty and Debut chapter Groups now populated, the builder output
+    # is still independent of Raw Character order and still sorted by descending
+    # count.
+    roster = [
+        _character("Luffy", bounty=3_000_000_000, first_appearance_arc="Chapter 1"),
+        _character("Zoro", bounty=1_111_000_000, first_appearance_arc="Chapter 3"),
+        _character("Sanji", bounty=1_032_000_000, first_appearance_arc="Chapter 43"),
+        _character("Jinbe", bounty=1_100_000_000, first_appearance_arc="Chapter 528"),
+    ]
+
+    forward = build_categories(roster, [], [])
+    reverse = build_categories(list(reversed(roster)), [], [])
+
+    assert forward.categories_json == reverse.categories_json
+    assert forward.categories_txt == reverse.categories_txt
+    assert dump_categories_json(forward.categories_json) == dump_categories_json(
+        reverse.categories_json
+    )
+    # Serialised, the entries are ordered by descending count then id ascending.
+    serialised = json.loads(dump_categories_json(forward.categories_json))
+    keys = [(-entry["count"], entry["id"]) for entry in serialised]
+    assert keys == sorted(keys)
+    # Both new Groups landed rows in the output.
+    groups = {entry["group"] for entry in forward.categories_txt}
+    assert CategoryGroup.BOUNTY in groups
+    assert CategoryGroup.DEBUT_CHAPTER in groups
 
 
 # --- determinism ------------------------------------------------------
