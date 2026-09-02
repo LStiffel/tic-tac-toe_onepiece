@@ -256,8 +256,8 @@ def test_forced_grid_rejects_a_blocklisted_pair_that_is_not_a_subset() -> None:
 
 
 def test_trivial_category_exclusion_is_enabled() -> None:
-    # Flipped from None in issue #11. The measurement backing 0.40 lives in
-    # docs/measurements/trivial-category-threshold.md.
+    # Flipped from None in issue #11. The value and its measurement live in
+    # docs/adr/0002-trivial-category-exclusion.md and docs/measurements/.
     assert TRIVIAL_CATEGORY_MAX_ROSTER_FRACTION is not None
     assert 0 < TRIVIAL_CATEGORY_MAX_ROSTER_FRACTION <= 1
 
@@ -304,16 +304,25 @@ def test_generation_succeeds_for_every_seed_in_a_large_sample() -> None:
 
 def test_forced_grid_may_use_a_trivial_category() -> None:
     # A forced Grid is an explicit override: it bypasses the trivial-Category
-    # exclusion. Every crafted grid Category covers 6 of the 12 crafted
-    # Characters (50%), over the 0.40 default, yet forcing them still stands.
-    data = _crafted_data()
-    assert all(
-        is_trivial_category(_C[cid], len(_ROSTER)) for cid in _FORCED
+    # exclusion, so a Category well over the threshold is still allowed.
+    big = _cat(  # 9 of 12 crafted Characters = 75%, over any sane threshold
+        "misc_big", CategoryGroup.MISC, {f"c{i}" for i in range(1, 10)}
     )
+    cats = (
+        big,
+        _cat("race_low", CategoryGroup.RACE, {"c1", "c2", "c3", "c10", "c11", "c12"}),
+        _cat("bounty_mid", CategoryGroup.BOUNTY, {"c4", "c5", "c6", "c10", "c11", "c12"}),
+        _cat("age_a", CategoryGroup.AGE, {"c1", "c4", "c7", "c10"}),
+        _cat("height_b", CategoryGroup.HEIGHT, {"c2", "c5", "c8", "c11"}),
+        _cat("origin_c", CategoryGroup.ORIGIN_SEA, {"c3", "c6", "c9", "c12"}),
+    )
+    data = GameData(roster=_ROSTER, categories=cats, report=DataQualityReport())
+    forced = [c.category.id for c in cats]
+    assert is_trivial_category(big, len(_ROSTER))
 
-    grid = generate_grid(data, category_ids=_FORCED)
+    grid = generate_grid(data, category_ids=forced)
 
-    assert _grid_ids(grid) == tuple(_FORCED)
+    assert _grid_ids(grid) == tuple(forced)
 
 
 # --- new_match --------------------------------------------------------

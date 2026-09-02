@@ -53,13 +53,14 @@ DEFAULT_MAX_ATTEMPTS = 10_000
 #: dropped before sampling in :func:`generate_grid`. Setting it to ``None``
 #: disables the exclusion (:func:`is_trivial_category` becomes a pass-through).
 #:
-#: ``0.40`` drops four Categories on the repo dataset - ``status_Alive`` (79%),
-#: ``race_Human`` (73%), ``debut_598_9999`` (52%), ``debut_1_597`` (47%) - and
-#: sits in a wide gap: the next-broadest survivor, ``age_known``, covers 33%.
-#: Decision: ``docs/adr/0002-trivial-category-exclusion.md``. Full measurement
+#: ``0.60`` drops the two Categories that are true for a clear majority of the
+#: Roster - ``status_Alive`` (79%) and ``race_Human`` (73%) - while keeping the
+#: chapter-debut buckets (``debut_598_9999`` at 52%, ``debut_1_597`` at 47%) as
+#: legitimate trivia axes. Decision:
+#: ``docs/adr/0002-trivial-category-exclusion.md``. Full measurement
 #: (per-Category coverage, attempt counts, Group distribution):
 #: ``docs/measurements/trivial-category-threshold.md``.
-TRIVIAL_CATEGORY_MAX_ROSTER_FRACTION: float | None = 0.40
+TRIVIAL_CATEGORY_MAX_ROSTER_FRACTION: float | None = 0.60
 
 #: Category pairings that are degenerate even though neither playable set is a
 #: strict subset of the other. Kept small on purpose: strict-subset pairs (e.g.

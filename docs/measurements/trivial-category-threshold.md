@@ -1,7 +1,7 @@
 # Trivial-Category exclusion — measurement
 
 Evidence for `docs/adr/0002-trivial-category-exclusion.md`, which sets
-`TRIVIAL_CATEGORY_MAX_ROSTER_FRACTION = 0.40` in `app/gridgen.py`.
+`TRIVIAL_CATEGORY_MAX_ROSTER_FRACTION = 0.60` in `app/gridgen.py`.
 
 A Category whose playable set is true for almost the whole Roster is a poor
 trivia clue. `generate_grid` drops such Categories from the candidate pool before
@@ -14,32 +14,35 @@ All figures below are from `default_game_data()` (repo `characters.json` /
 script in the "Reproducing" section. Roster: **1521** Characters, **195**
 playable Categories.
 
-## Where 0.40 falls
+## Where 0.60 falls
 
-The 0.40 limit is 608.4 Characters, so a Category is dropped at **≥ 609**
-(41 %+). The Categories nearest the cut:
+The 0.60 limit is 912.6 Characters, so a Category is dropped at **≥ 913**
+(61 %+). The Categories nearest the cut:
 
 | Category            | Group             | Playable / Roster | Coverage | Dropped? |
 | ------------------- | ----------------- | ----------------- | -------- | -------- |
 | `status_Alive`      | Status            | 1206 / 1521       | 79.3 %   | **drop** |
 | `race_Human`        | Race              | 1110 / 1521       | 73.0 %   | **drop** |
-| `debut_598_9999`    | Debut chapter     | 792 / 1521        | 52.1 %   | **drop** |
-| `debut_1_597`       | Debut chapter     | 718 / 1521        | 47.2 %   | **drop** |
+| `debut_598_9999`    | Debut chapter     | 792 / 1521        | 52.1 %   | keep     |
+| `debut_1_597`       | Debut chapter     | 718 / 1521        | 47.2 %   | keep     |
 | `age_known`         | Age               | 501 / 1521        | 32.9 %   | keep     |
 | `debut_900_9999`    | Debut chapter     | 411 / 1521        | 27.0 %   | keep     |
 | `rel_5plus`         | Misc              | 393 / 1521        | 25.8 %   | keep     |
 | `visited_Wano …`    | Visited (journey) | 365 / 1521        | 24.0 %   | keep     |
 
-The threshold removes exactly four Categories: **`status_Alive`, `race_Human`,
-`debut_598_9999`, `debut_1_597`**. The next-broadest survivor, `age_known` at
-32.9 %, is ~14 points clear — any cut from ~0.34 to ~0.47 drops the same four, so
-the exact figure is not delicate. No Category Group is emptied: Status, Race and
-Debut chapter each keep several narrower Categories. The full per-Category table
-is in the appendix.
+The threshold removes exactly two Categories: **`status_Alive` and
+`race_Human`** — the only ones true for a clear majority of every Character. The
+next-broadest survivor, `debut_598_9999` at 52.1 %, is ~8 points clear, so a
+modest dataset drift will not change which Categories drop, though the margin is
+tighter than a ~0.40 cut would give. A ~0.40 cut would also remove
+`debut_598_9999` and `debut_1_597`; those play as fair "when did they debut"
+clues, so the cut is set higher to catch only the everyone-qualifies Categories
+(see the ADR). No Category Group is emptied. The full per-Category table is in
+the appendix.
 
 > The issue #11 body cites `status_Alive` at 1211/1521 and `race_Human` at
 > 1114/1521 ("e.g."). The dataset has drifted slightly since; the current counts
-> are 1206 and 1110. Same four Categories drop either way.
+> are 1206 and 1110. Both drop under any threshold from ~0.35 to ~0.73.
 
 ## Generation stays comfortable
 
@@ -48,7 +51,7 @@ Re-roll attempts to find a solvable Grid, **1000 seeds** (`random.Random(seed)`,
 
 | exclusion | failures | min | median | mean | p95 | max | cap    |
 | --------- | -------- | --- | ------ | ---- | --- | --- | ------ |
-| on (0.40) | 0        | 1   | 29     | 40.6 | 122 | 283 | 10 000 |
+| on (0.60) | 0        | 1   | 26     | 36.2 | 106 | 193 | 10 000 |
 | off       | 0        | 1   | 24     | 32.0 | 96  | 157 | 10 000 |
 
 Every seed produces a Grid; the filter costs a handful of extra re-rolls and
@@ -62,22 +65,22 @@ stays two orders of magnitude inside `DEFAULT_MAX_ATTEMPTS`. The property tests
 Group shares of the six Category slots across 300 generated Grids
 (`seed` in `0..299`), before and after the exclusion:
 
-| Group             | off   | on (0.40) |
-| ----------------- | ----- | --------- |
-| Visited (journey) | 15.3 % | 16.4 %   |
-| Misc              | 10.2 % | 11.3 %   |
-| Status            | 12.8 % | 10.4 %   |
-| Haki              | 10.3 % | 10.3 %   |
-| Debut chapter     | 9.1 %  | 9.2 %    |
-| Bounty            | 9.2 %  | 8.8 %    |
-| Origin sea        | 8.3 %  | 8.2 %    |
-| Height            | 7.7 %  | 7.9 %    |
-| Age               | 6.5 %  | 7.9 %    |
-| Devil Fruit       | 6.9 %  | 6.8 %    |
-| Race              | 2.3 %  | 1.5 %    |
-| Affiliation       | 1.3 %  | 1.3 %    |
+| Group             | off    | on (0.60) |
+| ----------------- | ------ | --------- |
+| Visited (journey) | 15.3 % | 15.4 %    |
+| Haki              | 10.3 % | 10.9 %    |
+| Status            | 12.8 % | 10.3 %    |
+| Debut chapter     | 9.1 %  | 10.3 %    |
+| Bounty            | 9.2 %  | 10.1 %    |
+| Misc              | 10.2 % | 9.7 %     |
+| Origin sea        | 8.3 %  | 8.6 %     |
+| Height            | 7.7 %  | 8.0 %     |
+| Devil Fruit       | 6.9 %  | 7.4 %     |
+| Age               | 6.5 %  | 7.0 %     |
+| Race              | 2.3 %  | 1.5 %     |
+| Affiliation       | 1.3 %  | 0.9 %     |
 
-The exclusion barely moves the distribution — the top Group share stays ~16 %,
+The exclusion barely moves the distribution — the top Group share stays ~15 %,
 well under the `top_share < 0.20` bound in
 `test_category_groups_are_distributed_roughly_evenly`, which still passes
 unchanged. Race and Affiliation remain thin (`race_Human` was a large share of
