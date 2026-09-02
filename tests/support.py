@@ -1,7 +1,7 @@
 """Shared crafted dataset for the claim-a-cell tests (both seams).
 
-Six Categories over six Characters, ordered three row Categories then three
-column Categories, chosen so every Cell of the
+Six Categories over six named Characters, ordered three row Categories then
+three column Categories, chosen so every Cell of the
 
     rows    = (race_a, race_b, aff_crew)
     columns = (haki_arm, df_para, origin_gl)
@@ -9,6 +9,11 @@ column Categories, chosen so every Cell of the
 Grid has a known, small row-Category-intersect-column-Category set. Deliberately
 tiny so every "does this Character fit this Cell" assertion is exact
 (``docs/agents/testing.md``).
+
+The Roster carries four extra Characters that belong to no Category. They keep
+each Category's playable set under ``TRIVIAL_CATEGORY_MAX_ROSTER_FRACTION`` (3 of
+10, 30%), so a seeded (non-forced) generation over this dataset still has a
+candidate pool - see ``tests/test_rematch_api.py``.
 """
 
 from __future__ import annotations
@@ -18,7 +23,14 @@ from fastapi.testclient import TestClient
 from app.dataset import DataQualityReport, GameData, LoadedCategory
 from app.domain import Category, CategoryGroup
 
-ROSTER = frozenset({"Luffy", "Zoro", "Nami", "Robin", "Franky", "Brook"})
+#: The six Characters the crafted Categories are built from, plus four that
+#: belong to no Category (so no Category is "trivial" for this Roster).
+ROSTER = frozenset(
+    {
+        "Luffy", "Zoro", "Nami", "Robin", "Franky", "Brook",
+        "Sanji", "Usopp", "Chopper", "Jinbe",
+    }
+)
 
 
 def loaded_category(

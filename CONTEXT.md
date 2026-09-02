@@ -62,6 +62,15 @@ _Avoid_: Answer key, Members
 The minimum size of a Category's playable set — three — for the Category to be
 used in a Match. A Category with fewer resolved Characters is excluded from play.
 
+**Trivial Category**:
+A Category whose playable set is so large — more than a set fraction of the
+Roster — that naming almost any Character satisfies it, making it a poor trivia
+clue. Trivial Categories are dropped from the candidate pool before a Grid is
+generated. A forced Grid (an explicit Category list) is an override and keeps
+them. The fraction and the decision are recorded in
+`docs/adr/0002-trivial-category-exclusion.md`.
+_Avoid_: Gimme Category (a gimme is a Cell, not a Category), Broad tag
+
 **Data-quality report**:
 The record, produced when the dataset loads, of the Category-referenced names
 that do not resolve to a Roster Character, together with the Categories excluded

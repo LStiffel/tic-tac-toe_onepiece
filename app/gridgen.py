@@ -20,10 +20,14 @@ Match creation also accepts a ``seed`` (making generation reproducible) and/or a
 explicit list of six Category ids (forcing a known Grid, or a clear rejection if
 that Grid is unsolvable).
 
-The over-large "trivial Category" exclusion is deferred (issue #4): it lives here
-as :func:`is_trivial_category`, a single tunable predicate wired into the
-generation path but currently disabled (:data:`TRIVIAL_CATEGORY_MAX_ROSTER_FRACTION`
-is ``None``), so it passes every Category through.
+The over-large "trivial Category" exclusion (issue #11) lives here as
+:func:`is_trivial_category`, a single tunable predicate wired into the random
+generation path: a Category whose playable set covers more than
+:data:`TRIVIAL_CATEGORY_MAX_ROSTER_FRACTION` of the Roster is dropped before
+sampling. A forced Grid (``category_ids``) is a deliberate override and bypasses
+it. The threshold and the forced-Grid carve-out are decided in
+``docs/adr/0002-trivial-category-exclusion.md``, backed by
+``docs/measurements/trivial-category-threshold.md``.
 """
 
 from __future__ import annotations
@@ -44,11 +48,18 @@ GRID_CATEGORY_COUNT = 6
 #: a few dozen tries; exhausting this many means the candidate pool is too thin.
 DEFAULT_MAX_ATTEMPTS = 10_000
 
-#: When set to a fraction in ``(0, 1]``, a Category whose playable set covers more
-#: than that fraction of the Roster counts as "trivial" and is dropped before
-#: sampling. Deferred (issue #4): kept as the one tunable knob, currently
-#: disabled, so :func:`is_trivial_category` is a pass-through.
-TRIVIAL_CATEGORY_MAX_ROSTER_FRACTION: float | None = None
+#: A Category whose playable set covers more than this fraction of the Roster
+#: counts as "trivial" - true for almost everyone, so a poor trivia clue - and is
+#: dropped before sampling in :func:`generate_grid`. Setting it to ``None``
+#: disables the exclusion (:func:`is_trivial_category` becomes a pass-through).
+#:
+#: ``0.40`` drops four Categories on the repo dataset - ``status_Alive`` (79%),
+#: ``race_Human`` (73%), ``debut_598_9999`` (52%), ``debut_1_597`` (47%) - and
+#: sits in a wide gap: the next-broadest survivor, ``age_known``, covers 33%.
+#: Decision: ``docs/adr/0002-trivial-category-exclusion.md``. Full measurement
+#: (per-Category coverage, attempt counts, Group distribution):
+#: ``docs/measurements/trivial-category-threshold.md``.
+TRIVIAL_CATEGORY_MAX_ROSTER_FRACTION: float | None = 0.40
 
 #: Category pairings that are degenerate even though neither playable set is a
 #: strict subset of the other. Kept small on purpose: strict-subset pairs (e.g.
@@ -91,10 +102,8 @@ def is_trivial_category(
     """Whether ``category`` is too broad to be interesting - its playable set
     covers more than ``threshold`` of the Roster.
 
-    Deferred for issue #4: ``threshold`` defaults to
-    :data:`TRIVIAL_CATEGORY_MAX_ROSTER_FRACTION` (``None``), and while it is
-    ``None`` this always returns ``False``. Pass an explicit ``threshold`` to
-    turn the exclusion on (a later ticket flips the default).
+    ``threshold`` defaults to :data:`TRIVIAL_CATEGORY_MAX_ROSTER_FRACTION`.
+    A ``None`` threshold disables the check and this always returns ``False``.
     """
 
     if threshold is None:
@@ -170,8 +179,9 @@ def _forced_grid(data: GameData, category_ids: Sequence[str]) -> Grid:
 
     # A forced Grid is a deliberate override, so it deliberately bypasses the
     # trivial-Category filter (:func:`is_trivial_category`) - callers pinning a
-    # known Grid get exactly the Categories they name. It still has to be
-    # playable.
+    # known Grid (tests, replays, a hand-picked board) get exactly the Categories
+    # they name, over-large ones included. It still has to be playable: an
+    # unsolvable or degenerate pairing is rejected below.
     chosen = [by_id[cid] for cid in category_ids]
     rows, columns = chosen[:3], chosen[3:]
     if not _pairing_is_valid(rows, columns):

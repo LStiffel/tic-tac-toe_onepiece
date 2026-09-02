@@ -180,6 +180,9 @@ def test_a_seeded_rematch_grid_matches_a_fresh_seeded_generation(
 ) -> None:
     # The Rematch Grid is produced the very same way a fresh Match's is, so under
     # a shared seed the two Grids are identical - "distinct only by chance".
+    # This is the one test that runs *non-forced* generation over the crafted
+    # dataset, so tests/support.py pads its Roster to keep every crafted Category
+    # under TRIVIAL_CATEGORY_MAX_ROSTER_FRACTION (else the pool is empty).
     source_id, _ = new_forced_match(client)
 
     fresh = client.post("/matches", json={"seed": 987654}).json()

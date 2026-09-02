@@ -252,15 +252,23 @@ def test_forced_grid_rejects_a_blocklisted_pair_that_is_not_a_subset() -> None:
         generate_grid(data, category_ids=forced)
 
 
-# --- the deferred "trivial Category" predicate ------------------------
+# --- the "trivial Category" exclusion (issue #11) --------------------
 
 
-def test_trivial_category_predicate_is_currently_a_no_op() -> None:
-    assert TRIVIAL_CATEGORY_MAX_ROSTER_FRACTION is None
+def test_trivial_category_exclusion_is_enabled() -> None:
+    # Flipped from None in issue #11. The measurement backing 0.40 lives in
+    # docs/measurements/trivial-category-threshold.md.
+    assert TRIVIAL_CATEGORY_MAX_ROSTER_FRACTION is not None
+    assert 0 < TRIVIAL_CATEGORY_MAX_ROSTER_FRACTION <= 1
 
+
+def test_trivial_category_predicate_uses_the_module_default_threshold() -> None:
     covers_everyone = _cat("misc_all", CategoryGroup.MISC, set(_ROSTER))
-    # Disabled: even a Category matching the entire Roster is not "trivial".
-    assert is_trivial_category(covers_everyone, len(_ROSTER)) is False
+    small = _C["race_far"]  # 3 of 12
+
+    # No explicit threshold: falls back to TRIVIAL_CATEGORY_MAX_ROSTER_FRACTION.
+    assert is_trivial_category(covers_everyone, len(_ROSTER)) is True
+    assert is_trivial_category(small, len(_ROSTER)) is False
 
 
 def test_trivial_category_predicate_is_tunable_when_a_threshold_is_given() -> None:
@@ -269,12 +277,43 @@ def test_trivial_category_predicate_is_tunable_when_a_threshold_is_given() -> No
 
     assert is_trivial_category(covers_everyone, len(_ROSTER), threshold=0.4) is True
     assert is_trivial_category(small, len(_ROSTER), threshold=0.4) is False
+    # An explicit None still turns the check off.
+    assert is_trivial_category(covers_everyone, len(_ROSTER), threshold=None) is False
 
 
-def test_generation_still_succeeds_with_the_trivial_predicate_disabled() -> None:
-    # Nothing is filtered out today, so the repo dataset must still generate.
-    grid = generate_grid(default_game_data(), seed=7)
-    assert len(grid.cells) == 9
+def test_no_generated_grid_uses_a_trivial_category() -> None:
+    data = default_game_data()
+    roster_size = len(data.roster)
+    by_id = {c.category.id: c for c in data.categories}
+
+    for seed in range(500):
+        grid = generate_grid(data, seed=seed)
+        for cat in _grid_ids(grid):
+            assert not is_trivial_category(by_id[cat], roster_size), (seed, cat)
+
+
+def test_generation_succeeds_for_every_seed_in_a_large_sample() -> None:
+    # Enabling the exclusion thins the pool; every seed must still yield a Grid
+    # (no GridGenerationError) well inside DEFAULT_MAX_ATTEMPTS.
+    data = default_game_data()
+
+    for seed in range(500):
+        grid = generate_grid(data, seed=seed)
+        assert len(set(_grid_ids(grid))) == 6
+
+
+def test_forced_grid_may_use_a_trivial_category() -> None:
+    # A forced Grid is an explicit override: it bypasses the trivial-Category
+    # exclusion. Every crafted grid Category covers 6 of the 12 crafted
+    # Characters (50%), over the 0.40 default, yet forcing them still stands.
+    data = _crafted_data()
+    assert all(
+        is_trivial_category(_C[cid], len(_ROSTER)) for cid in _FORCED
+    )
+
+    grid = generate_grid(data, category_ids=_FORCED)
+
+    assert _grid_ids(grid) == tuple(_FORCED)
 
 
 # --- new_match --------------------------------------------------------
