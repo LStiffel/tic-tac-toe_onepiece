@@ -581,7 +581,16 @@ CATEGORY_SPECS: tuple[CategorySpec, ...] = (
     CategorySpec("visited_Sabaody Archipelago", "Visited Sabaody Archipelago", CategoryGroup.VISITED, None),
     CategorySpec("visited_Fish-Man Island", "Visited Fish-Man Island", CategoryGroup.VISITED, None),
     CategorySpec("visited_Elbaph Island", "Visited Elbaph Island", CategoryGroup.VISITED, None),
-    CategorySpec("visited_Water 7", "Visited Water 7", CategoryGroup.VISITED, None),
+    # Upstream renamed the "Water 7" journey location (and its islands.json row)
+    # to "Shipbuilding Island" in the 2026-09 Refresh. The id tracks Upstream so
+    # the join keeps resolving; the player-facing label stays "Water 7", the name
+    # the manga uses.
+    CategorySpec(
+        "visited_Shipbuilding Island",
+        "Visited Water 7",
+        CategoryGroup.VISITED,
+        None,
+    ),
     CategorySpec("visited_Zou", "Visited Zou", CategoryGroup.VISITED, None),
     CategorySpec("visited_Sandy Island", "Visited Sandy Island", CategoryGroup.VISITED, None),
     CategorySpec("visited_Skypiea", "Visited Skypiea", CategoryGroup.VISITED, None),

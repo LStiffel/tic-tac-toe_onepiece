@@ -1120,13 +1120,6 @@
     "description": "Allows the user to transform into a <strong>caterpillar</strong> at will."
   },
   {
-    "name": "Unnamed Squirrel Zoan",
-    "image": "/images/devil_fruits/Unnamed Squirrel Zoan.webp",
-    "type": "Zoan",
-    "user": "Ragnir",
-    "description": "Allows the user to transform into a giant <strong>squirrel</strong> at will."
-  },
-  {
     "name": " Ryu Ryu no Mi, Model: Allosaurus",
     "english": "Dragon-Dragon Fruit, Model: Allosaurus",
     "image": "/images/devil_fruits/allosaurus.webp",
@@ -1298,7 +1291,7 @@
     "image": "/images/devil_fruits/cerberus.webp",
     "type": "Zoan",
     "subtype": "Mythical",
-    "user": "Cerberus (sword)",
+    "user": "Cerberus",
     "description": "Allows the user to transform into a <strong>cerberus</strong> at will."
   },
   {
@@ -1319,6 +1312,15 @@
     "subtype": "Mythical",
     "user": "Loki",
     "description": "Allows the user to transform into a <strong>Nidhogg</strong> at will."
+  },
+  {
+    "name": "Risu Risu no Mi, Model: Ratatoskr",
+    "english": "Squirrel-Squirrel Fruit, Model: Ice Squirrel Ratatoskr",
+    "image": "/images/devil_fruits/Ratatoskr.webp",
+    "type": "Zoan",
+    "subtype": "Mythical",
+    "user": "Ragnir",
+    "description": "Allows the user to transform into a <strong>Ratatoskr</strong> at will."
   },
   {
     "name": " Akuma No Mi (Awakened)",
