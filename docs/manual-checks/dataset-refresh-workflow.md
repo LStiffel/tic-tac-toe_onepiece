@@ -75,6 +75,24 @@ near-quiet:
   read-before-write ordering), `format_findings_by_severity`, `build_pr_body`,
   the `main()` exit code, and a full `refresh()` over the committed dataset
   writing into a temp dir.
-- **Steps 1–7 above:** pending a human dispatch (needs the workflow on the
-  default branch and the repo setting from the *Prerequisite* section). Record
-  the run URL, the PR link, and the outcome here afterwards.
+
+- **2026-09-03 — verified by dispatch.** Two `workflow_dispatch` runs on `main`:
+  - **Quiet run** (`33789670214`): dataset unchanged since the #22 catch-up →
+    "No dataset change this week", the PR step skipped. Steps 1, 3, 5, 6, 7
+    (quiet-path) confirmed.
+  - **Controlled-change run** (`33790697805`): a throwaway commit perturbed one
+    `islands.json` `description` field (no builder/loader reads it), then the
+    workflow was dispatched. **PR #31 "Weekly dataset Refresh"** opened from
+    `data-refresh` → `main` with no labels (0 REVIEW findings), the body carried
+    the merge rule + `### INFO (2)` + the changelog line, and the diff reverted
+    the marker and regenerated `data/PROVENANCE.md`. PR #31 was then closed, the
+    `data-refresh` branch deleted, and the perturbation reverted (`9ce01c1`).
+    Steps 2, 3, 4, 6 (changed-path), 7 confirmed.
+  - **Fixed while verifying:** the PR body file was being written into the repo
+    working tree, so `create-pull-request` committed `pr-body.md` into the PR.
+    It is now written to `${{ runner.temp }}` and the step has an `add-paths`
+    allowlist of the six Refresh outputs.
+  - **Still unexercised:** a BLOCK / failed-fetch scheduled run (step 7 failure
+    path) and a REVIEW finding applying `needs-review` — both need a dataset
+    that actually trips them; covered by `tests/test_validate_dataset.py` at the
+    function level.

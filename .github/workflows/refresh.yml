@@ -54,7 +54,10 @@ jobs:
               sys.exit(1)
 
           body = build_pr_body(outcome)
-          pathlib.Path("pr-body.md").write_text(body, encoding="utf-8")
+          # Outside the repo tree, so create-pull-request never commits it.
+          pathlib.Path(os.environ["RUNNER_TEMP"], "pr-body.md").write_text(
+              body, encoding="utf-8"
+          )
           with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as out:
               out.write(f"needs_review={'true' if outcome.has_review else 'false'}\n")
 
@@ -87,7 +90,15 @@ jobs:
           base: main
           commit-message: "Weekly dataset Refresh from Upstream (oparchive.com)"
           title: "Weekly dataset Refresh"
-          body-path: pr-body.md
+          body-path: ${{ runner.temp }}/pr-body.md
+          # Only ever commit the Refresh's own outputs - never a stray file.
+          add-paths: |
+            characters.json
+            devil_fruits.json
+            islands.json
+            categories.json
+            categories.txt
+            data/PROVENANCE.md
           delete-branch: false
 
       # create-pull-request only ADDS labels; on a later clean run the rolling
