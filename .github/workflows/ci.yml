@@ -16,3 +16,5 @@ jobs:
       - run: pip install -e ".[dev]"
       - run: mypy
       - run: pytest
+      - name: Validate the committed dataset (ADR 0004)
+        run: python -m scripts.validate_dataset

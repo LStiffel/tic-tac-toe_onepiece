@@ -97,6 +97,31 @@ that do not resolve to a Roster Character, together with the Categories excluded
 for falling below the Viable threshold. Logged at startup and served from a
 diagnostic endpoint.
 
+**Upstream**:
+The external site the Raw dataset is pulled from — oparchive.com, which publishes
+`characters.json`, `devil_fruits.json` and `islands.json` as static files and
+tracks the manga chapter by chapter. It is a fan project with no API and no
+stated licence, so it is treated as a best-effort source and credited in
+`data/PROVENANCE.md`.
+_Avoid_: Source, the wiki, the scrape
+
+**Raw dataset**:
+The three JSON files as pulled from Upstream (`characters.json`,
+`devil_fruits.json`, `islands.json`), committed to the repo verbatim. The Roster
+and every Category's characters are derived from it. It is never hand-edited, so
+a Refresh overwrites it wholesale.
+_Avoid_: Scrape output, source data, the dump
+
+**Refresh**:
+Re-pulling the current Raw dataset from Upstream and regenerating the derived
+files from it (`categories.json`, `categories.txt`), then validating the result
+before it can be accepted. A Refresh replaces the Raw dataset wholesale, is
+always reviewed before it lands, and never re-tunes the Grid-generation knobs
+(`docs/adr/0002`, `docs/adr/0003`) — a data shift that moves those knobs'
+invariants is flagged for a human, not acted on. See
+`docs/adr/0004-dataset-refresh-pipeline.md`.
+_Avoid_: Update, Sync, Re-scrape, Reload
+
 **Used pool**:
 The set of Characters already claimed in the current Match. It is shared by both
 players; a Character in the Used pool cannot be named again in that Match.

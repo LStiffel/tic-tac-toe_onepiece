@@ -111,7 +111,7 @@ import random, statistics
 from app.dataset import default_game_data
 from app import gridgen
 from app.gridgen import (
-    is_trivial_category, _valid_partner_counts,
+    is_trivial_category, valid_partner_counts,
     MIN_VALID_PARTNERS, VALID_PARTNER_WEIGHT_EXPONENT,
 )
 
@@ -119,7 +119,7 @@ d = default_game_data(); N = len(d.roster)
 
 def search(prune, exponent, seeds=range(1000)):
     nt = tuple(c for c in d.categories if not is_trivial_category(c, N))
-    pc = _valid_partner_counts(nt)
+    pc = valid_partner_counts(nt)
     floor = MIN_VALID_PARTNERS if prune else 0
     pool = tuple(c for c in nt if pc[c.category.id] >= floor)
     bg = defaultdict(list)
@@ -148,5 +148,6 @@ print(search(prune=True, exponent=VALID_PARTNER_WEIGHT_EXPONENT))  # on
 ```
 
 The dead-Category list: `[c.category.id for c in default_game_data().categories
-if _valid_partner_counts(tuple(...)).get(c.category.id, 0) < MIN_VALID_PARTNERS]`
-over the non-trivial pool.
+if valid_partner_counts(tuple(...)).get(c.category.id, 0) < MIN_VALID_PARTNERS]`
+over the non-trivial pool. `app.gridgen.generation_pool(default_game_data())`
+returns the same split (`.pool` / `.trivial` / `.dead`) in one call.

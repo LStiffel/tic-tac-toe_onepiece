@@ -30,7 +30,7 @@ document the skew). This ADR records how that was implemented and what it bought
 Both levers key on a Category's **valid-partner count**: the number of other
 pool Categories it can share a Cell with — non-empty playable-set intersection,
 neither set a subset of the other, pair not on `DEGENERATE_BLOCKLIST`
-(`_valid_partner` / `_valid_partner_counts` in `app/gridgen.py`). That is exactly
+(`_valid_partner` / `valid_partner_counts` in `app/gridgen.py`). That is exactly
 the pairwise test the solvability re-roll applies, so the count predicts how
 often a Category survives to a finished Grid. It is computed once per dataset
 (O(n²) frozenset intersections) and cached.
@@ -129,7 +129,7 @@ Grid.
 - The random pool is now 182 Categories (195 playable → 193 after the trivial
   exclusion → 182 after the dead-Category prune). The 11 pruned Categories are
   still valid for forced Grids.
-- `_valid_partner_counts` is `lru_cache`d on the pool tuple. `generate_grid`
+- `valid_partner_counts` is `lru_cache`d on the pool tuple. `generation_pool`
   rebuilds an equal tuple each call, so the O(n²) precompute runs once per
   dataset per process; the full test suite stays ~3 s.
 - The counts are taken over the *non-trivial* pool and reused for both the prune

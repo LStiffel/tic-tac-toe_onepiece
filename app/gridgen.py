@@ -29,7 +29,7 @@ Two tunables shape the random-generation candidate pool; a forced Grid
   ``docs/adr/0002-trivial-category-exclusion.md``,
   ``docs/measurements/trivial-category-threshold.md``.
 * The **Category Group evening** (issue #12): a Category's count of *Valid
-  partners* (CONTEXT.md; :func:`_valid_partner_counts`) - other pool Categories it
+  partners* (CONTEXT.md; :func:`valid_partner_counts`) - other pool Categories it
   could sit opposite on a Grid and still make a playable Cell - drives both a
   prune of **Dead Categories** with fewer than :data:`MIN_VALID_PARTNERS` (they
   cannot sit in any solvable Grid) and a
@@ -46,7 +46,8 @@ import itertools
 import random
 import uuid
 from collections import defaultdict
-from collections.abc import Sequence
+from collections.abc import Mapping, Sequence
+from dataclasses import dataclass
 from functools import lru_cache
 
 from app.dataset import GameData, LoadedCategory
@@ -75,7 +76,7 @@ TRIVIAL_CATEGORY_MAX_ROSTER_FRACTION: float | None = 0.60
 
 #: Issue #12 - even out the Category Group mix across generated Grids. Both knobs
 #: below key on a Category's count of **Valid partners** (CONTEXT.md;
-#: :func:`_valid_partner_counts`): other pool Categories it could sit opposite on
+#: :func:`valid_partner_counts`): other pool Categories it could sit opposite on
 #: a Grid and still make a playable Cell - non-empty intersection, neither
 #: playable set a subset of the other, pair not on :data:`DEGENERATE_BLOCKLIST`.
 #: That is exactly what the solvability re-roll filters on, so the count predicts
@@ -175,13 +176,13 @@ def _valid_partner(a: LoadedCategory, b: LoadedCategory) -> bool:
 # maxsize: one entry per distinct candidate pool - the repo dataset in normal
 # use, plus a few hand-built ones while tests run.
 @lru_cache(maxsize=8)
-def _valid_partner_counts(pool: tuple[LoadedCategory, ...]) -> dict[str, int]:
+def valid_partner_counts(pool: tuple[LoadedCategory, ...]) -> dict[str, int]:
     """Map each Category id in ``pool`` to its number of :func:`_valid_partner`
     Categories within ``pool``.
 
     This is O(len(pool)^2) frozenset intersections, so it is cached on the pool
-    tuple - which :func:`generate_grid` rebuilds identically on every call for a
-    given dataset. The returned dict must not be mutated by callers.
+    tuple - which :func:`generation_pool` rebuilds identically on every call for
+    a given dataset. The returned dict must not be mutated by callers.
     """
 
     counts = {c.category.id: 0 for c in pool}
@@ -190,6 +191,65 @@ def _valid_partner_counts(pool: tuple[LoadedCategory, ...]) -> dict[str, int]:
             counts[a.category.id] += 1
             counts[b.category.id] += 1
     return counts
+
+
+@dataclass(frozen=True)
+class GenerationPool:
+    """The candidate pool :func:`generate_grid`'s random path draws from, and the
+    two sets it excludes on the way - laid out so a caller that must reason about
+    *what the game sees* (e.g. ``scripts/validate_dataset.py``) reuses this
+    derivation instead of repeating it.
+
+    * :attr:`pool` - the playable Categories that survive both exclusions, in
+      ``data.categories`` order.
+    * :attr:`trivial` - Categories dropped by :func:`is_trivial_category`
+      (issue #11).
+    * :attr:`dead` - **Dead Categories** (CONTEXT.md): non-trivial Categories
+      with fewer than :data:`MIN_VALID_PARTNERS` Valid partners (issue #12).
+    * :attr:`partner_counts` - :func:`valid_partner_counts` over the *non-trivial*
+      Categories (trivial ones excluded first), the map both the prune and the
+      within-Group weighting key on.
+    """
+
+    pool: tuple[LoadedCategory, ...]
+    trivial: tuple[LoadedCategory, ...]
+    dead: tuple[LoadedCategory, ...]
+    partner_counts: Mapping[str, int]
+
+
+def generation_pool(data: GameData) -> GenerationPool:
+    """Split ``data``'s playable Categories the way :func:`generate_grid` does:
+    drop the trivial ones, then the Dead ones, and keep the rest as the sampling
+    pool. See :class:`GenerationPool`."""
+
+    roster_size = len(data.roster)
+    trivial: list[LoadedCategory] = []
+    non_trivial: list[LoadedCategory] = []
+    for category in data.categories:
+        target = (
+            trivial
+            if is_trivial_category(category, roster_size)
+            else non_trivial
+        )
+        target.append(category)
+
+    partner_counts = valid_partner_counts(tuple(non_trivial))
+    dead: list[LoadedCategory] = []
+    pool: list[LoadedCategory] = []
+    for category in non_trivial:
+        target = (
+            pool
+            if partner_counts[category.category.id] >= MIN_VALID_PARTNERS
+            else dead
+        )
+        target.append(category)
+
+    return GenerationPool(
+        pool=tuple(pool),
+        trivial=tuple(trivial),
+        dead=tuple(dead),
+        partner_counts=partner_counts,
+    )
 
 
 def _pairing_is_valid(
@@ -286,19 +346,15 @@ def generate_grid(
     if category_ids is not None:
         return _forced_grid(data, category_ids)
 
-    roster_size = len(data.roster)
-    pool = tuple(
-        c for c in data.categories if not is_trivial_category(c, roster_size)
-    )
-    # Counted over the non-trivial pool, then reused for both the prune and the
-    # weights below. The pruned Dead Categories have < MIN_VALID_PARTNERS
+    # The trivial + Dead-Category split (:func:`generation_pool`). partner_counts
+    # is over the non-trivial Categories and is reused for the within-Group
+    # weights below: the pruned Dead Categories have < MIN_VALID_PARTNERS
     # partners each, so re-counting on the survivors would move no weight worth
     # the second O(n^2) pass; docs/measurements/category-group-sampling.md uses
     # these same counts.
-    partner_counts = _valid_partner_counts(pool)
-    pool = tuple(
-        c for c in pool if partner_counts[c.category.id] >= MIN_VALID_PARTNERS
-    )
+    gen_pool = generation_pool(data)
+    pool = gen_pool.pool
+    partner_counts = gen_pool.partner_counts
 
     by_group: dict[CategoryGroup, list[LoadedCategory]] = defaultdict(list)
     for category in pool:
