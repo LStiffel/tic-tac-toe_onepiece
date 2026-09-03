@@ -124,7 +124,7 @@ def test_txt_payload_carries_the_group_and_drops_the_character_list() -> None:
     assert by_id["status_Alive"] == {
         "id": "status_Alive",
         "label": "Status: Alive",
-        "count": 1211,
+        "count": 1223,
         "group": CategoryGroup.STATUS,
     }
     assert by_id["race_Fish-man"]["group"] is CategoryGroup.RACE

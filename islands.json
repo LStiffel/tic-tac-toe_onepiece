@@ -68,7 +68,7 @@
     "current_ruler": "Unknown",
     "notable_members": ["Nojiko", "Genzo", "Nako", "Johnny", "Yosaku"]
   },
-    {
+  {
     "name": "16th Branch's Island",
     "image": "/images/islands/16thbranch.webp",
     "location": "East Blue",
@@ -145,7 +145,7 @@
     "name": "Satsuruzo's Kingdom Island",
     "image": "/images/islands/satsuruzo.webp",
     "location": "East Blue",
-    "description": "Island where <strong>Satsuruzo Kingdom</strong> is located. Home island of Koby",
+    "description": "Island where the <strong>Satsuruzo Kingdom</strong> is located. Home island of Koby",
     "notable_locations": ["Satsuruzo Kingdom"],
     "current_ruler": "Unknown"
   },
@@ -181,6 +181,14 @@
     "current_ruler": "Unknown"
   },
   {
+    "name": "80th Branch's Island",
+    "image": "/images/islands/80thbranch.webp",
+    "location": "West Blue",
+    "description": "Island where the <strong>Marine 80th Branch</strong> of the Marines is located",
+    "notable_locations": ["80th Branch"],
+    "current_ruler": "Unknown"
+  },
+  {
     "name": "Kano's Country Island",
     "image": "/images/islands/Kano_Country.webp",
     "location": "West Blue",
@@ -210,6 +218,21 @@
     "image": "/images/islands/Soja.webp",
     "location": "West Blue",
     "description": "World government affiliated island and the place where <strong>Issho</strong> lived prior to joining the Marines",
+    "current_ruler": "Unknown"
+  },
+  {
+    "name": "Esperia's Kingdom Island",
+    "image": "/images/islands/Esperia_Kingdom.webp",
+    "location": "West Blue",
+    "description": "Island where the <strong>Esperia Kingdom</strong> is located. Home island of <strong>Brook and Shuri</strong>",
+    "notable_locations": ["Esperia Kingdom", "Esperia Palace", "Opera House", "Cello Port", "Trash Dump", "School"],
+    "current_ruler": "No ruler (fallen kingdom)"
+  },
+  {
+    "name": "Kamigata",
+    "image": "/images/islands/Kamigata.webp",
+    "location": "West Blue",
+    "description": "Island known for its distinctive regional dialect",
     "current_ruler": "Unknown"
   },
   {
@@ -441,7 +464,7 @@
     "name": "Rusukaina",
     "image": "/images/islands/Rusukaina.webp",
     "location": "Calm Belt",
-    "description": "Island northwest of Amazon Lily. Harsh island that has 48 seasons a year. It was here that Luffy spent 2 years honing his skills and mastering Haki",
+    "description": "Island northwest of Amazon Lily that was once home to the <strong>Ottankaina Kingdom</strong>. Harsh island that has 48 seasons a year. It was here that Luffy spent 2 years honing his skills and mastering Haki",
     "notable_locations": ["Safe tree"],
     "current_ruler": "No ruler"
   },
@@ -528,11 +551,11 @@
     "notable_members": ["Goro", "Gedatsu", "Dirt Boss", "Forest Boss", "Hasami"]
   },
   {
-    "name": "Water 7",
+    "name": "Shipbuilding Island",
     "image": "/images/islands/Water_7.webp",
     "location": "Paradise",
     "description": "Island known for its shipwrights. <strong>Capital of Water</strong>",
-    "notable_locations": ["Galley-La Headquarters", "Dock 1", "Blue Station", "Blueno's Bar", "Franky House", "Scrap Island", "Rental Bull Shop", "Rocky Cape"],
+    "notable_locations": ["Water 7", "Galley-La Headquarters", "Dock 1", "Blue Station", "Blueno's Bar", "Franky House", "Scrap Island", "Rental Bull Shop", "Rocky Cape"],
     "current_ruler": "Iceburg",
     "notable_members": ["Iceburg", "Alice", "Paulie", "Peepley Lulu", "Tilestone", "Zambai", "Mozu", "Kiwi", "Tamagon", "Sodoma", "Gomorrah", "Kokoro", "Chimney", "Yokozuna"]
   },
@@ -678,7 +701,7 @@
     "name": "Kenzan Island",
     "image": "/images/islands/Kenzan_Island.webp",
     "location": "Paradise",
-    "description": "Island where the <strong> Tehna Gehna Kingdom </strong> is located. Seems to be the homeland of the Longarm Tribe",
+    "description": "Island where the <strong> Tehna Gehna Kingdom </strong> is located. Inhabited by Longarm Tribe members",
     "notable_locations": ["Tehna Gehna Kingdom"],
     "current_ruler": "Unknown"
   },
@@ -1022,7 +1045,7 @@
     "image": "/images/islands/Ballon_Terminal.webp",
     "location": "Sky",
     "description": "Island located in the sky above the <strong> New World </strong>",
-    "current_ruler": "Unknown"
+    "current_ruler": "No ruler"
   },
   {
     "name": "Merveille",
@@ -1296,6 +1319,22 @@
     "location": "Unknown",
     "description": "Home island of <strong>Shiki</strong>. Described as a rougher version of Wano Country",
     "notable_locations": ["Yano Country"],
+    "current_ruler": "Unknown"
+  },
+  {
+    "name": "Euro Peninsula's Island",
+    "image": "/images/islands/Euro_Peninsula.webp",
+    "location": "Unknown",
+    "description": "Island where the <strong>Euro Peninsula</strong> is located. Seafood from this place was eaten by prince <strong>Reuven</strong> at some point",
+    "notable_locations": ["Euro Peninsula"],
+    "current_ruler": "Unknown"
+  },
+  {
+    "name": "Asshina Gainone's Kingdom island",
+    "image": "/images/islands/Asshina.webp",
+    "location": "Unknown",
+    "description": "Island where the <strong> Asshina Gainone Kingdom </strong> is located. Inhabited by Longleg Tribe members",
+    "notable_locations": ["Asshina Gainone Kingdom"],
     "current_ruler": "Unknown"
   }
 ]
