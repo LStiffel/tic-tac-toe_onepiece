@@ -1,13 +1,11 @@
 """Seam 2 - the deterministic Category builder, no HTTP.
 
-Covers the ADR 0004 contract as it has grown across the #19 slices: the
-serialisers reproduce the committed ``categories.json`` / ``categories.txt``
-byte-for-byte, and the builder reproduces from the Raw dataset the Status / Race
-Categories (issue #24), the Devil Fruit / Visited Categories the
-``devil_fruits.json`` and ``islands.json`` joins populate (issue #25), and the
-Bounty / Debut chapter Categories whose predicates parse a number out of a Raw
-field (issue #26). The membership fixtures build a tiny Roster by hand so the
-assertions are exact (``docs/agents/testing.md``).
+Covers the ADR 0004 contract: the serialisers reproduce the committed
+``categories.json`` / ``categories.txt`` byte-for-byte, and the builder
+reproduces the **whole** committed ``categories.json`` from the Raw dataset -
+every one of the ~195 Categories across all twelve Category Groups. The
+membership fixtures build a tiny Roster by hand so the assertions are exact
+(``docs/agents/testing.md``); the golden tests use the real committed files.
 """
 
 from __future__ import annotations
@@ -24,7 +22,6 @@ from scripts.build_categories import (
     MIN_CHARACTERS,
     BuildResult,
     CategoryEntry,
-    _merge_into_committed,
     build_categories,
     dump_categories_json,
     dump_categories_txt,
@@ -48,14 +45,6 @@ def _build_from_repo_dataset() -> BuildResult:
     return build_categories(
         read_json(CHARACTERS_PATH), read_json(DEVIL_FRUITS_PATH), read_json(ISLANDS_PATH)
     )
-
-
-def _committed_status_and_race() -> dict[str, CategoryEntry]:
-    return {
-        entry["id"]: entry
-        for entry in _COMMITTED_CATEGORIES
-        if entry["id"].startswith(("status_", "race_"))
-    }
 
 
 # --- serialisation round-trips --------------------------------------------
@@ -92,67 +81,41 @@ def test_dump_categories_json_sorts_each_characters_list() -> None:
     assert dumped[0]["characters"] == ["Luffy", "Nami", "Zoro"]
 
 
-# --- golden: the builder reproduces the committed files -----------------
+# --- golden: the builder reproduces the whole committed file -------------
 #
-# Merged with the committed payload (as ``python -m scripts.build_categories``
-# does), a rebuild of the Status / Race Categories from the current Raw dataset
-# leaves both committed files byte-for-byte unchanged.
+# Run on the committed Raw dataset, the builder reproduces every Category and
+# every resolved Character list in the committed derived files, byte-for-byte.
+# This is the guard against silent predicate drift (ADR 0004). When a
+# legitimate data change moves the output, this expected file is updated by
+# hand - the intended human checkpoint.
 
 
-def test_rebuild_leaves_categories_json_byte_for_byte_identical() -> None:
-    merged = _merge_into_committed(
-        _COMMITTED_CATEGORIES, _build_from_repo_dataset().categories_json
-    )
+def test_builder_reproduces_the_committed_categories_json_byte_for_byte() -> None:
+    built = _build_from_repo_dataset()
 
-    assert dump_categories_json(merged) == _COMMITTED_JSON_TEXT
+    assert dump_categories_json(built.categories_json) == _COMMITTED_JSON_TEXT
 
 
-def test_rebuild_leaves_categories_txt_byte_for_byte_identical() -> None:
-    merged = _merge_into_committed(
-        to_txt_payload(_COMMITTED_CATEGORIES), _build_from_repo_dataset().categories_txt
-    )
+def test_builder_reproduces_the_committed_categories_txt_byte_for_byte() -> None:
+    built = _build_from_repo_dataset()
 
-    assert dump_categories_txt(merged) == _COMMITTED_TXT_TEXT
+    assert dump_categories_txt(built.categories_txt) == _COMMITTED_TXT_TEXT
 
 
-def test_builder_reproduces_every_committed_status_and_race_category() -> None:
-    built = {entry["id"]: entry for entry in _build_from_repo_dataset().categories_json}
-    committed = _committed_status_and_race()
+def test_builder_produces_every_committed_category() -> None:
+    built = _build_from_repo_dataset().categories_json
 
-    assert set(committed) <= set(built)
-    for category_id, committed_entry in committed.items():
-        assert built[category_id] == committed_entry
-
-
-def test_builder_reproduces_every_committed_devil_fruit_and_visited_category() -> None:
-    built = {entry["id"]: entry for entry in _build_from_repo_dataset().categories_json}
-    committed = {
-        entry["id"]: entry
-        for entry in _COMMITTED_CATEGORIES
-        if entry["id"] == "has_df" or entry["id"].startswith(("df_", "visited_"))
+    assert {entry["id"] for entry in built} == {
+        entry["id"] for entry in _COMMITTED_CATEGORIES
     }
-
-    assert committed, "the fixture must cover the join-backed Categories"
-    assert set(committed) <= set(built)
-    for category_id, committed_entry in committed.items():
-        assert built[category_id] == committed_entry
+    assert len(built) == len(_COMMITTED_CATEGORIES)
 
 
-def test_builder_reproduces_every_committed_bounty_and_debut_chapter_category() -> None:
-    # Golden: the field-predicate slice (issue #26). Parsing a bounty figure and
-    # a debut chapter out of the Raw dataset reproduces each ``bounty_*`` /
-    # ``debut_*`` Category's Character list and count byte-for-byte.
-    built = {entry["id"]: entry for entry in _build_from_repo_dataset().categories_json}
-    committed = {
-        entry["id"]: entry
-        for entry in _COMMITTED_CATEGORIES
-        if entry["id"].startswith(("bounty_", "debut_"))
-    }
+def test_every_category_group_is_represented_in_the_build() -> None:
+    groups = {entry["group"] for entry in _build_from_repo_dataset().categories_txt}
 
-    assert committed, "the fixture must cover the Bounty and Debut chapter Categories"
-    assert set(committed) <= set(built)
-    for category_id, committed_entry in committed.items():
-        assert built[category_id] == committed_entry
+    # Every Category Group named in CONTEXT.md lands at least one Category.
+    assert groups == set(CategoryGroup)
 
 
 def test_txt_payload_carries_the_group_and_drops_the_character_list() -> None:
@@ -186,13 +149,15 @@ def test_repo_build_report_lists_the_known_unjoinable_values() -> None:
         for location in report.unjoinable_journey_locations
     )
     # Both lists are sorted and de-duplicated.
-    assert list(report.unjoinable_devil_fruits) == sorted(set(report.unjoinable_devil_fruits))
+    assert list(report.unjoinable_devil_fruits) == sorted(
+        set(report.unjoinable_devil_fruits)
+    )
     assert list(report.unjoinable_journey_locations) == sorted(
         set(report.unjoinable_journey_locations)
     )
 
 
-# --- membership fixtures ------------------------------------------------
+# --- membership fixtures: Status / Race (issue #24) ---------------------
 
 
 def test_status_predicate_is_plain_equality_on_the_status_field() -> None:
@@ -352,9 +317,7 @@ def test_hand_built_journey_yields_expected_visited_membership() -> None:
                 {"location": "Zou"},
             ],
         ),
-        _character(
-            "Law", journey=[{"location": "Dressrosa"}, {"location": "Zou"}]
-        ),
+        _character("Law", journey=[{"location": "Dressrosa"}, {"location": "Zou"}]),
         _character(
             "Kin'emon",
             journey=[
@@ -556,33 +519,205 @@ def test_non_chapter_first_appearance_values_yield_no_debut_chapter() -> None:
     assert not any(entry["id"].startswith("debut_") for entry in result.categories_json)
 
 
-def test_new_field_predicate_groups_keep_the_build_order_deterministic() -> None:
-    # With the Bounty and Debut chapter Groups now populated, the builder output
-    # is still independent of Raw Character order and still sorted by descending
-    # count.
+# --- Affiliation (issue #20) ----------------------------------------
+
+
+def test_affiliation_predicate_ignores_a_trailing_former_marker() -> None:
+    # Upstream tags a Character who has left a group with a trailing "(former)"
+    # / "(Former)"; the Affiliation Category counts current and former members
+    # alike, so the marker is trimmed before the equality.
     roster = [
-        _character("Luffy", bounty=3_000_000_000, first_appearance_arc="Chapter 1"),
-        _character("Zoro", bounty=1_111_000_000, first_appearance_arc="Chapter 3"),
-        _character("Sanji", bounty=1_032_000_000, first_appearance_arc="Chapter 43"),
-        _character("Jinbe", bounty=1_100_000_000, first_appearance_arc="Chapter 528"),
+        _character("Marco", affiliation="Whitebeard Pirates (former)"),
+        _character("Izo", affiliation="Whitebeard Pirates (Former)"),
+        _character("Vista", affiliation="Whitebeard Pirates"),
+        _character("Jozu", affiliation="Whitebeard Pirates"),
+        _character("Akainu", affiliation="Marines"),
     ]
 
-    forward = build_categories(roster, [], [])
-    reverse = build_categories(list(reversed(roster)), [], [])
+    result = build_categories(roster, [], [])
+    by_id = {entry["id"]: entry for entry in result.categories_json}
 
-    assert forward.categories_json == reverse.categories_json
-    assert forward.categories_txt == reverse.categories_txt
-    assert dump_categories_json(forward.categories_json) == dump_categories_json(
-        reverse.categories_json
-    )
-    # Serialised, the entries are ordered by descending count then id ascending.
-    serialised = json.loads(dump_categories_json(forward.categories_json))
-    keys = [(-entry["count"], entry["id"]) for entry in serialised]
-    assert keys == sorted(keys)
-    # Both new Groups landed rows in the output.
-    groups = {entry["group"] for entry in forward.categories_txt}
-    assert CategoryGroup.BOUNTY in groups
-    assert CategoryGroup.DEBUT_CHAPTER in groups
+    assert by_id["aff_Whitebeard Pirates"]["characters"] == [
+        "Izo",
+        "Jozu",
+        "Marco",
+        "Vista",
+    ]
+    # A single Marine is below the threshold.
+    assert "aff_Marines" not in by_id
+
+
+def test_affiliation_predicate_keeps_a_meaningful_parenthetical() -> None:
+    # "(Millions)" names a division and is part of the group name, so - unlike
+    # "(former)" - it is not trimmed: these Characters land in
+    # ``aff_Baroque Works (Millions)``, not ``aff_Baroque Works``.
+    roster = [
+        _character("Mr. Beans", affiliation="Baroque Works (Millions) (former)"),
+        _character("Miss Monday", affiliation="Baroque Works (Millions)"),
+        _character("Mr. Shimizu", affiliation="Baroque Works (Millions) (former)"),
+        _character("Crocodile", affiliation="Baroque Works"),
+    ]
+
+    result = build_categories(roster, [], [])
+    by_id = {entry["id"]: entry for entry in result.categories_json}
+
+    assert by_id["aff_Baroque Works (Millions)"]["characters"] == [
+        "Miss Monday",
+        "Mr. Beans",
+        "Mr. Shimizu",
+    ]
+    assert "aff_Baroque Works" not in by_id
+
+
+# --- Origin sea (issue #20) ----------------------------------------
+
+
+def test_origin_sea_predicate_matches_the_sea_and_its_parenthetical_places() -> None:
+    # ``origin`` is either the sea on its own or the sea followed by a
+    # parenthesised place; both count for the sea's Origin Category.
+    roster = [
+        _character("Luffy", origin="East Blue (Foosha Village)"),
+        _character("Nami", origin="East Blue (Conomi Islands)"),
+        _character("Usopp", origin="East Blue"),
+        _character("Sanji", origin="North Blue"),
+        _character("Law", origin="North Blue (Flevance)"),
+        _character("Robin", origin="West Blue (Ohara)"),
+    ]
+
+    result = build_categories(roster, [], [])
+    by_id = {entry["id"]: entry for entry in result.categories_json}
+
+    assert by_id["origin_East Blue"]["characters"] == ["Luffy", "Nami", "Usopp"]
+    # Two from North Blue, one from West Blue - both below the threshold.
+    assert "origin_North Blue" not in by_id
+    assert "origin_West Blue" not in by_id
+
+
+# --- Haki (issue #20) --------------------------------------------------
+
+
+def test_haki_predicates_read_the_haki_type_list() -> None:
+    # Each ``haki_*`` Category is a membership test on the Character's ``haki``
+    # list (spelled "Conquerors", no apostrophe, as Upstream spells it).
+    roster = [
+        _character("Luffy", haki=["Conquerors", "Observation", "Armament"]),
+        _character("Zoro", haki=["Armament", "Observation"]),
+        _character("Sanji", haki=["Observation", "Armament"]),
+        _character("Nami", haki=["Observation"]),
+        _character("Usopp", haki=["Observation"]),
+        _character("Chopper", haki=[]),
+    ]
+
+    result = build_categories(roster, [], [])
+    by_id = {entry["id"]: entry for entry in result.categories_json}
+
+    assert by_id["haki_any"]["characters"] == ["Luffy", "Nami", "Sanji", "Usopp", "Zoro"]
+    assert by_id["haki_obs"]["characters"] == ["Luffy", "Nami", "Sanji", "Usopp", "Zoro"]
+    assert by_id["haki_arm"]["characters"] == ["Luffy", "Sanji", "Zoro"]
+    # One Conqueror, one all-three user - both below the threshold.
+    assert "haki_conq" not in by_id
+    assert "haki_all3" not in by_id
+
+
+# --- Height + Age integer bands (issue #20) --------------------------
+
+
+def test_height_predicates_band_the_integer_height_field() -> None:
+    roster = [
+        _character("Nami", height=170),
+        _character("Zoro", height=181),
+        _character("Robin", height=188),
+        _character("Chopper", height=90),
+        _character("Oars", height=800),
+        _character("Sanji", height="6 feet"),
+    ]
+
+    result = build_categories(roster, [], [])
+    by_id = {entry["id"]: entry for entry in result.categories_json}
+
+    assert by_id["height_150_200"]["characters"] == ["Nami", "Robin", "Zoro"]
+    # One short, one giant - below the threshold.
+    assert "height_under_100" not in by_id
+    assert "height_giant" not in by_id
+    # A non-integer height is not parsed, so Sanji is in no Height Category.
+    for entry in result.categories_json:
+        assert "Sanji" not in entry["characters"]
+
+
+def test_age_predicates_use_the_integer_age_and_ignore_prose() -> None:
+    # ``age`` is an ``int`` for most Characters and prose ("Over 140") for a
+    # few. Unlike ``bounty``, the prose form is *not* parsed - the committed Age
+    # Categories are built from the plain integer values only.
+    roster = [
+        _character("Luffy", age=19),
+        _character("Zoro", age=21),
+        _character("Nami", age=20),
+        _character("Rayleigh", age=78),
+        _character("Garp", age=78),
+        _character("Brook", age=90),
+        _character("Kureha", age="Over 140"),
+    ]
+
+    result = build_categories(roster, [], [])
+    by_id = {entry["id"]: entry for entry in result.categories_json}
+
+    assert by_id["age_known"]["characters"] == [
+        "Brook",
+        "Garp",
+        "Luffy",
+        "Nami",
+        "Rayleigh",
+        "Zoro",
+    ]
+    assert "Kureha" not in by_id["age_known"]["characters"]
+    assert by_id["age_60_plus"]["characters"] == ["Brook", "Garp", "Rayleigh"]
+    assert "age_over_100" not in by_id
+
+
+# --- Misc (issue #20) ------------------------------------------------
+
+
+def test_misc_name_family_predicate_matches_a_leading_family_name() -> None:
+    # A ``name_*`` family Category is the Characters whose name *opens* with
+    # "<Family> " - a bracketed alias or a longer word that merely starts with
+    # the letters does not count.
+    roster = [
+        _character("Charlotte Katakuri"),
+        _character("Charlotte Cracker"),
+        _character("Charlotte Pudding"),
+        _character("Gecko Moria [Kouzuki Moria]"),
+        _character("Sea Boar"),
+    ]
+
+    result = build_categories(roster, [], [])
+    by_id = {entry["id"]: entry for entry in result.categories_json}
+
+    assert by_id["name_charlotte"]["characters"] == [
+        "Charlotte Cracker",
+        "Charlotte Katakuri",
+        "Charlotte Pudding",
+    ]
+    assert "name_kouzuki" not in by_id
+    assert "name_boa" not in by_id
+
+
+def test_misc_relationship_count_predicate_counts_the_relationships_list() -> None:
+    def relationships(n: int) -> list[dict[str, str]]:
+        return [{"name": f"r{i}", "relationship": "Ally"} for i in range(n)]
+
+    roster = [
+        _character("Luffy", relationships=relationships(12)),
+        _character("Law", relationships=relationships(6)),
+        _character("Kid", relationships=relationships(5)),
+        _character("Nami", relationships=relationships(2)),
+    ]
+
+    result = build_categories(roster, [], [])
+    by_id = {entry["id"]: entry for entry in result.categories_json}
+
+    assert by_id["rel_5plus"]["characters"] == ["Kid", "Law", "Luffy"]
+    # Only Luffy has 10+ - below the threshold.
+    assert "rel_10plus" not in by_id
 
 
 # --- determinism ------------------------------------------------------

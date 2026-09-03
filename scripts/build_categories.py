@@ -8,39 +8,37 @@ reproducible from the Raw dataset alone.
 
 This module holds:
 
-* :data:`CATEGORY_SPECS` — the ~195 Category predicates and their **Category
-  Group** assignment, reverse-engineered from the currently committed
+* :data:`CATEGORY_SPECS` — every Category predicate and its **Category Group**
+  assignment, reverse-engineered from the currently committed
   ``categories.json`` + ``categories.txt``. Each row carries an ``id``, a
   ``label``, a :class:`~app.domain.CategoryGroup`, and an optional *predicate*
-  over a Raw Character. Three kinds of row are built so far:
-    - **Status / Race** (issue #24 / #19a) — the row carries a ``predicate``: a
-      plain equality on the Character's ``status`` / ``race`` field, no join.
-    - **Devil Fruit / Visited** (issue #25 / #19b) — the row's ``predicate`` is
-      ``None``; membership comes from the ``devil_fruits.json`` /
-      ``islands.json`` join (:func:`_fruit_category_ids`,
-      :func:`_visited_category_ids`). Both sides of a join are compared on
-      :func:`_join_key`.
-    - **Bounty / Debut chapter** (issue #26 / #19c) — the row carries a
-      ``predicate`` that first *parses* a number out of the Raw field
-      (:func:`_parse_bounty` off ``bounty``, :func:`_parse_debut_chapter` off
-      ``first_appearance_arc``) and then tests it against a threshold or range.
-      No join.
-  Every other row's predicate is ``None`` until a later slice fills it in.
+  over a Raw Character. Two kinds of row exist:
+    - **Field predicate** — the row carries a ``predicate``. Most are a plain
+      read of one Raw field: an equality (Status / Race / Affiliation, the last
+      after trimming a trailing ``"(former)"``), a prefix test (Origin sea), a
+      list-membership test (Haki), a ``>=`` / ``<`` band over an integer field
+      (Height / Age), a name test (the Misc ``name_*`` rows), or a truthy-field
+      test (``has_epithet``). A few first *parse* a number out of a mixed-type
+      field (:func:`_parse_bounty` off ``bounty``, :func:`_parse_debut_chapter`
+      off ``first_appearance_arc``) and then band it.
+    - **Join backed** — the Devil Fruit and Visited rows carry no ``predicate``;
+      membership comes from the ``devil_fruits.json`` / ``islands.json`` join
+      (:func:`_fruit_category_ids`, :func:`_visited_category_ids`). Both sides of
+      a join are compared on :func:`_join_key`.
 * :func:`build_categories` — a pure, deterministic function from the three Raw
   structures to a :class:`BuildResult`: the ``categories.json`` payload, the
   ``categories.txt`` payload, and a :class:`BuildReport` of the values that would
-  not join. Each payload covers only the rows the builder can build.
+  not join. The payloads cover the whole file — every :data:`CATEGORY_SPECS` row
+  matched by at least :data:`MIN_CHARACTERS` Characters.
 * :func:`dump_categories_json` / :func:`dump_categories_txt` — serialisers that
   reproduce the committed files byte-for-byte from those payloads. The exact
   normalisation is recorded in ``docs/measurements/categories-serialisation.md``.
   :func:`to_txt_payload` turns a ``categories.json`` payload into a
   ``categories.txt`` one by attaching each Category's Group.
 
-Run ``python -m scripts.build_categories`` to rebuild both files in place: the
-Status / Race / Bounty / Debut chapter / Devil Fruit / Visited Categories are
-rebuilt from the Raw dataset, every other Category is carried over from the
-committed ``categories.json`` unchanged (the builder is not yet the source of
-the whole file), and both files are re-serialised through the helpers above.
+Run ``python -m scripts.build_categories`` to rebuild both files in place from
+the Raw dataset. A golden test asserts the rebuild reproduces the committed
+``categories.json`` and ``categories.txt`` byte-for-byte.
 """
 
 from __future__ import annotations
@@ -50,7 +48,7 @@ import re
 from collections.abc import Callable, Iterable, Mapping
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, TypedDict, TypeVar
+from typing import Any, TypedDict
 
 from app.dataset import canonical_name
 from app.domain import CategoryGroup
@@ -107,11 +105,6 @@ class TxtCategory(_CategoryHeader):
     group: CategoryGroup
 
 
-#: Bound to a concrete ``_CategoryHeader`` subclass so :func:`_merge_into_committed`
-#: keeps the payload shape it is handed.
-_Header = TypeVar("_Header", bound=_CategoryHeader)
-
-
 def _match_field(field_name: str, value: str) -> Predicate:
     """A predicate that is true when the Character's ``field_name`` equals
     ``value`` exactly (the Status / Race shape: no join, no parsing)."""
@@ -120,6 +113,146 @@ def _match_field(field_name: str, value: str) -> Predicate:
         return character.get(field_name) == value
 
     return predicate
+
+
+#: A trailing "(former)" marker on an ``affiliation`` value (any case), plus any
+#: whitespace around it. Upstream tacks it on to say a Character has *left* a
+#: group (``"Whitebeard Pirates (former)"``, ``"Baroque Works (Millions) (former)"``);
+#: the game's Affiliation Categories count current and former members alike, so
+#: the marker is trimmed before the equality. Only this exact word is trimmed —
+#: a meaningful parenthetical such as ``"(Millions)"`` or ``"(disbanded)"`` is
+#: part of the group name and kept.
+_AFFILIATION_FORMER = re.compile(r"\s*\((?i:former)\)\s*$")
+
+
+def _normalise_affiliation(value: object) -> str | None:
+    """A Raw ``affiliation`` value with a trailing ``"(former)"`` marker and
+    surrounding whitespace trimmed, or ``None`` when the field is absent or not
+    a string."""
+
+    if not isinstance(value, str):
+        return None
+    return _AFFILIATION_FORMER.sub("", value).strip()
+
+
+def _affiliation_is(name: str) -> Predicate:
+    """A predicate true when the Character's :func:`_normalise_affiliation`
+    equals ``name`` — the Affiliation shape: an equality that ignores the
+    ``"(former)"`` marker."""
+
+    def predicate(character: RawCharacter) -> bool:
+        return _normalise_affiliation(character.get("affiliation")) == name
+
+    return predicate
+
+
+def _origin_in_sea(sea: str) -> Predicate:
+    """A predicate true when the Character's ``origin`` names ``sea`` — either
+    the sea on its own (``"West Blue"``) or the sea followed by a parenthesised
+    place (``"East Blue (Foosha Village)"``). The Origin sea shape: a prefix
+    test on one field."""
+
+    prefix = f"{sea} ("
+
+    def predicate(character: RawCharacter) -> bool:
+        origin = character.get("origin")
+        return isinstance(origin, str) and (origin == sea or origin.startswith(prefix))
+
+    return predicate
+
+
+def _haki_types(character: RawCharacter) -> frozenset[str]:
+    """The Haki types listed on a Character's ``haki`` field, as a set
+    (``{"Observation", "Armament"}``); empty when the field is absent."""
+
+    value = character.get("haki")
+    return frozenset(value) if isinstance(value, list) else frozenset()
+
+
+#: The three Haki types, spelled as ``characters.json`` spells them (note the
+#: apostrophe-free ``"Conquerors"``).
+_ALL_HAKI: frozenset[str] = frozenset({"Armament", "Observation", "Conquerors"})
+
+
+def _can_use_haki(character: RawCharacter) -> bool:
+    """True when the Character has any Haki type listed — the ``haki_any``
+    Category."""
+
+    return bool(_haki_types(character))
+
+
+def _has_haki_type(haki_type: str) -> Predicate:
+    """A predicate true when ``haki_type`` is one of the Character's listed Haki
+    types."""
+
+    return lambda character: haki_type in _haki_types(character)
+
+
+def _has_all_haki(character: RawCharacter) -> bool:
+    """True when the Character lists all three Haki types — the ``haki_all3``
+    Category."""
+
+    return _ALL_HAKI <= _haki_types(character)
+
+
+def _raw_int(value: object) -> int | None:
+    """``value`` when it is a genuine JSON integer, else ``None``. ``bool`` is a
+    subclass of ``int`` in Python but never a real ``height`` / ``age``, so it
+    is rejected. A ``height`` / ``age`` Upstream stores as prose (``age`` is
+    sometimes ``"Over 30"``) is *not* parsed — the committed Categories are
+    built from the plain integer values only."""
+
+    if isinstance(value, bool):
+        return None
+    return value if isinstance(value, int) else None
+
+
+def _int_field_in_band(field_name: str, low: int | None, high: int | None) -> Predicate:
+    """A predicate true when ``field_name`` holds an integer in the half-open
+    band ``[low, high)``. A ``None`` bound is open, so ``(None, None)`` is a bare
+    "the field is a known integer" test (``age_known``). A strict "over N" is
+    ``low = N + 1``; an inclusive "N–M" is ``high = M + 1``."""
+
+    return _number_field_in_band(_raw_int, field_name, low, high)
+
+
+def _relationship_count(character: RawCharacter) -> int:
+    """How many entries the Character's ``relationships`` list holds; ``0`` when
+    the field is absent."""
+
+    value = character.get("relationships")
+    return len(value) if isinstance(value, list) else 0
+
+
+def _has_min_relationships(minimum: int) -> Predicate:
+    """A predicate true when the Character lists at least ``minimum``
+    relationships — the ``rel_5plus`` / ``rel_10plus`` shape."""
+
+    return lambda character: _relationship_count(character) >= minimum
+
+
+def _has_truthy_field(field_name: str) -> Predicate:
+    """A predicate true when ``field_name`` is present and non-empty — how
+    ``has_epithet`` and ``has_image_pre`` are decided (a Character either has an
+    epithet / alternate-form image or the field is missing)."""
+
+    return lambda character: bool(character.get(field_name))
+
+
+def _name_starts_with_family(family: str) -> Predicate:
+    """A predicate true when the Character's ``name`` opens with ``"<family> "``
+    — the Misc ``name_*`` family rows (``"Charlotte Pudding"`` is a Charlotte,
+    ``"Gecko Moria [Kouzuki Moria]"`` is not a Kouzuki)."""
+
+    prefix = f"{family} "
+    return lambda character: str(character.get("name", "")).startswith(prefix)
+
+
+def _carries_the_d(character: RawCharacter) -> bool:
+    """True when the Character's ``name`` carries the ``"D."`` initial — the
+    ``name_has_D`` Category (``"Monkey D. Luffy"``, ``"Portgas D. Ace"``)."""
+
+    return "D." in str(character.get("name", ""))
 
 
 #: First run of digits (with thousands commas) in a prose ``bounty`` string.
@@ -267,7 +400,9 @@ class CategorySpec:
 # order), then by descending Category size — the same order ``categories.txt``
 # prints. ``has_df`` sits under Devil Fruit even though its ``id`` prefix is
 # ``has``: that is how ``categories.txt`` groups it, and this table reproduces
-# that file.
+# that file. Every row carries a ``predicate`` except the Devil Fruit and Visited
+# rows, whose membership is the ``devil_fruits.json`` / ``islands.json`` join
+# (:func:`_fruit_category_ids`, :func:`_visited_category_ids`).
 CATEGORY_SPECS: tuple[CategorySpec, ...] = (
     # Bounty
     CategorySpec("bounty_1", "Has a known bounty", CategoryGroup.BOUNTY, _has_known_bounty),
@@ -303,108 +438,108 @@ CATEGORY_SPECS: tuple[CategorySpec, ...] = (
     CategorySpec("status_Unknown", "Status: Unknown", CategoryGroup.STATUS, _match_field("status", "Unknown")),
     CategorySpec("status_Deceased", "Status: Deceased", CategoryGroup.STATUS, _match_field("status", "Deceased")),
     # Affiliation
-    CategorySpec("aff_Big Mom Pirates", "Affiliation: Big Mom Pirates", CategoryGroup.AFFILIATION, None),
-    CategorySpec("aff_Marines", "Affiliation: Marines", CategoryGroup.AFFILIATION, None),
-    CategorySpec("aff_Beasts Pirates", "Affiliation: Beasts Pirates", CategoryGroup.AFFILIATION, None),
-    CategorySpec("aff_Whitebeard Pirates", "Affiliation: Whitebeard Pirates", CategoryGroup.AFFILIATION, None),
-    CategorySpec("aff_Kouzuki Family", "Affiliation: Kouzuki Family", CategoryGroup.AFFILIATION, None),
-    CategorySpec("aff_Thriller Bark Pirates", "Affiliation: Thriller Bark Pirates", CategoryGroup.AFFILIATION, None),
-    CategorySpec("aff_Roger Pirates", "Affiliation: Roger Pirates", CategoryGroup.AFFILIATION, None),
-    CategorySpec("aff_Kuja", "Affiliation: Kuja", CategoryGroup.AFFILIATION, None),
-    CategorySpec("aff_Arabasta Kingdom", "Affiliation: Arabasta Kingdom", CategoryGroup.AFFILIATION, None),
-    CategorySpec("aff_Kid Pirates", "Affiliation: Kid Pirates", CategoryGroup.AFFILIATION, None),
-    CategorySpec("aff_Tontatta Kingdom", "Affiliation: Tontatta Kingdom", CategoryGroup.AFFILIATION, None),
-    CategorySpec("aff_Revolutionary Army", "Affiliation: Revolutionary Army", CategoryGroup.AFFILIATION, None),
-    CategorySpec("aff_Spade Pirates", "Affiliation: Spade Pirates", CategoryGroup.AFFILIATION, None),
-    CategorySpec("aff_Mokomo Dukedom", "Affiliation: Mokomo Dukedom", CategoryGroup.AFFILIATION, None),
-    CategorySpec("aff_World Government", "Affiliation: World Government", CategoryGroup.AFFILIATION, None),
-    CategorySpec("aff_Baroque Works", "Affiliation: Baroque Works", CategoryGroup.AFFILIATION, None),
-    CategorySpec("aff_Blackbeard Pirates", "Affiliation: Blackbeard Pirates", CategoryGroup.AFFILIATION, None),
-    CategorySpec("aff_Donquixote Pirates", "Affiliation: Donquixote Pirates", CategoryGroup.AFFILIATION, None),
-    CategorySpec("aff_Walrus School", "Affiliation: Walrus School", CategoryGroup.AFFILIATION, None),
-    CategorySpec("aff_Foxy Pirates", "Affiliation: Foxy Pirates", CategoryGroup.AFFILIATION, None),
-    CategorySpec("aff_CP0", "Affiliation: CP0", CategoryGroup.AFFILIATION, None),
-    CategorySpec("aff_Impel Down", "Affiliation: Impel Down", CategoryGroup.AFFILIATION, None),
-    CategorySpec("aff_Shandia", "Affiliation: Shandia", CategoryGroup.AFFILIATION, None),
-    CategorySpec("aff_Giant Warrior Pirates", "Affiliation: Giant Warrior Pirates", CategoryGroup.AFFILIATION, None),
-    CategorySpec("aff_Red Hair Pirates", "Affiliation: Red Hair Pirates", CategoryGroup.AFFILIATION, None),
-    CategorySpec("aff_Ryugu Kingdom", "Affiliation: Ryugu Kingdom", CategoryGroup.AFFILIATION, None),
-    CategorySpec("aff_Kurozumi Family", "Affiliation: Kurozumi Family", CategoryGroup.AFFILIATION, None),
-    CategorySpec("aff_Mermaid Café", "Affiliation: Mermaid Café", CategoryGroup.AFFILIATION, None),
-    CategorySpec("aff_Straw Hat Pirates", "Affiliation: Straw Hat Pirates", CategoryGroup.AFFILIATION, None),
-    CategorySpec("aff_Beasts Pirates (Numbers)", "Affiliation: Beasts Pirates (Numbers)", CategoryGroup.AFFILIATION, None),
-    CategorySpec("aff_Caesar Clown", "Affiliation: Caesar Clown", CategoryGroup.AFFILIATION, None),
-    CategorySpec("aff_Fake Straw Hat Crew", "Affiliation: Fake Straw Hat Crew", CategoryGroup.AFFILIATION, None),
-    CategorySpec("aff_Cross Guild", "Affiliation: Cross Guild", CategoryGroup.AFFILIATION, None),
-    CategorySpec("aff_Franky Family", "Affiliation: Franky Family", CategoryGroup.AFFILIATION, None),
-    CategorySpec("aff_Germa Kingdom", "Affiliation: Germa Kingdom", CategoryGroup.AFFILIATION, None),
-    CategorySpec("aff_Heart Pirates", "Affiliation: Heart Pirates", CategoryGroup.AFFILIATION, None),
-    CategorySpec("aff_New Fish-Man Pirates", "Affiliation: New Fish-Man Pirates", CategoryGroup.AFFILIATION, None),
-    CategorySpec("aff_Ohara Archaeologists", "Affiliation: Ohara Archaeologists", CategoryGroup.AFFILIATION, None),
-    CategorySpec("aff_Shimotsuki Family", "Affiliation: Shimotsuki Family", CategoryGroup.AFFILIATION, None),
-    CategorySpec("aff_Arlong Pirates", "Affiliation: Arlong Pirates", CategoryGroup.AFFILIATION, None),
-    CategorySpec("aff_Bellamy Pirates", "Affiliation: Bellamy Pirates", CategoryGroup.AFFILIATION, None),
-    CategorySpec("aff_God's Army", "Affiliation: God's Army", CategoryGroup.AFFILIATION, None),
-    CategorySpec("aff_New Spiders Cafe", "Affiliation: New Spiders Cafe", CategoryGroup.AFFILIATION, None),
-    CategorySpec("aff_Beasts Pirates (Armored Division)", "Affiliation: Beasts Pirates (Armored Division)", CategoryGroup.AFFILIATION, None),
-    CategorySpec("aff_Five Elders", "Affiliation: Five Elders", CategoryGroup.AFFILIATION, None),
-    CategorySpec("aff_Knights of God", "Affiliation: Knights of God", CategoryGroup.AFFILIATION, None),
-    CategorySpec("aff_Krieg Pirates", "Affiliation: Krieg Pirates", CategoryGroup.AFFILIATION, None),
-    CategorySpec("aff_Marines (SSG)", "Affiliation: Marines (SSG)", CategoryGroup.AFFILIATION, None),
-    CategorySpec("aff_New Giant Warrior Pirates", "Affiliation: New Giant Warrior Pirates", CategoryGroup.AFFILIATION, None),
-    CategorySpec("aff_Poseidon", "Affiliation: Poseidon", CategoryGroup.AFFILIATION, None),
-    CategorySpec("aff_Rocks Pirates", "Affiliation: Rocks Pirates", CategoryGroup.AFFILIATION, None),
-    CategorySpec("aff_Underworld", "Affiliation: Underworld", CategoryGroup.AFFILIATION, None),
-    CategorySpec("aff_Automata", "Affiliation: Automata", CategoryGroup.AFFILIATION, None),
-    CategorySpec("aff_Baroque Works (Millions)", "Affiliation: Baroque Works (Millions)", CategoryGroup.AFFILIATION, None),
-    CategorySpec("aff_Bonney Pirates", "Affiliation: Bonney Pirates", CategoryGroup.AFFILIATION, None),
-    CategorySpec("aff_Charlotte Family", "Affiliation: Charlotte Family", CategoryGroup.AFFILIATION, None),
-    CategorySpec("aff_Dressrosa Kingdom", "Affiliation: Dressrosa Kingdom", CategoryGroup.AFFILIATION, None),
-    CategorySpec("aff_Fire Tank Pirates", "Affiliation: Fire Tank Pirates", CategoryGroup.AFFILIATION, None),
-    CategorySpec("aff_Galley-La Company", "Affiliation: Galley-La Company", CategoryGroup.AFFILIATION, None),
-    CategorySpec("aff_Germ Pirates", "Affiliation: Germ Pirates", CategoryGroup.AFFILIATION, None),
-    CategorySpec("aff_Goa Kingdom", "Affiliation: Goa Kingdom", CategoryGroup.AFFILIATION, None),
-    CategorySpec("aff_Marines (SWORD)", "Affiliation: Marines (SWORD)", CategoryGroup.AFFILIATION, None),
-    CategorySpec("aff_Roshwan Kingdom", "Affiliation: Roshwan Kingdom", CategoryGroup.AFFILIATION, None),
-    CategorySpec("aff_Ukkari Hot-Spring Island", "Affiliation: Ukkari Hot-Spring Island", CategoryGroup.AFFILIATION, None),
-    CategorySpec("aff_Black Cat Pirates", "Affiliation: Black Cat Pirates", CategoryGroup.AFFILIATION, None),
-    CategorySpec("aff_CP9", "Affiliation: CP9", CategoryGroup.AFFILIATION, None),
-    CategorySpec("aff_Drum Kingdom", "Affiliation: Drum Kingdom", CategoryGroup.AFFILIATION, None),
-    CategorySpec("aff_God's Guards", "Affiliation: God's Guards", CategoryGroup.AFFILIATION, None),
-    CategorySpec("aff_Ideo Pirates", "Affiliation: Ideo Pirates", CategoryGroup.AFFILIATION, None),
-    CategorySpec("aff_Island of Rare Animals", "Affiliation: Island of Rare Animals", CategoryGroup.AFFILIATION, None),
-    CategorySpec("aff_Newkama Land", "Affiliation: Newkama Land", CategoryGroup.AFFILIATION, None),
-    CategorySpec("aff_Rebel Army", "Affiliation: Rebel Army", CategoryGroup.AFFILIATION, None),
-    CategorySpec("aff_Sun Pirates", "Affiliation: Sun Pirates", CategoryGroup.AFFILIATION, None),
-    CategorySpec("aff_Vegapunk", "Affiliation: Vegapunk", CategoryGroup.AFFILIATION, None),
-    CategorySpec("aff_Warland Kingdom", "Affiliation: Warland Kingdom", CategoryGroup.AFFILIATION, None),
-    CategorySpec("aff_Alvida Pirates (disbanded)", "Affiliation: Alvida Pirates (disbanded)", CategoryGroup.AFFILIATION, None),
-    CategorySpec("aff_Baratie", "Affiliation: Baratie", CategoryGroup.AFFILIATION, None),
-    CategorySpec("aff_Baroque Works (Billions)", "Affiliation: Baroque Works (Billions)", CategoryGroup.AFFILIATION, None),
-    CategorySpec("aff_Beasts Pirates (Tobiroppo)", "Affiliation: Beasts Pirates (Tobiroppo)", CategoryGroup.AFFILIATION, None),
-    CategorySpec("aff_Beautiful Pirates", "Affiliation: Beautiful Pirates", CategoryGroup.AFFILIATION, None),
-    CategorySpec("aff_Dadan Family", "Affiliation: Dadan Family", CategoryGroup.AFFILIATION, None),
-    CategorySpec("aff_Endurance Curry Pirates", "Affiliation: Endurance Curry Pirates", CategoryGroup.AFFILIATION, None),
-    CategorySpec("aff_Galley-La Company (Zambai's Company Union)", "Affiliation: Galley-La Company (Zambai's Company Union)", CategoryGroup.AFFILIATION, None),
-    CategorySpec("aff_Happo Navy", "Affiliation: Happo Navy", CategoryGroup.AFFILIATION, None),
-    CategorySpec("aff_Kyoshiro Family", "Affiliation: Kyoshiro Family", CategoryGroup.AFFILIATION, None),
-    CategorySpec("aff_Lvneel Kingdom", "Affiliation: Lvneel Kingdom", CategoryGroup.AFFILIATION, None),
-    CategorySpec("aff_Macro Pirates", "Affiliation: Macro Pirates", CategoryGroup.AFFILIATION, None),
-    CategorySpec("aff_Rumbar Pirates", "Affiliation: Rumbar Pirates", CategoryGroup.AFFILIATION, None),
-    CategorySpec("aff_Tom's Workers", "Affiliation: Tom's Workers", CategoryGroup.AFFILIATION, None),
-    CategorySpec("aff_Usopp Pirates (disbanded)", "Affiliation: Usopp Pirates (disbanded)", CategoryGroup.AFFILIATION, None),
-    CategorySpec("aff_Wagomuland", "Affiliation: Wagomuland", CategoryGroup.AFFILIATION, None),
-    CategorySpec("aff_World Economy News Paper", "Affiliation: World Economy News Paper", CategoryGroup.AFFILIATION, None),
-    CategorySpec("aff_Yes Pirates", "Affiliation: Yes Pirates", CategoryGroup.AFFILIATION, None),
+    CategorySpec("aff_Big Mom Pirates", "Affiliation: Big Mom Pirates", CategoryGroup.AFFILIATION, _affiliation_is("Big Mom Pirates")),
+    CategorySpec("aff_Marines", "Affiliation: Marines", CategoryGroup.AFFILIATION, _affiliation_is("Marines")),
+    CategorySpec("aff_Beasts Pirates", "Affiliation: Beasts Pirates", CategoryGroup.AFFILIATION, _affiliation_is("Beasts Pirates")),
+    CategorySpec("aff_Whitebeard Pirates", "Affiliation: Whitebeard Pirates", CategoryGroup.AFFILIATION, _affiliation_is("Whitebeard Pirates")),
+    CategorySpec("aff_Kouzuki Family", "Affiliation: Kouzuki Family", CategoryGroup.AFFILIATION, _affiliation_is("Kouzuki Family")),
+    CategorySpec("aff_Thriller Bark Pirates", "Affiliation: Thriller Bark Pirates", CategoryGroup.AFFILIATION, _affiliation_is("Thriller Bark Pirates")),
+    CategorySpec("aff_Roger Pirates", "Affiliation: Roger Pirates", CategoryGroup.AFFILIATION, _affiliation_is("Roger Pirates")),
+    CategorySpec("aff_Kuja", "Affiliation: Kuja", CategoryGroup.AFFILIATION, _affiliation_is("Kuja")),
+    CategorySpec("aff_Arabasta Kingdom", "Affiliation: Arabasta Kingdom", CategoryGroup.AFFILIATION, _affiliation_is("Arabasta Kingdom")),
+    CategorySpec("aff_Kid Pirates", "Affiliation: Kid Pirates", CategoryGroup.AFFILIATION, _affiliation_is("Kid Pirates")),
+    CategorySpec("aff_Tontatta Kingdom", "Affiliation: Tontatta Kingdom", CategoryGroup.AFFILIATION, _affiliation_is("Tontatta Kingdom")),
+    CategorySpec("aff_Revolutionary Army", "Affiliation: Revolutionary Army", CategoryGroup.AFFILIATION, _affiliation_is("Revolutionary Army")),
+    CategorySpec("aff_Spade Pirates", "Affiliation: Spade Pirates", CategoryGroup.AFFILIATION, _affiliation_is("Spade Pirates")),
+    CategorySpec("aff_Mokomo Dukedom", "Affiliation: Mokomo Dukedom", CategoryGroup.AFFILIATION, _affiliation_is("Mokomo Dukedom")),
+    CategorySpec("aff_World Government", "Affiliation: World Government", CategoryGroup.AFFILIATION, _affiliation_is("World Government")),
+    CategorySpec("aff_Baroque Works", "Affiliation: Baroque Works", CategoryGroup.AFFILIATION, _affiliation_is("Baroque Works")),
+    CategorySpec("aff_Blackbeard Pirates", "Affiliation: Blackbeard Pirates", CategoryGroup.AFFILIATION, _affiliation_is("Blackbeard Pirates")),
+    CategorySpec("aff_Donquixote Pirates", "Affiliation: Donquixote Pirates", CategoryGroup.AFFILIATION, _affiliation_is("Donquixote Pirates")),
+    CategorySpec("aff_Walrus School", "Affiliation: Walrus School", CategoryGroup.AFFILIATION, _affiliation_is("Walrus School")),
+    CategorySpec("aff_Foxy Pirates", "Affiliation: Foxy Pirates", CategoryGroup.AFFILIATION, _affiliation_is("Foxy Pirates")),
+    CategorySpec("aff_CP0", "Affiliation: CP0", CategoryGroup.AFFILIATION, _affiliation_is("CP0")),
+    CategorySpec("aff_Impel Down", "Affiliation: Impel Down", CategoryGroup.AFFILIATION, _affiliation_is("Impel Down")),
+    CategorySpec("aff_Shandia", "Affiliation: Shandia", CategoryGroup.AFFILIATION, _affiliation_is("Shandia")),
+    CategorySpec("aff_Giant Warrior Pirates", "Affiliation: Giant Warrior Pirates", CategoryGroup.AFFILIATION, _affiliation_is("Giant Warrior Pirates")),
+    CategorySpec("aff_Red Hair Pirates", "Affiliation: Red Hair Pirates", CategoryGroup.AFFILIATION, _affiliation_is("Red Hair Pirates")),
+    CategorySpec("aff_Ryugu Kingdom", "Affiliation: Ryugu Kingdom", CategoryGroup.AFFILIATION, _affiliation_is("Ryugu Kingdom")),
+    CategorySpec("aff_Kurozumi Family", "Affiliation: Kurozumi Family", CategoryGroup.AFFILIATION, _affiliation_is("Kurozumi Family")),
+    CategorySpec("aff_Mermaid Café", "Affiliation: Mermaid Café", CategoryGroup.AFFILIATION, _affiliation_is("Mermaid Café")),
+    CategorySpec("aff_Straw Hat Pirates", "Affiliation: Straw Hat Pirates", CategoryGroup.AFFILIATION, _affiliation_is("Straw Hat Pirates")),
+    CategorySpec("aff_Beasts Pirates (Numbers)", "Affiliation: Beasts Pirates (Numbers)", CategoryGroup.AFFILIATION, _affiliation_is("Beasts Pirates (Numbers)")),
+    CategorySpec("aff_Caesar Clown", "Affiliation: Caesar Clown", CategoryGroup.AFFILIATION, _affiliation_is("Caesar Clown")),
+    CategorySpec("aff_Fake Straw Hat Crew", "Affiliation: Fake Straw Hat Crew", CategoryGroup.AFFILIATION, _affiliation_is("Fake Straw Hat Crew")),
+    CategorySpec("aff_Cross Guild", "Affiliation: Cross Guild", CategoryGroup.AFFILIATION, _affiliation_is("Cross Guild")),
+    CategorySpec("aff_Franky Family", "Affiliation: Franky Family", CategoryGroup.AFFILIATION, _affiliation_is("Franky Family")),
+    CategorySpec("aff_Germa Kingdom", "Affiliation: Germa Kingdom", CategoryGroup.AFFILIATION, _affiliation_is("Germa Kingdom")),
+    CategorySpec("aff_Heart Pirates", "Affiliation: Heart Pirates", CategoryGroup.AFFILIATION, _affiliation_is("Heart Pirates")),
+    CategorySpec("aff_New Fish-Man Pirates", "Affiliation: New Fish-Man Pirates", CategoryGroup.AFFILIATION, _affiliation_is("New Fish-Man Pirates")),
+    CategorySpec("aff_Ohara Archaeologists", "Affiliation: Ohara Archaeologists", CategoryGroup.AFFILIATION, _affiliation_is("Ohara Archaeologists")),
+    CategorySpec("aff_Shimotsuki Family", "Affiliation: Shimotsuki Family", CategoryGroup.AFFILIATION, _affiliation_is("Shimotsuki Family")),
+    CategorySpec("aff_Arlong Pirates", "Affiliation: Arlong Pirates", CategoryGroup.AFFILIATION, _affiliation_is("Arlong Pirates")),
+    CategorySpec("aff_Bellamy Pirates", "Affiliation: Bellamy Pirates", CategoryGroup.AFFILIATION, _affiliation_is("Bellamy Pirates")),
+    CategorySpec("aff_God's Army", "Affiliation: God's Army", CategoryGroup.AFFILIATION, _affiliation_is("God's Army")),
+    CategorySpec("aff_New Spiders Cafe", "Affiliation: New Spiders Cafe", CategoryGroup.AFFILIATION, _affiliation_is("New Spiders Cafe")),
+    CategorySpec("aff_Beasts Pirates (Armored Division)", "Affiliation: Beasts Pirates (Armored Division)", CategoryGroup.AFFILIATION, _affiliation_is("Beasts Pirates (Armored Division)")),
+    CategorySpec("aff_Five Elders", "Affiliation: Five Elders", CategoryGroup.AFFILIATION, _affiliation_is("Five Elders")),
+    CategorySpec("aff_Knights of God", "Affiliation: Knights of God", CategoryGroup.AFFILIATION, _affiliation_is("Knights of God")),
+    CategorySpec("aff_Krieg Pirates", "Affiliation: Krieg Pirates", CategoryGroup.AFFILIATION, _affiliation_is("Krieg Pirates")),
+    CategorySpec("aff_Marines (SSG)", "Affiliation: Marines (SSG)", CategoryGroup.AFFILIATION, _affiliation_is("Marines (SSG)")),
+    CategorySpec("aff_New Giant Warrior Pirates", "Affiliation: New Giant Warrior Pirates", CategoryGroup.AFFILIATION, _affiliation_is("New Giant Warrior Pirates")),
+    CategorySpec("aff_Poseidon", "Affiliation: Poseidon", CategoryGroup.AFFILIATION, _affiliation_is("Poseidon")),
+    CategorySpec("aff_Rocks Pirates", "Affiliation: Rocks Pirates", CategoryGroup.AFFILIATION, _affiliation_is("Rocks Pirates")),
+    CategorySpec("aff_Underworld", "Affiliation: Underworld", CategoryGroup.AFFILIATION, _affiliation_is("Underworld")),
+    CategorySpec("aff_Automata", "Affiliation: Automata", CategoryGroup.AFFILIATION, _affiliation_is("Automata")),
+    CategorySpec("aff_Baroque Works (Millions)", "Affiliation: Baroque Works (Millions)", CategoryGroup.AFFILIATION, _affiliation_is("Baroque Works (Millions)")),
+    CategorySpec("aff_Bonney Pirates", "Affiliation: Bonney Pirates", CategoryGroup.AFFILIATION, _affiliation_is("Bonney Pirates")),
+    CategorySpec("aff_Charlotte Family", "Affiliation: Charlotte Family", CategoryGroup.AFFILIATION, _affiliation_is("Charlotte Family")),
+    CategorySpec("aff_Dressrosa Kingdom", "Affiliation: Dressrosa Kingdom", CategoryGroup.AFFILIATION, _affiliation_is("Dressrosa Kingdom")),
+    CategorySpec("aff_Fire Tank Pirates", "Affiliation: Fire Tank Pirates", CategoryGroup.AFFILIATION, _affiliation_is("Fire Tank Pirates")),
+    CategorySpec("aff_Galley-La Company", "Affiliation: Galley-La Company", CategoryGroup.AFFILIATION, _affiliation_is("Galley-La Company")),
+    CategorySpec("aff_Germ Pirates", "Affiliation: Germ Pirates", CategoryGroup.AFFILIATION, _affiliation_is("Germ Pirates")),
+    CategorySpec("aff_Goa Kingdom", "Affiliation: Goa Kingdom", CategoryGroup.AFFILIATION, _affiliation_is("Goa Kingdom")),
+    CategorySpec("aff_Marines (SWORD)", "Affiliation: Marines (SWORD)", CategoryGroup.AFFILIATION, _affiliation_is("Marines (SWORD)")),
+    CategorySpec("aff_Roshwan Kingdom", "Affiliation: Roshwan Kingdom", CategoryGroup.AFFILIATION, _affiliation_is("Roshwan Kingdom")),
+    CategorySpec("aff_Ukkari Hot-Spring Island", "Affiliation: Ukkari Hot-Spring Island", CategoryGroup.AFFILIATION, _affiliation_is("Ukkari Hot-Spring Island")),
+    CategorySpec("aff_Black Cat Pirates", "Affiliation: Black Cat Pirates", CategoryGroup.AFFILIATION, _affiliation_is("Black Cat Pirates")),
+    CategorySpec("aff_CP9", "Affiliation: CP9", CategoryGroup.AFFILIATION, _affiliation_is("CP9")),
+    CategorySpec("aff_Drum Kingdom", "Affiliation: Drum Kingdom", CategoryGroup.AFFILIATION, _affiliation_is("Drum Kingdom")),
+    CategorySpec("aff_God's Guards", "Affiliation: God's Guards", CategoryGroup.AFFILIATION, _affiliation_is("God's Guards")),
+    CategorySpec("aff_Ideo Pirates", "Affiliation: Ideo Pirates", CategoryGroup.AFFILIATION, _affiliation_is("Ideo Pirates")),
+    CategorySpec("aff_Island of Rare Animals", "Affiliation: Island of Rare Animals", CategoryGroup.AFFILIATION, _affiliation_is("Island of Rare Animals")),
+    CategorySpec("aff_Newkama Land", "Affiliation: Newkama Land", CategoryGroup.AFFILIATION, _affiliation_is("Newkama Land")),
+    CategorySpec("aff_Rebel Army", "Affiliation: Rebel Army", CategoryGroup.AFFILIATION, _affiliation_is("Rebel Army")),
+    CategorySpec("aff_Sun Pirates", "Affiliation: Sun Pirates", CategoryGroup.AFFILIATION, _affiliation_is("Sun Pirates")),
+    CategorySpec("aff_Vegapunk", "Affiliation: Vegapunk", CategoryGroup.AFFILIATION, _affiliation_is("Vegapunk")),
+    CategorySpec("aff_Warland Kingdom", "Affiliation: Warland Kingdom", CategoryGroup.AFFILIATION, _affiliation_is("Warland Kingdom")),
+    CategorySpec("aff_Alvida Pirates (disbanded)", "Affiliation: Alvida Pirates (disbanded)", CategoryGroup.AFFILIATION, _affiliation_is("Alvida Pirates (disbanded)")),
+    CategorySpec("aff_Baratie", "Affiliation: Baratie", CategoryGroup.AFFILIATION, _affiliation_is("Baratie")),
+    CategorySpec("aff_Baroque Works (Billions)", "Affiliation: Baroque Works (Billions)", CategoryGroup.AFFILIATION, _affiliation_is("Baroque Works (Billions)")),
+    CategorySpec("aff_Beasts Pirates (Tobiroppo)", "Affiliation: Beasts Pirates (Tobiroppo)", CategoryGroup.AFFILIATION, _affiliation_is("Beasts Pirates (Tobiroppo)")),
+    CategorySpec("aff_Beautiful Pirates", "Affiliation: Beautiful Pirates", CategoryGroup.AFFILIATION, _affiliation_is("Beautiful Pirates")),
+    CategorySpec("aff_Dadan Family", "Affiliation: Dadan Family", CategoryGroup.AFFILIATION, _affiliation_is("Dadan Family")),
+    CategorySpec("aff_Endurance Curry Pirates", "Affiliation: Endurance Curry Pirates", CategoryGroup.AFFILIATION, _affiliation_is("Endurance Curry Pirates")),
+    CategorySpec("aff_Galley-La Company (Zambai's Company Union)", "Affiliation: Galley-La Company (Zambai's Company Union)", CategoryGroup.AFFILIATION, _affiliation_is("Galley-La Company (Zambai's Company Union)")),
+    CategorySpec("aff_Happo Navy", "Affiliation: Happo Navy", CategoryGroup.AFFILIATION, _affiliation_is("Happo Navy")),
+    CategorySpec("aff_Kyoshiro Family", "Affiliation: Kyoshiro Family", CategoryGroup.AFFILIATION, _affiliation_is("Kyoshiro Family")),
+    CategorySpec("aff_Lvneel Kingdom", "Affiliation: Lvneel Kingdom", CategoryGroup.AFFILIATION, _affiliation_is("Lvneel Kingdom")),
+    CategorySpec("aff_Macro Pirates", "Affiliation: Macro Pirates", CategoryGroup.AFFILIATION, _affiliation_is("Macro Pirates")),
+    CategorySpec("aff_Rumbar Pirates", "Affiliation: Rumbar Pirates", CategoryGroup.AFFILIATION, _affiliation_is("Rumbar Pirates")),
+    CategorySpec("aff_Tom's Workers", "Affiliation: Tom's Workers", CategoryGroup.AFFILIATION, _affiliation_is("Tom's Workers")),
+    CategorySpec("aff_Usopp Pirates (disbanded)", "Affiliation: Usopp Pirates (disbanded)", CategoryGroup.AFFILIATION, _affiliation_is("Usopp Pirates (disbanded)")),
+    CategorySpec("aff_Wagomuland", "Affiliation: Wagomuland", CategoryGroup.AFFILIATION, _affiliation_is("Wagomuland")),
+    CategorySpec("aff_World Economy News Paper", "Affiliation: World Economy News Paper", CategoryGroup.AFFILIATION, _affiliation_is("World Economy News Paper")),
+    CategorySpec("aff_Yes Pirates", "Affiliation: Yes Pirates", CategoryGroup.AFFILIATION, _affiliation_is("Yes Pirates")),
     # Origin sea
-    CategorySpec("origin_Grand Line", "Origin: Grand Line", CategoryGroup.ORIGIN_SEA, None),
-    CategorySpec("origin_East Blue", "Origin: East Blue", CategoryGroup.ORIGIN_SEA, None),
-    CategorySpec("origin_North Blue", "Origin: North Blue", CategoryGroup.ORIGIN_SEA, None),
-    CategorySpec("origin_West Blue", "Origin: West Blue", CategoryGroup.ORIGIN_SEA, None),
-    CategorySpec("origin_South Blue", "Origin: South Blue", CategoryGroup.ORIGIN_SEA, None),
-    CategorySpec("origin_Calm Belt", "Origin: Calm Belt", CategoryGroup.ORIGIN_SEA, None),
-    CategorySpec("origin_Sky Islands", "Origin: Sky Islands", CategoryGroup.ORIGIN_SEA, None),
-    CategorySpec("origin_Red Line", "Origin: Red Line", CategoryGroup.ORIGIN_SEA, None),
+    CategorySpec("origin_Grand Line", "Origin: Grand Line", CategoryGroup.ORIGIN_SEA, _origin_in_sea("Grand Line")),
+    CategorySpec("origin_East Blue", "Origin: East Blue", CategoryGroup.ORIGIN_SEA, _origin_in_sea("East Blue")),
+    CategorySpec("origin_North Blue", "Origin: North Blue", CategoryGroup.ORIGIN_SEA, _origin_in_sea("North Blue")),
+    CategorySpec("origin_West Blue", "Origin: West Blue", CategoryGroup.ORIGIN_SEA, _origin_in_sea("West Blue")),
+    CategorySpec("origin_South Blue", "Origin: South Blue", CategoryGroup.ORIGIN_SEA, _origin_in_sea("South Blue")),
+    CategorySpec("origin_Calm Belt", "Origin: Calm Belt", CategoryGroup.ORIGIN_SEA, _origin_in_sea("Calm Belt")),
+    CategorySpec("origin_Sky Islands", "Origin: Sky Islands", CategoryGroup.ORIGIN_SEA, _origin_in_sea("Sky Islands")),
+    CategorySpec("origin_Red Line", "Origin: Red Line", CategoryGroup.ORIGIN_SEA, _origin_in_sea("Red Line")),
     # Devil Fruit
     CategorySpec("has_df", "Has a Devil Fruit", CategoryGroup.DEVIL_FRUIT, None),
     CategorySpec("df_Zoan", "Devil Fruit type: Zoan", CategoryGroup.DEVIL_FRUIT, None),
@@ -414,21 +549,21 @@ CATEGORY_SPECS: tuple[CategorySpec, ...] = (
     CategorySpec("df_Logia", "Devil Fruit type: Logia", CategoryGroup.DEVIL_FRUIT, None),
     CategorySpec("df_sub_Ancient", "Devil Fruit subtype: Ancient Zoan", CategoryGroup.DEVIL_FRUIT, None),
     # Haki
-    CategorySpec("haki_any", "Can use Haki", CategoryGroup.HAKI, None),
-    CategorySpec("haki_arm", "Can use Armament Haki", CategoryGroup.HAKI, None),
-    CategorySpec("haki_obs", "Can use Observation Haki", CategoryGroup.HAKI, None),
-    CategorySpec("haki_conq", "Can use Conqueror's Haki", CategoryGroup.HAKI, None),
-    CategorySpec("haki_all3", "Can use all three types of Haki", CategoryGroup.HAKI, None),
+    CategorySpec("haki_any", "Can use Haki", CategoryGroup.HAKI, _can_use_haki),
+    CategorySpec("haki_arm", "Can use Armament Haki", CategoryGroup.HAKI, _has_haki_type("Armament")),
+    CategorySpec("haki_obs", "Can use Observation Haki", CategoryGroup.HAKI, _has_haki_type("Observation")),
+    CategorySpec("haki_conq", "Can use Conqueror's Haki", CategoryGroup.HAKI, _has_haki_type("Conquerors")),
+    CategorySpec("haki_all3", "Can use all three types of Haki", CategoryGroup.HAKI, _has_all_haki),
     # Height
-    CategorySpec("height_150_200", "Height between 150 and 200 cm", CategoryGroup.HEIGHT, None),
-    CategorySpec("height_giant", "Height over 500 cm", CategoryGroup.HEIGHT, None),
-    CategorySpec("height_over_1000", "Height over 1,000 cm", CategoryGroup.HEIGHT, None),
-    CategorySpec("height_under_100", "Height under 100 cm", CategoryGroup.HEIGHT, None),
+    CategorySpec("height_150_200", "Height between 150 and 200 cm", CategoryGroup.HEIGHT, _int_field_in_band("height", 150, 201)),
+    CategorySpec("height_giant", "Height over 500 cm", CategoryGroup.HEIGHT, _int_field_in_band("height", 501, None)),
+    CategorySpec("height_over_1000", "Height over 1,000 cm", CategoryGroup.HEIGHT, _int_field_in_band("height", 1001, None)),
+    CategorySpec("height_under_100", "Height under 100 cm", CategoryGroup.HEIGHT, _int_field_in_band("height", None, 100)),
     # Age
-    CategorySpec("age_known", "Has a known age", CategoryGroup.AGE, None),
-    CategorySpec("age_60_plus", "Age 60 or older", CategoryGroup.AGE, None),
-    CategorySpec("age_under_18", "Age under 18", CategoryGroup.AGE, None),
-    CategorySpec("age_over_100", "Age over 100", CategoryGroup.AGE, None),
+    CategorySpec("age_known", "Has a known age", CategoryGroup.AGE, _int_field_in_band("age", None, None)),
+    CategorySpec("age_60_plus", "Age 60 or older", CategoryGroup.AGE, _int_field_in_band("age", 60, None)),
+    CategorySpec("age_under_18", "Age under 18", CategoryGroup.AGE, _int_field_in_band("age", None, 18)),
+    CategorySpec("age_over_100", "Age over 100", CategoryGroup.AGE, _int_field_in_band("age", 101, None)),
     # Debut chapter
     CategorySpec("debut_598_9999", "Debuted after the timeskip (ch. ≥ 598)", CategoryGroup.DEBUT_CHAPTER, _debut_chapter_in(598, 9999)),
     CategorySpec("debut_1_597", "Debuted before the timeskip (ch. ≤ 597)", CategoryGroup.DEBUT_CHAPTER, _debut_chapter_in(1, 597)),
@@ -467,45 +602,20 @@ CATEGORY_SPECS: tuple[CategorySpec, ...] = (
     CategorySpec("visited_Baltigo", "Visited Baltigo", CategoryGroup.VISITED, None),
     CategorySpec("visited_Laugh Tale", "Visited Laugh Tale", CategoryGroup.VISITED, None),
     # Misc
-    CategorySpec("rel_5plus", "Has 5 or more listed relationships", CategoryGroup.MISC, None),
-    CategorySpec("has_epithet", "Has an epithet", CategoryGroup.MISC, None),
-    CategorySpec("rel_10plus", "Has 10 or more listed relationships", CategoryGroup.MISC, None),
-    CategorySpec("has_image_pre", "Has a transformation / alternate form image", CategoryGroup.MISC, None),
-    CategorySpec("name_charlotte", "Member of the Charlotte family (by name)", CategoryGroup.MISC, None),
-    CategorySpec("name_has_D", 'Carries the "D." in their name', CategoryGroup.MISC, None),
-    CategorySpec("name_vinsmoke", "Vinsmoke family (by name)", CategoryGroup.MISC, None),
-    CategorySpec("name_kouzuki", "Kouzuki family (by name)", CategoryGroup.MISC, None),
-    CategorySpec("name_boa", "Boa family (by name)", CategoryGroup.MISC, None),
+    CategorySpec("rel_5plus", "Has 5 or more listed relationships", CategoryGroup.MISC, _has_min_relationships(5)),
+    CategorySpec("has_epithet", "Has an epithet", CategoryGroup.MISC, _has_truthy_field("epithet")),
+    CategorySpec("rel_10plus", "Has 10 or more listed relationships", CategoryGroup.MISC, _has_min_relationships(10)),
+    CategorySpec("has_image_pre", "Has a transformation / alternate form image", CategoryGroup.MISC, _has_truthy_field("image_pre")),
+    CategorySpec("name_charlotte", "Member of the Charlotte family (by name)", CategoryGroup.MISC, _name_starts_with_family("Charlotte")),
+    CategorySpec("name_has_D", 'Carries the "D." in their name', CategoryGroup.MISC, _carries_the_d),
+    CategorySpec("name_vinsmoke", "Vinsmoke family (by name)", CategoryGroup.MISC, _name_starts_with_family("Vinsmoke")),
+    CategorySpec("name_kouzuki", "Kouzuki family (by name)", CategoryGroup.MISC, _name_starts_with_family("Kouzuki")),
+    CategorySpec("name_boa", "Boa family (by name)", CategoryGroup.MISC, _name_starts_with_family("Boa")),
 )
 
 #: ``id`` → **Category Group**, from :data:`CATEGORY_SPECS`. Used by
 #: :func:`to_txt_payload` to tag a ``categories.json`` entry with its Group.
 _GROUP_BY_ID: dict[str, CategoryGroup] = {spec.id: spec.group for spec in CATEGORY_SPECS}
-
-#: Category Groups this builder populates through a join rather than a per-field
-#: predicate (issue #25). Every :data:`CATEGORY_SPECS` row in one of these Groups
-#: is built from the ``devil_fruits.json`` / ``islands.json`` join below; its
-#: ``predicate`` stays ``None``.
-_JOIN_GROUPS: frozenset[CategoryGroup] = frozenset(
-    {CategoryGroup.DEVIL_FRUIT, CategoryGroup.VISITED}
-)
-
-
-def _is_rebuilt(spec: CategorySpec) -> bool:
-    """Whether the builder can build ``spec`` from the Raw dataset: any row that
-    carries a ``predicate`` — the plain field equalities of Status / Race (issue
-    #24) and the parse-then-compare predicates of Bounty / Debut chapter (issue
-    #26) — or a join-backed Devil Fruit / Visited row (issue #25)."""
-
-    return spec.predicate is not None or spec.group in _JOIN_GROUPS
-
-
-#: The ``id``s this builder owns. A rebuild replaces the committed entries for
-#: exactly these ids (dropping any that no longer meet :data:`MIN_CHARACTERS`);
-#: every other id is carried over untouched.
-_REBUILT_IDS: frozenset[str] = frozenset(
-    spec.id for spec in CATEGORY_SPECS if _is_rebuilt(spec)
-)
 
 #: Devil Fruit ``type`` value → the ``df_*`` Category id. A fruit whose ``type``
 #: is anything else (``"Unknown"``) still joins — it just adds no ``df_*``
@@ -688,9 +798,7 @@ class BuildReport:
 
 @dataclass(frozen=True)
 class BuildResult:
-    """The output of :func:`build_categories`, each field covering the Category
-    Groups this builder owns (Status, Race, Bounty, Debut chapter, Devil Fruit,
-    Visited):
+    """The output of :func:`build_categories` — the whole of both derived files:
 
     * :attr:`categories_json` — the ``categories.json`` payload, for
       :func:`dump_categories_json`.
@@ -707,9 +815,9 @@ class BuildResult:
 def _category_ids_for(
     character: RawCharacter, fruit_index: Mapping[str, Mapping[str, Any]]
 ) -> frozenset[str]:
-    """Every Category id ``character`` belongs to across the Groups this builder
-    owns: the field predicates (Status / Race equalities, Bounty / Debut chapter
-    parse-and-compare) plus the Devil Fruit and journey/island joins."""
+    """Every Category id ``character`` belongs to: every :data:`CATEGORY_SPECS`
+    field predicate it satisfies, plus the Devil Fruit and journey/island
+    joins."""
 
     predicate_ids = frozenset(
         spec.id
@@ -753,13 +861,11 @@ def build_categories(
     three Raw dataset structures.
 
     Pure and deterministic: the same Raw input always yields byte-identical
-    output. Produces every :data:`CATEGORY_SPECS` row this builder owns — the
-    Status / Race field predicates (issue #24), the Bounty / Debut chapter
-    parse-then-compare predicates (issue #26), and the Devil Fruit / Visited
-    rows the ``devil_fruits.json`` and ``islands.json`` joins populate (issue
-    #25). A Category matched by fewer than :data:`MIN_CHARACTERS` Characters is
-    omitted. An unjoinable ``devil_fruit`` value or journey location is recorded
-    in the :class:`BuildReport`, never silently dropped.
+    output. Produces every :data:`CATEGORY_SPECS` row — the field predicates and
+    the Devil Fruit / Visited rows the ``devil_fruits.json`` and ``islands.json``
+    joins populate. A Category matched by fewer than :data:`MIN_CHARACTERS`
+    Characters is omitted. An unjoinable ``devil_fruit`` value or journey
+    location is recorded in the :class:`BuildReport`, never silently dropped.
     """
 
     characters = list(raw_characters)
@@ -894,23 +1000,6 @@ def dump_categories_txt(payload: Iterable[TxtCategory]) -> str:
     return "\n\n".join(blocks) + "\n"
 
 
-def _merge_into_committed(
-    committed: Iterable[_Header], built: Iterable[_Header]
-) -> list[_Header]:
-    """Overlay the freshly built entries onto the committed payload (works on a
-    ``categories.json`` or a ``categories.txt`` payload alike).
-
-    Every id in :data:`_REBUILT_IDS` is dropped from the committed payload and
-    replaced by whatever ``built`` produced for it — so a builder-owned Category
-    that fell below :data:`MIN_CHARACTERS` is removed, not left stale. Ids the
-    builder does not yet own are carried over untouched: the builder is not yet
-    the source of the whole file (ADR 0004 rollout step 1).
-    """
-
-    carried_over = [entry for entry in committed if entry["id"] not in _REBUILT_IDS]
-    return carried_over + list(built)
-
-
 def read_json(path: Path) -> Any:
     """Parse a UTF-8 JSON file. Thin wrapper so the reads share one spelling."""
 
@@ -919,28 +1008,24 @@ def read_json(path: Path) -> Any:
 
 def main() -> None:
     """Rebuild ``categories.json`` and ``categories.txt`` in place from the
-    committed Raw dataset."""
+    committed Raw dataset. The builder is the sole source of both files."""
 
     result = build_categories(
         read_json(CHARACTERS_PATH),
         read_json(DEVIL_FRUITS_PATH),
         read_json(ISLANDS_PATH),
     )
-    committed = read_json(CATEGORIES_JSON_PATH)
-    json_payload = _merge_into_committed(committed, result.categories_json)
-    txt_payload = _merge_into_committed(to_txt_payload(committed), result.categories_txt)
 
     CATEGORIES_JSON_PATH.write_text(
-        dump_categories_json(json_payload), encoding="utf-8", newline="\n"
+        dump_categories_json(result.categories_json), encoding="utf-8", newline="\n"
     )
     CATEGORIES_TXT_PATH.write_text(
-        dump_categories_txt(txt_payload), encoding="utf-8", newline="\n"
+        dump_categories_txt(result.categories_txt), encoding="utf-8", newline="\n"
     )
 
-    built_ids = ", ".join(sorted(entry["id"] for entry in result.categories_json))
     print(
         f"Rebuilt {CATEGORIES_JSON_PATH.name} and {CATEGORIES_TXT_PATH.name} "
-        f"({len(result.categories_json)} Categories rebuilt: {built_ids})."
+        f"({len(result.categories_json)} Categories)."
     )
     for value in result.report.unjoinable_devil_fruits:
         print(f"  unjoinable devil_fruit: {value}")
