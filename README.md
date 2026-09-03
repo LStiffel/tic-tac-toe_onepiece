@@ -75,6 +75,24 @@ names are dropped and collected in the data-quality report, which is also logged
 at startup. Only Character names and their art paths reach the client — the
 Category-to-Characters answer key stays server-side.
 
+## Data & credits
+
+The One Piece data — `characters.json`, `devil_fruits.json`, `islands.json` — is
+vendored from **[oparchive.com](https://oparchive.com)**, an unaffiliated fan
+project that publishes the archive as static JSON and tracks the manga chapter by
+chapter. `categories.json` / `categories.txt` are derived from those three files
+by `scripts/build_categories.py`. Thanks to the oparchive.com maintainers for
+keeping it current.
+
+- **Where the current copy came from and when:** `data/PROVENANCE.md` (source
+  URLs, fetch timestamp, Upstream `CHANGELOG_VERSION`, entry counts) —
+  regenerated on every Refresh.
+- **How it stays current:** a weekly GitHub Actions **Refresh**
+  (`.github/workflows/refresh.yml`) re-pulls the dataset, rebuilds, validates,
+  and opens a review-only `data-refresh` pull request when something changed.
+  Run it locally with `python -m scripts.refresh` (or `make refresh`).
+- **Why it works this way:** `docs/adr/0004-dataset-refresh-pipeline.md`.
+
 ## Tests
 
 ```bash
