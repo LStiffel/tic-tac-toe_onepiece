@@ -67,7 +67,7 @@ DEFAULT_MAX_ATTEMPTS = 10_000
 #:
 #: ``0.60`` drops the two Categories that are true for a clear majority of the
 #: Roster - ``status_Alive`` (79%) and ``race_Human`` (73%) - while keeping the
-#: chapter-debut buckets (``debut_598_9999`` at 52%, ``debut_1_597`` at 47%) as
+#: chapter-debut buckets (``debut_598_9999`` at 53%, ``debut_1_597`` at 45%) as
 #: legitimate trivia axes. Decision:
 #: ``docs/adr/0002-trivial-category-exclusion.md``. Full measurement
 #: (per-Category coverage, attempt counts, Group distribution):
