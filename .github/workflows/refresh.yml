@@ -1,0 +1,104 @@
+# Weekly dataset Refresh (ADR 0004, issue #23).
+#
+# Pulls the current Raw dataset from Upstream, rebuilds the derived files,
+# regenerates data/PROVENANCE.md, and runs the validator. Only when `git diff`
+# shows a real change does it open / force-update ONE rolling `data-refresh`
+# pull request. Nothing auto-merges. A failed fetch or a BLOCK finding fails the
+# job, which GitHub emails to the repo owner.
+#
+# Requires: Settings -> Actions -> General -> "Allow GitHub Actions to create and
+# approve pull requests" (fallback: a fine-grained PAT in a secret passed as the
+# create-pull-request `token`).
+
+name: Weekly dataset Refresh
+
+on:
+  schedule:
+    - cron: "0 6 * * 1" # Monday 06:00 UTC
+  workflow_dispatch: # the one-time manual verification (docs/manual-checks/)
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: dataset-refresh
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - run: pip install -e ".[dev]"
+
+      - name: Fetch, rebuild, regenerate provenance, validate
+        id: refresh
+        run: |
+          python - <<'PY'
+          import os
+          import pathlib
+          import sys
+
+          from scripts.refresh import RefreshError, build_pr_body, refresh
+
+          try:
+              outcome = refresh()
+          except RefreshError as exc:
+              print(f"::error::{exc}")
+              sys.exit(1)
+
+          body = build_pr_body(outcome)
+          pathlib.Path("pr-body.md").write_text(body, encoding="utf-8")
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as out:
+              out.write(f"needs_review={'true' if outcome.has_review else 'false'}\n")
+
+          print(body)
+          if outcome.blocked:
+              print("::error::Refresh blocked - a BLOCK finding or a gated write. See the findings above.")
+              sys.exit(1)
+          PY
+
+      - name: Any dataset change?
+        id: diff
+        run: |
+          # data/PROVENANCE.md carries the fetch timestamp, so it churns on
+          # every run - key the guard on the dataset files themselves.
+          data_files="characters.json devil_fruits.json islands.json categories.json categories.txt"
+          if git diff --quiet -- $data_files; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "No dataset change this week - no pull request."
+            git checkout -- data/PROVENANCE.md || true
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Open or update the rolling data-refresh PR
+        id: cpr
+        if: steps.diff.outputs.changed == 'true'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          branch: data-refresh
+          base: main
+          commit-message: "Weekly dataset Refresh from Upstream (oparchive.com)"
+          title: "Weekly dataset Refresh"
+          body-path: pr-body.md
+          delete-branch: false
+
+      # create-pull-request only ADDS labels; on a later clean run the rolling
+      # PR must also lose `needs-review` if no REVIEW finding fired this time.
+      - name: Sync the needs-review label
+        if: steps.diff.outputs.changed == 'true' && steps.cpr.outputs.pull-request-number
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [ "${{ steps.refresh.outputs.needs_review }}" = "true" ]; then
+            gh pr edit "${{ steps.cpr.outputs.pull-request-number }}" --add-label needs-review
+          else
+            gh pr edit "${{ steps.cpr.outputs.pull-request-number }}" --remove-label needs-review || true
+          fi

@@ -702,8 +702,9 @@ def _git_show_json(path_from_root: str) -> Any:
     return json.loads(completed.stdout.decode("utf-8"))
 
 
-def _committed_raw() -> RawDataset:
-    """The ``HEAD`` version of all four dataset files - the baseline side."""
+def committed_raw() -> RawDataset:
+    """The ``HEAD`` version of all four dataset files - the baseline side. Shared
+    with :mod:`scripts.refresh`, which validates a fetched candidate against it."""
 
     return RawDataset(
         characters=_git_show_json("characters.json"),
@@ -731,7 +732,7 @@ def main() -> int:
         devil_fruits=_read_json(DEVIL_FRUITS_PATH),
         islands=_read_json(ISLANDS_PATH),
     )
-    baseline_raw = _committed_raw()
+    baseline_raw = committed_raw()
     baseline = GameData.from_raw(baseline_raw.characters, baseline_raw.categories)
 
     findings = validate_dataset(candidate, baseline, baseline_raw=baseline_raw)
