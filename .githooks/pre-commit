@@ -1,21 +1,16 @@
 #!/bin/sh
-# .git/hooks/pre-commit
-# Validates any staged .claude/skills/*/SKILL.md files
-
 FAIL=0
 
 for f in $(git diff --cached --name-only --diff-filter=ACM | grep -E '^\.claude/skills/.*/SKILL\.md$'); do
   dir=$(dirname "$f")
   folder_name=$(basename "$dir")
 
-  # File must exist in the working tree (not just staged deletion)
   if [ ! -f "$f" ]; then
     continue
   fi
 
-  # Must have frontmatter delimiters
   if ! head -1 "$f" | grep -q '^---$'; then
-    echo "🚫 $f: missing YAML frontmatter (must start with ---)"
+    echo "BLOCKED: $f is missing YAML frontmatter (must start with ---)"
     FAIL=1
     continue
   fi
@@ -24,26 +19,25 @@ for f in $(git diff --cached --name-only --diff-filter=ACM | grep -E '^\.claude/
   desc_line=$(sed -n '2,/^---$/p' "$f" | grep '^description:')
 
   if [ -z "$name_line" ]; then
-    echo "🚫 $f: frontmatter missing 'name:' field"
+    echo "BLOCKED: $f is missing the 'name:' field"
     FAIL=1
   fi
 
   if [ -z "$desc_line" ]; then
-    echo "🚫 $f: frontmatter missing 'description:' field"
+    echo "BLOCKED: $f is missing the 'description:' field"
     FAIL=1
   fi
 
-  # name should match folder name
-  name_value=$(echo "$name_line" | sed 's/^name:[[:space:]]*//' | tr -d '"'"'"'')
+  name_value=$(echo "$name_line" | sed "s/^name:[[:space:]]*//" | tr -d '"'"'"'')
   if [ -n "$name_value" ] && [ "$name_value" != "$folder_name" ]; then
-    echo "🚫 $f: name '$name_value' does not match folder '$folder_name'"
+    echo "BLOCKED: $f has name '$name_value' but folder is '$folder_name'"
     FAIL=1
   fi
 done
 
 if [ "$FAIL" -eq 1 ]; then
   echo ""
-  echo "Commit blocked: fix SKILL.md issues above."
+  echo "Commit rejected: fix SKILL.md issues above."
   exit 1
 fi
 
