@@ -171,8 +171,8 @@ Haki  (5 categories)
   Can use Haki                      186 characters
   Can use Armament Haki             160 characters
   Can use Observation Haki          126 characters
-  Can use Conqueror's Haki           28 characters
-  Can use all three types of Haki    20 characters
+  Can use Conqueror's Haki           29 characters
+  Can use all three types of Haki    21 characters
 
 ======================================================================
 Height  (4 categories)
@@ -216,7 +216,7 @@ Visited (journey)  (28 categories)
   Visited Zou                      75 characters
   Visited Sandy Island             73 characters
   Visited Skypiea                  68 characters
-  Visited Impel Down               64 characters
+  Visited Impel Down               65 characters
   Visited Egghead                  62 characters
   Visited Punk Hazard              62 characters
   Visited Hachinosu                60 characters
@@ -236,7 +236,7 @@ Visited (journey)  (28 categories)
 ======================================================================
 Misc  (9 categories)
 ======================================================================
-  Has 5 or more listed relationships            398 characters
+  Has 5 or more listed relationships            399 characters
   Has an epithet                                263 characters
   Has 10 or more listed relationships           165 characters
   Has a transformation / alternate form image   113 characters

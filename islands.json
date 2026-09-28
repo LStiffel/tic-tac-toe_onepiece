@@ -865,31 +865,6 @@
     "notable_members": ["Kelly Funk", "Bobby Funk"]
   },
   {
-    "name": "Jewel Ice Sheet's Island",
-    "image": "/images/islands/Jewel_Ice_Sheet.webp",
-    "location": "New World",
-    "description": "Island where the <strong>Jewel Ice Sheet</strong>, a treasure cache frozen beneath extremely hard ice, is located. <strong>Chinjao</strong> broke through this ice 13 years ago with his head",
-    "notable_locations": ["Jewel Ice Sheet"],
-    "current_ruler": "Unknown"
-  },
-  {
-    "name": "Doerena's Kingdom Island",
-    "image": "/images/islands/Mogaro_Kingdom.webp",
-    "location": "New World",
-    "description": "Island where the <strong> Doerena Kingdom </strong> is located. Some noble of the kingdom travelled to Dressrosa to compete in the Corrida Colosseum",
-    "notable_locations": ["Doerena Kingdom"],
-    "current_ruler": "Unknown"
-  },
-  {
-    "name": "Majiatsuka's Kingdom Island",
-    "image": "/images/islands/Majiatsuka_Kingdom.webp",
-    "location": "New World",
-    "description": "Island where the <strong>Majiatsuka Kingdom</strong> is located and where <strong>Rolling Logan</strong> comes from",
-    "notable_locations": ["Majiatsuka Kingdom"],
-    "current_ruler": "Unknown",
-    "notable_members": ["Rolling Logan"]
-  },
-  {
     "name": "Applenine Island",
     "image": "/images/islands/Applenine_Island.webp",
     "location": "New World",
@@ -1165,6 +1140,31 @@
     "description": "Island where the <strong> Rommel Kingdom </strong> is located and where the legend of Hakuba originated",
     "notable_locations": ["Rommel Kingdom"],
     "current_ruler": "Unknown"
+  },
+  {
+    "name": "Jewel Ice Sheet's Island",
+    "image": "/images/islands/Jewel_Ice_Sheet.webp",
+    "location": "Unknown",
+    "description": "Island where the <strong>Jewel Ice Sheet</strong>, a treasure cache frozen beneath extremely hard ice, is located. <strong>Chinjao</strong> broke through this ice 13 years ago with his head",
+    "notable_locations": ["Jewel Ice Sheet"],
+    "current_ruler": "Unknown"
+  },
+  {
+    "name": "Doerena's Kingdom Island",
+    "image": "/images/islands/Mogaro_Kingdom.webp",
+    "location": "Unknown",
+    "description": "Island where the <strong> Doerena Kingdom </strong> is located. Some noble of the kingdom travelled to Dressrosa to compete in the Corrida Colosseum",
+    "notable_locations": ["Doerena Kingdom"],
+    "current_ruler": "Unknown"
+  },
+  {
+    "name": "Majiatsuka's Kingdom Island",
+    "image": "/images/islands/Majiatsuka_Kingdom.webp",
+    "location": "Unknown",
+    "description": "Island where the <strong>Majiatsuka Kingdom</strong> is located and where <strong>Rolling Logan</strong> comes from",
+    "notable_locations": ["Majiatsuka Kingdom"],
+    "current_ruler": "Unknown",
+    "notable_members": ["Rolling Logan"]
   },
   {
     "name": "Tajine's Kingdom Island",

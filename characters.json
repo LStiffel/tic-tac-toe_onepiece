@@ -8231,7 +8231,7 @@
     "image": "/images/characters/Dracule_Mihawk.webp",
     "epithet": "Strongest Swordsman in the World",
     "affiliation": "Cross Guild",
-    "haki": ["Observation","Armament"],
+    "haki": ["Conquerors","Observation","Armament"],
     "bounty": 3590000000,
     "height": 198,
     "age": 43,
@@ -22859,7 +22859,8 @@
       {"name": "Gecko Moria [Kouzuki Moria]","relationship": "Captain"},
       {"name": "Hogback","relationship": "Crewmate"},
       {"name": "Absalom","relationship": "Former Crewmate"},
-      {"name": "Usopp","relationship": "Defeated by"}
+      {"name": "Usopp","relationship": "Defeated by"},
+      {"name": "Dracule Mihawk","relationship": "Friend"}
   ]
   },
   {
@@ -26045,7 +26046,8 @@
       {"location":"Unknown island - raiding", "region":"North Blue"},
       {"location":"Minion Island"},
       {"location":"Unknown island - met Russian and had a son", "region":"North Blue"},
-      {"location":"Dressrosa","chapter":"Chapter 728"}
+      {"location":"Dressrosa"},
+      {"location":"Impel Down","chapter":"Chapter 792"}
     ],
     "relationships": [
         {"name": "Donquixote Doflamingo","relationship": "Captain"},
