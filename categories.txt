@@ -6,9 +6,9 @@ Total: 195 categories
 ======================================================================
 Bounty  (7 categories)
 ======================================================================
-  Has a known bounty                       221 characters
+  Has a known bounty                       222 characters
   Bounty ≥ 100,000,000                     139 characters
-  Bounty below 100,000,000 (but has one)    82 characters
+  Bounty below 100,000,000 (but has one)    83 characters
   Bounty ≥ 500,000,000                      75 characters
   Bounty ≥ 1,000,000,000                    29 characters
   Bounty ≥ 1,500,000,000                    21 characters
@@ -17,8 +17,8 @@ Bounty  (7 categories)
 ======================================================================
 Race  (20 categories)
 ======================================================================
-  Race: Human                   1122 characters
-  Race: Animal                   112 characters
+  Race: Human                   1129 characters
+  Race: Animal                   113 characters
   Race: Giant                     60 characters
   Race: Fish-man                  41 characters
   Race: Merfolk                   32 characters
@@ -41,7 +41,7 @@ Race  (20 categories)
 ======================================================================
 Status  (3 categories)
 ======================================================================
-  Status: Alive     1223 characters
+  Status: Alive     1233 characters
   Status: Unknown    169 characters
   Status: Deceased   158 characters
 
@@ -51,7 +51,7 @@ Affiliation  (93 categories)
   Affiliation: Big Mom Pirates                               95 characters
   Affiliation: Marines                                       87 characters
   Affiliation: Beasts Pirates                                73 characters
-  Affiliation: Whitebeard Pirates                            59 characters
+  Affiliation: Whitebeard Pirates                            60 characters
   Affiliation: Kouzuki Family                                27 characters
   Affiliation: Thriller Bark Pirates                         26 characters
   Affiliation: Roger Pirates                                 25 characters
@@ -146,11 +146,11 @@ Affiliation  (93 categories)
 Origin sea  (8 categories)
 ======================================================================
   Origin: Grand Line    308 characters
-  Origin: East Blue     110 characters
+  Origin: East Blue     111 characters
   Origin: North Blue     62 characters
   Origin: West Blue      38 characters
   Origin: South Blue     36 characters
-  Origin: Calm Belt      19 characters
+  Origin: Calm Belt      20 characters
   Origin: Sky Islands    19 characters
   Origin: Red Line        6 characters
 
@@ -171,13 +171,13 @@ Haki  (5 categories)
   Can use Haki                      186 characters
   Can use Armament Haki             160 characters
   Can use Observation Haki          126 characters
-  Can use Conqueror's Haki           28 characters
-  Can use all three types of Haki    20 characters
+  Can use Conqueror's Haki           29 characters
+  Can use all three types of Haki    21 characters
 
 ======================================================================
 Height  (4 categories)
 ======================================================================
-  Height between 150 and 200 cm   133 characters
+  Height between 150 and 200 cm   134 characters
   Height over 500 cm               68 characters
   Height over 1,000 cm             31 characters
   Height under 100 cm               9 characters
@@ -185,7 +185,7 @@ Height  (4 categories)
 ======================================================================
 Age  (4 categories)
 ======================================================================
-  Has a known age   512 characters
+  Has a known age   513 characters
   Age 60 or older    64 characters
   Age under 18       45 characters
   Age over 100       12 characters
@@ -194,49 +194,49 @@ Age  (4 categories)
 Debut chapter  (7 categories)
 ======================================================================
   Debuted after the timeskip (ch. ≥ 598)    813 characters
-  Debuted before the timeskip (ch. ≤ 597)   694 characters
+  Debuted before the timeskip (ch. ≤ 597)   699 characters
   Debut chapter ≥ 900                       428 characters
-  Debut chapter 1–300                       326 characters
+  Debut chapter 1–300                       330 characters
   Debut chapter ≥ 1000                      147 characters
-  Debut chapter 1–100                       119 characters
-  Debuted in Chapter 1                       17 characters
+  Debut chapter 1–100                       122 characters
+  Debuted in Chapter 1                       18 characters
 
 ======================================================================
 Visited (journey)  (28 categories)
 ======================================================================
-  Visited Wano Country's Island   371 characters
-  Visited Marineford              161 characters
-  Visited Totto Land              140 characters
-  Visited Dressrosa               139 characters
+  Visited Wano Country's Island   373 characters
+  Visited Marineford              162 characters
+  Visited Totto Land              141 characters
+  Visited Dressrosa               140 characters
   Visited Mary Geoise             136 characters
-  Visited Elbaph Island           122 characters
-  Visited Sabaody Archipelago     122 characters
-  Visited Fish-Man Island         116 characters
-  Visited Water 7                  80 characters
-  Visited Zou                      75 characters
-  Visited Sandy Island             73 characters
-  Visited Skypiea                  68 characters
-  Visited Impel Down               64 characters
-  Visited Egghead                  62 characters
-  Visited Punk Hazard              62 characters
+  Visited Elbaph Island           124 characters
+  Visited Sabaody Archipelago     124 characters
+  Visited Fish-Man Island         117 characters
+  Visited Water 7                  82 characters
+  Visited Zou                      76 characters
+  Visited Sandy Island             75 characters
+  Visited Skypiea                  70 characters
+  Visited Impel Down               67 characters
+  Visited Egghead                  63 characters
+  Visited Punk Hazard              63 characters
   Visited Hachinosu                60 characters
+  Visited Enies Lobby              57 characters
   Visited God Valley               57 characters
-  Visited Enies Lobby              56 characters
-  Visited Jaya                     42 characters
-  Visited Island of Women          40 characters
-  Visited Thriller Bark            39 characters
-  Visited Dawn Island              36 characters
+  Visited Jaya                     44 characters
+  Visited Island of Women          41 characters
+  Visited Thriller Bark            40 characters
+  Visited Dawn Island              38 characters
+  Visited Baratie                  25 characters
+  Visited Drum Island              25 characters
   Visited Little Garden            25 characters
-  Visited Baratie                  24 characters
-  Visited Drum Island              24 characters
-  Visited Ohara                    24 characters
+  Visited Ohara                    25 characters
   Visited Baltigo                  20 characters
   Visited Laugh Tale               19 characters
 
 ======================================================================
 Misc  (9 categories)
 ======================================================================
-  Has 5 or more listed relationships            398 characters
+  Has 5 or more listed relationships            399 characters
   Has an epithet                                263 characters
   Has 10 or more listed relationships           165 characters
   Has a transformation / alternate form image   113 characters

@@ -2195,6 +2195,14 @@
     ]
   },
   {
+    "name": "Billy the Yabuki",
+    "image": "/images/characters/Billy_the_Yabuki.webp",
+    "first_appearance_arc": "SBS Volume 114",
+    "race": "Human",
+    "status": "Alive",
+    "description": "Mysterious figure who tears wanted posters when revealing the bounty amount would be inconvinient for the story"
+  },
+  {
     "name": "Bimine",
     "image": "/images/characters/Bimine.webp",
     "affiliation": "Pucci",
@@ -7905,6 +7913,20 @@
     ]
   },
   {
+    "name": "Domo-kun",
+    "image": "/images/characters/Domo.webp",
+    "first_appearance_arc": "Chapter 9",
+    "race": "Extraterrestrial",
+    "status": "Alive",
+    "description": "Alien planning to conquer the Blue Planet alongside his partner Nnke-kun",
+    "journey": [
+      {"location":"Organ Islands","chapter":"Chapter 9"}
+    ],
+    "relationships": [
+        {"name": "Nnke-kun","relationship": "Partner"}
+    ]
+  },
+  {
     "name": "Donannoyo",
     "image": "/images/characters/Donannoyo.webp",
     "affiliation": "Beasts Pirates",
@@ -8231,7 +8253,7 @@
     "image": "/images/characters/Dracule_Mihawk.webp",
     "epithet": "Strongest Swordsman in the World",
     "affiliation": "Cross Guild",
-    "haki": ["Observation","Armament"],
+    "haki": ["Conquerors","Observation","Armament"],
     "bounty": 3590000000,
     "height": 198,
     "age": 43,
@@ -8528,7 +8550,8 @@
         {"name": "Neptune","relationship": "Friend"},
         {"name": "Kaidou","relationship": "Former Crewmate"},
         {"name": "Buckingham Stussy","relationship": "Lover"},
-        {"name": "Edward Weevil","relationship": "Son (supposedly)"}
+        {"name": "Edward Weevil","relationship": "Son (supposedly)"},
+        {"name": "Stefan","relationship": "Pet"}
     ]
   },
   {
@@ -18936,6 +18959,16 @@
     ]
   },
   {
+    "name": "Mikio Itoo",
+    "image": "/images/characters/Mikio_Itoo.webp",
+    "origin": "East Blue",
+    "bounty":"1,000,000¥",
+    "first_appearance_arc": "Chapter 1",
+    "race": "Human",
+    "status": "Alive",
+    "description": "Background joke character and the first Easter Egg to appear in the story"
+  },
+  {
     "name": "Mikita [Miss Valentine]",
     "image": "/images/characters/Mikita.webp",
     "epithet": "Courier",
@@ -19049,7 +19082,23 @@
       {"location":"Wano Country's Island","chapter":"Chapter 909"}
     ],
     "relationships": [
-        {"name": "Cutty Flam [Franky]","relationship": "Former Employee"}
+        {"name": "Cutty Flam [Franky]","relationship": "Former Employee"},
+        {"name": "Minatomo ","relationship": "Related by blood"}
+    ]
+  },
+  {
+    "name": "Minatomo ",
+    "image": "/images/characters/Minatomo_(eastblue).webp",
+    "first_appearance_arc": "SBS Volume 7",
+    "race": "Human",
+    "status": "Alive",
+    "description": "Traveling carpenter obsessed with repairing any broken door he sees. Native of Wano Country, he left with Kouzaburou and Furiko 55 years ago and resettled in the East Blue",
+    "journey": [
+      {"location":"Wano Country's Island"},
+      {"location":"Dawn Island","chapter":"SBS Volume 7"}
+    ],
+    "relationships": [
+        {"name": "Minatomo","relationship": "Related by blood"}
     ]
   },
   {
@@ -21107,10 +21156,10 @@
     "status": "Deceased",
     "description": "Queen of Arabasta during the Void Century, being one of the 20 monarchs that founded the World Government. She was the only one that didn't move to Mary Geoise and decided to return to her kingdom but mysteriously vanished",
     "journey": [
-      {"location":"Sandy Island","chapter":"Chapter 1084"}
+      {"location":"Sandy Island"},
+      {"location":"Elbaph Island","chapter":"Chapter 1195"}
     ],
     "relationships": [
-      {"name": "Nefertari Cobra","relationship": "Descendant"},
       {"name": "Nefertari Vivi","relationship": "Descendant"}
     ]
   },
@@ -21160,6 +21209,7 @@
         {"name": "Igaram","relationship": "Friend, Former Partner, Subordinate"},
         {"name": "Crocodile","relationship": "Enemy, Former Boss"},
         {"name": "Nefertari Titi","relationship": "Mother"},
+        {"name": "Nefertari D. Lili","relationship": "Ancestor"},
         {"name": "Karoo","relationship": "Pet"},
         {"name": "Pell","relationship": "Friend"},
         {"name": "Chaka","relationship": "Friend"},
@@ -21638,6 +21688,17 @@
         {"name": "Charlotte Linlin [Big Mom]","relationship": "Creator, Captain"},
         {"name": "Charlotte Pudding","relationship": "Friend"},
         {"name": "Rabiyan","relationship": "Partner"}
+    ]
+  },
+  {
+    "name": "Nnke-kun",
+    "image": "/images/characters/Nnke.webp",
+    "first_appearance_arc": "Volume 52 inside cover",
+    "race": "Extraterrestrial",
+    "status": "Alive",
+    "description": "Alien planning to conquer the Blue Planet alongside his partner Domo-kun",
+    "relationships": [
+        {"name": "Domo-kun","relationship": "Partner"}
     ]
   },
   {
@@ -22390,10 +22451,84 @@
     ]
   },
   {
+    "name": "Pandaman",
+    "image": "/images/characters/Pandaman.webp",
+    "first_appearance_arc": "Chapter 44",
+    "height": 200,
+    "race": "Human",
+    "status": "Alive",
+    "description": "One of the most prominent easter eggs in the story, making cameo appearances in many manga chapters and anime episodes",
+    "journey": [
+      {"location":"Unknown island - abandoned in a bamboo thicket", "region": "Paradise"},
+      {"location":"Panda Island"},
+      {"location":"Jaya"},
+      {"location":"Elbaph Island"},
+      {"location":"Wano Country's Island"},
+      {"location":"Unknown island - saw Morgans", "region":"Paradise"},
+      {"location":"Ohara"},
+      {"location":"Unknown island - being raided", "region":"North Blue"},
+      {"location":"Unknown island - saw Doflamingo", "region":"North Blue"},
+      {"location":"Fish-Man Island"},
+      {"location":"Dawn Island"},
+      {"location":"Baratie"},
+      {"location":"Conomi Islands"},
+      {"location":"Polestar Islands"},
+      {"location":"Cactus Island"},
+      {"location":"Kyuka Island"},
+      {"location":"Drum Island"},
+      {"location":"Sandy Island"},
+      {"location":"Jaya"},
+      {"location":"Skypiea"},
+      {"location":"Unknown island - saw Wapol", "region":"Paradise"},
+      {"location":"Lulusia's Kingdom Island"},
+      {"location":"Skypiea"},
+      {"location":"Long Ring Long Land"},
+      {"location":"Shipbuilding Island"},
+      {"location":"Enies Lobby"},
+      {"location":"Shipbuilding Island"},
+      {"location":"Banaro Island"},
+      {"location":"Thriller Bark"},
+      {"location":"Sabaody Archipelago"},
+      {"location":"Impel Down"},
+      {"location":"Marineford"},
+      {"location":"Sabaody Archipelago"},
+      {"location":"Fish-Man Island"},
+      {"location":"Punk Hazard"},
+      {"location":"Zou"},
+      {"location":"Dressrosa"},
+      {"location":"Karai Bari Island"},
+      {"location":"Zou"},
+      {"location":"Fish-Man Island"},
+      {"location":"Totto Land"},
+      {"location":"Wano Country's Island"},
+      {"location":"Egghead"},
+      {"location":"Polestar Islands"},
+      {"location":"Egghead"},
+      {"location":"Marine GS General Hospital's Island"}
+    ],
+    "relationships": [
+        {"name": "Pandawomanmi","relationship": "In Love With"},
+        {"name": "Tomato Gang","relationship": "Enemy"},
+        {"name": "Unforgivable Mask","relationship": "Rival"}
+    ]
+  },
+  {
+    "name": "Pandawomanmi",
+    "image": "/images/characters/Pandawomanmi.webp",
+    "origin": "Calm Belt (Amazon Lily)",
+    "first_appearance_arc": "Chapter 517",
+    "race": "Human",
+    "status": "Alive",
+    "description": "Female version of Pandaman",
+    "journey": [
+      {"location":"Island of Women","chapter":"Chapter 517"}
+    ]
+  },
+  {
     "name": "Pandora",
     "image": "/images/characters/Pandora.webp",
     "affiliation": "Carmel",
-    "first_appearance_arc": "Chapter 867,Episode 837",
+    "first_appearance_arc": "Chapter 867",
     "race": "Object",
     "status": "Unknown",
     "description": "Sun homie created by Carmel, who placed a portion of her soul into a fire on Elbaph",
@@ -22859,7 +22994,8 @@
       {"name": "Gecko Moria [Kouzuki Moria]","relationship": "Captain"},
       {"name": "Hogback","relationship": "Crewmate"},
       {"name": "Absalom","relationship": "Former Crewmate"},
-      {"name": "Usopp","relationship": "Defeated by"}
+      {"name": "Usopp","relationship": "Defeated by"},
+      {"name": "Dracule Mihawk","relationship": "Friend"}
   ]
   },
   {
@@ -26045,7 +26181,8 @@
       {"location":"Unknown island - raiding", "region":"North Blue"},
       {"location":"Minion Island"},
       {"location":"Unknown island - met Russian and had a son", "region":"North Blue"},
-      {"location":"Dressrosa","chapter":"Chapter 728"}
+      {"location":"Dressrosa"},
+      {"location":"Impel Down","chapter":"Chapter 792"}
     ],
     "relationships": [
         {"name": "Donquixote Doflamingo","relationship": "Captain"},
@@ -26919,6 +27056,7 @@
       {"location":"Esperia's Kingdom Island"},
       {"location":"Mary Geoise"},
       {"location":"God Valley"},
+      {"location":"Mary Geoise"},
       {"location":"Elbaph Island","chapter":"Chapter 1134"}
     ],
     "relationships": [
@@ -27645,6 +27783,18 @@
     "description": "Fictional character member of Germa 66 portrayed in the comic strip Sora, Warrior of the Sea",
     "relationships": [
       {"name": "Sora ","relationship": "Enemy"}
+  ]
+  },
+  {
+    "name": "Stefan",
+    "image": "/images/characters/Stefan.webp",
+    "affiliation": "Whitebeard Pirates",
+    "first_appearance_arc": "SBS Volume 58",
+    "race": "Animal",
+    "status": "Alive",
+    "description": "Whitebeard's dog",
+    "relationships": [
+      {"name": "Edward Newgate [Whitebeard]","relationship": "Former Owner"}
   ]
   },
   {
@@ -28766,6 +28916,31 @@
     ]
   },
   {
+    "name": "Tomato Gang",
+    "image": "/images/characters/Tomato_Gang.webp",
+    "age": 40,
+    "first_appearance_arc": "Chapter 179",
+    "race": "Human",
+    "status": "Alive",
+    "description": "Debt collector who is after Pandaman. He hired Unforgivable Mask to help track him down",
+    "journey": [
+      {"location":"Jaya"},
+      {"location":"Lvneel's Kingdom Island"},
+      {"location":"Sandy Island"},
+      {"location":"Jaya"},
+      {"location":"Skypiea"},
+      {"location":"Lulusia's Kingdom Island"},
+      {"location":"Long Ring Long Land"},
+      {"location":"Shipbuilding Island"},
+      {"location":"Sabaody Archipelago"},
+      {"location":"Impel Down"}
+    ],
+    "relationships": [
+      {"name": "Unforgivable Mask","relationship": "Employee"},
+      {"name": "Pandaman","relationship": "Enemy"}
+    ]
+  },
+  {
     "name": "Tomozo",
     "image": "/images/characters/Tomozo.webp",
     "first_appearance_arc": "Chapter 960",
@@ -29568,6 +29743,19 @@
     ],
     "relationships": [
         {"name": "Shirahoshi","relationship": "Poseidon"}
+    ]
+  },
+  {
+    "name": "Unforgivable Mask",
+    "image": "/images/characters/Unforgivable_Mask.webp",
+    "affiliation": "Tomato Gang",
+    "first_appearance_arc": "One Piece Color Walk 2",
+    "race": "Human",
+    "status": "Alive",
+    "description": "Pandaman's rival. He was hired by Tomato Gang to track him down",
+    "relationships": [
+        {"name": "Pandaman","relationship": "Rival"},
+        {"name": "Tomato Gang","relationship": "Boss"}
     ]
   },
   {
