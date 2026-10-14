@@ -7,12 +7,15 @@
  *
  * Issue #9 built the Grid + claim interaction. Issue #10 completes the screen:
  * an end-of-Match banner, a Pass button, a live Used-pool view, a Rematch
- * button, and Character art that falls back to a placeholder when the
- * `/images/...webp` file is absent (which, in text-only v1, is always).
+ * button, and Character art hotlinked from Upstream (ART_BASE) that falls back
+ * to a placeholder when the dataset has no path or the image fails to load.
  */
 
 const MARKS = { P1: "X", P2: "O" };
 const MAX_SUGGESTIONS = 50;
+// Character art is hotlinked from Upstream; `characters.json` stores only the
+// path (e.g. "/images/characters/Nami.webp"). See data/PROVENANCE.md.
+const ART_BASE = "https://oparchive.com";
 
 const state = {
   matchId: null,
@@ -425,16 +428,16 @@ function axisChip(axis, cat) {
 
 // --- Character art ------------------------------------------------------
 
-// A portrait node: an <img> pointing at the known `/images/...webp` path, or a
-// styled placeholder when there is no path or the file 404s — so the text-only
-// v1 still looks deliberate. `size` is "sm" or "lg".
+// A portrait node: an <img> of the Character's Upstream art, or a styled
+// placeholder when there is no path or the image fails to load (Upstream down,
+// path renamed). `size` is "sm" or "lg".
 function portrait(name, size) {
   const wrap = document.createElement("span");
   wrap.className = `portrait portrait-${size}`;
   const src = state.images[name] || "";
   if (src) {
     const img = document.createElement("img");
-    img.src = src;
+    img.src = ART_BASE + src;
     img.alt = "";
     img.loading = "lazy";
     img.addEventListener("error", () => {
