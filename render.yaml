@@ -1,0 +1,24 @@
+# Render Blueprint: the public, playable instance of the game (linked from the
+# author's portfolio). One free web service running the same FastAPI app as
+# `uvicorn app.main:app` locally; Render redeploys on every push to main, so a
+# merged `data-refresh` PR (refresh.yml) goes live on its own.
+#
+# Editable install on purpose: app/dataset.py finds characters.json and
+# categories.json relative to the source tree (REPO_ROOT), which a regular
+# install into site-packages would break.
+#
+# Free plan: the service sleeps after 15 min without traffic, so the first
+# visit after a pause takes ~30-60 s to wake it. The in-memory MatchStore is
+# reset on each sleep / redeploy, which is fine for single-screen Matches.
+
+services:
+  - type: web
+    name: tic-tac-toe-onepiece
+    runtime: python
+    plan: free
+    buildCommand: pip install -e .
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /roster
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.11
