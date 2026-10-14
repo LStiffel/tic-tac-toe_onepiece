@@ -45,6 +45,17 @@ Characters claimed so far. Manual browser checks:
 `docs/manual-checks/v1-frontend-complete-match.md` (banner, Pass, Used pool,
 Rematch, art fallback).
 
+## Deploy
+
+The public instance runs on [Render](https://render.com)'s free plan, described
+by `render.yaml` (a Render Blueprint): the same `uvicorn app.main:app`, behind an
+editable install so the dataset files are found from the source tree. Render
+redeploys on every push to `main`, including merged `data-refresh` PRs.
+
+One-time setup: Render dashboard → **New → Blueprint** → pick this repository.
+On the free plan the service sleeps after 15 minutes idle, so the first visit
+after a pause takes 30-60 s.
+
 ## API
 
 The JSON API is at <http://127.0.0.1:8000> (interactive docs at `/docs`):
