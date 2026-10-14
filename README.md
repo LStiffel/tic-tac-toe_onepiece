@@ -1,6 +1,8 @@
 # One Piece Trivia Tic-Tac-Toe
 
-A local two-player trivia game built on a One Piece dataset. See `CONTEXT.md` for
+**Play it: <https://tic-tac-toe-onepiece.onrender.com/>**
+
+A two-player, single-screen trivia game built on a One Piece dataset. See `CONTEXT.md` for
 the domain vocabulary (Match, Grid, Cell, Category, Category Group, ...) and
 `docs/adr/0001-stack-and-state.md` for the stack decision.
 
@@ -12,9 +14,9 @@ already-used / rejected with win-and-draw detection. A stuck Active player can
 Pass, and two Passes in immediate succession end the Match as a draw. A no-build
 HTML/JS/CSS frontend renders the Grid and drives the whole Match on one shared
 screen: an end-of-Match banner that locks the Grid, a Pass button, a live
-Used-pool view, a Rematch button, and Character-art `<img>` tags that fall back
-to a placeholder when the image file is absent (which, in text-only v1, is
-always).
+Used-pool view, a Rematch button, and Character art hotlinked from
+oparchive.com, falling back to a placeholder when a Character has no art or the
+image fails to load.
 
 ## Requirements
 
@@ -40,7 +42,15 @@ with its six Category labels and a turn indicator, and lets whoever's turn it is
 select an empty Cell and name a Character (autocompleted from the Roster), or
 Pass. When the Match ends a banner announces the winner or the draw and the Grid
 locks; **Rematch** starts a fresh Match in place. The Used-pool panel lists the
-Characters claimed so far. Manual browser checks:
+Characters claimed so far.
+
+The look: a themed title (Rye + Alegreya Sans from Google Fonts, system fonts as
+fallback), guess controls, art and Used pool in a side panel next to the Grid, a
+mark animation on the Cell just claimed, and the winning Line highlighted on a
+finished board. Fonts and Character art come from third-party origins, so
+offline the page falls back to system fonts and placeholders.
+
+Manual browser checks:
 `docs/manual-checks/v1-frontend-grid-claim.md` (claim loop) and
 `docs/manual-checks/v1-frontend-complete-match.md` (banner, Pass, Used pool,
 Rematch, art fallback).
@@ -54,7 +64,8 @@ redeploys on every push to `main`, including merged `data-refresh` PRs.
 
 One-time setup: Render dashboard → **New → Blueprint** → pick this repository.
 On the free plan the service sleeps after 15 minutes idle, so the first visit
-after a pause takes 30-60 s.
+after a pause takes 30-60 s. Match state is in memory only, so every sleep or
+redeploy discards in-progress Matches.
 
 ## API
 
@@ -68,10 +79,13 @@ The JSON API is at <http://127.0.0.1:8000> (interactive docs at `/docs`):
 | `POST /matches/{id}/guesses` | Attempt to claim a Cell (`player`, `row`, `column`, `character`); returns the outcome (`claimed` / `wrong` / `already-used` / `rejected`) plus the Match after it. The Roster check is re-run here, so a hand-crafted request cannot bypass it. |
 | `POST /matches/{id}/passes` | Pass the turn without attempting a Cell (`player`); returns the outcome (`passed` / `rejected`) plus the Match after it. Two Passes in immediate succession end the Match as a `draw`; a Pass out of turn or on a finished Match is `rejected` with no state change. |
 | `GET /roster`            | The Roster as a flat, sorted list of canonical Character names, for client-side autocomplete. Excludes the Category-to-Characters answer key. |
-| `GET /characters`        | The Roster as `{name, image}` records, sorted by name, for the Character-art `<img>` tags. `image` is `""` when the dataset carries no art for that Character; the client shows a placeholder for both an empty path and a 404. Excludes the answer key. |
+| `GET /characters`        | The Roster as `{name, image}` records, sorted by name, for the Character-art `<img>` tags. `image` is the Upstream-relative path (e.g. `/images/characters/….webp`), which the client prefixes with `https://oparchive.com`; it is `""` when the dataset carries no art for that Character. The client shows a placeholder for both an empty path and a failed load. Excludes the answer key. |
 | `GET /diagnostics/data-quality` | The data-quality report from the dataset load: Category-referenced names that do not resolve to a Roster Character, and Categories excluded from play for having fewer than three resolved Characters. |
 
 The frontend is served from `static/` (`GET /`, assets under `/static`).
+
+The root `main.py` is an unrelated early terminal X/O prototype, not part of
+the app; the server entry point is `app/main.py`.
 
 Match state lives in an in-memory map keyed by match id, reached only through the
 `MatchStore` interface (`app/storage.py`), so a database can replace it later

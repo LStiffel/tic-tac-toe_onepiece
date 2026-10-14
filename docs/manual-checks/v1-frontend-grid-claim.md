@@ -62,4 +62,4 @@ Each step maps to an acceptance criterion on the ticket.
 ## Out of scope here (issue #10)
 
 End-of-Match banner, Pass button, Used-pool view, Rematch button, and
-`/images/…webp` fallbacks are checked in `v1-frontend-complete-match.md`.
+Character-art fallbacks are checked in `v1-frontend-complete-match.md`.

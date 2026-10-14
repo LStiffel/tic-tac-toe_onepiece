@@ -23,12 +23,14 @@ Open <http://127.0.0.1:8000/>.
 Each step maps to an acceptance criterion on the ticket.
 
 1. **Character art with placeholder fallback.** On load, and after every claim,
-   Cells that hold a Character and the "Last claimed" figure under the input show
-   a portrait box. `v1` ships no `/images/…webp` files, so every box renders the
-   hatched placeholder with a ☠ glyph rather than a broken image. Confirm in
-   DevTools that the `<img>` `src` is the real `/images/characters/<Name>.webp`
-   path from `GET /characters` and that the box degrades on the 404 — no broken
-   image icon.
+   Cells that hold a Character and the "Last claimed" figure in the side panel
+   (below Pass / Rematch) show a portrait box. Art is hotlinked from Upstream:
+   confirm in DevTools that the `<img>` `src` is `https://oparchive.com` followed
+   by the `/images/characters/<Name>.webp` path from `GET /characters`, and that
+   the portrait actually renders. Then check the fallback: block
+   `oparchive.com` in DevTools (Network → Block request domain) and claim again —
+   every box shows the hatched placeholder with a ☠ glyph, no broken image icon.
+   A Character whose `image` is `""` shows the placeholder without a request.
 
 2. **Used-pool view.** The "Used pool (N)" panel starts at `0` with
    "No Characters used yet." Claim a Character: the count becomes `1` and the
