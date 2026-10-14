@@ -4,11 +4,20 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>One Piece Trivia Tic-Tac-Toe</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Alegreya+Sans:wght@400;500;700;800&family=Rye&display=swap"
+    />
     <link rel="stylesheet" href="/static/styles.css" />
   </head>
   <body>
     <header class="topbar">
-      <h1>One Piece Trivia Tic-Tac-Toe</h1>
+      <h1 class="title">
+        <span class="title-sub">One Piece Trivia</span>
+        <span class="title-main">Tic-Tac-Toe</span>
+      </h1>
       <p id="turn-indicator" class="turn">Starting a Match&hellip;</p>
     </header>
 
@@ -18,47 +27,49 @@
         <div id="grid" class="grid" role="grid"></div>
       </section>
 
-      <section class="guess" aria-label="Guess">
-        <p id="selected-cell" class="selected-cell">
-          Select an empty Cell to guess.
-        </p>
+      <aside class="side">
+        <section class="guess panel" aria-label="Guess">
+          <p id="selected-cell" class="selected-cell">
+            Select an empty Cell to guess.
+          </p>
 
-        <div class="guess-row">
-          <input
-            id="guess-input"
-            type="text"
-            list="roster-suggestions"
-            autocomplete="off"
-            spellcheck="false"
-            placeholder="Name a Character&hellip;"
-            aria-label="Character name"
-          />
-          <datalist id="roster-suggestions"></datalist>
-          <button id="guess-submit" type="button" disabled>Guess</button>
-        </div>
+          <div class="guess-row">
+            <input
+              id="guess-input"
+              type="text"
+              list="roster-suggestions"
+              autocomplete="off"
+              spellcheck="false"
+              placeholder="Name a Character&hellip;"
+              aria-label="Character name"
+            />
+            <datalist id="roster-suggestions"></datalist>
+            <button id="guess-submit" type="button" disabled>Guess</button>
+          </div>
 
-        <div class="actions">
-          <button id="pass-btn" type="button" disabled>Pass</button>
-          <button id="rematch-btn" type="button" disabled>Rematch</button>
-        </div>
+          <p id="feedback" class="feedback" role="status" aria-live="polite"></p>
 
-        <p id="feedback" class="feedback" role="status" aria-live="polite"></p>
+          <div class="actions">
+            <button id="pass-btn" type="button" disabled>Pass</button>
+            <button id="rematch-btn" type="button" disabled>Rematch</button>
+          </div>
 
-        <figure id="art" class="art" hidden>
-          <span id="art-portrait" class="art-portrait"></span>
-          <figcaption id="art-caption"></figcaption>
-        </figure>
-      </section>
+          <figure id="art" class="art" hidden>
+            <span id="art-portrait" class="art-portrait"></span>
+            <figcaption id="art-caption"></figcaption>
+          </figure>
+        </section>
 
-      <section class="used-pool" aria-label="Used pool">
-        <h2 class="used-pool-title">
-          Used pool (<span id="used-count">0</span>)
-        </h2>
-        <p id="used-pool-empty" class="used-pool-empty">
-          No Characters used yet.
-        </p>
-        <ul id="used-pool-list" class="used-pool-list"></ul>
-      </section>
+        <section class="used-pool panel" aria-label="Used pool">
+          <h2 class="used-pool-title">
+            Used pool <span id="used-count" class="used-count">0</span>
+          </h2>
+          <p id="used-pool-empty" class="used-pool-empty">
+            No Characters used yet.
+          </p>
+          <ul id="used-pool-list" class="used-pool-list"></ul>
+        </section>
+      </aside>
     </main>
 
     <script src="/static/app.js"></script>

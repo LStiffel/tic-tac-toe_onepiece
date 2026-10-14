@@ -21,6 +21,7 @@ const state = {
   images: {}, // canonical name -> "/images/...webp" (or "" when unknown)
   selected: null, // { row, column } of the Cell being guessed, or null
   lastClaim: null, // { name } of the most recently claimed Character, or null
+  stampAt: null, // { row, column } whose mark animates on the next render only
 };
 
 const els = {
@@ -79,6 +80,7 @@ function applyNewMatch(match, message) {
   state.match = match;
   state.selected = null;
   state.lastClaim = null;
+  state.stampAt = null;
   els.input.value = "";
   updateSuggestions();
   render();
@@ -172,6 +174,7 @@ function applyOutcome(result, character) {
   switch (result.outcome) {
     case "claimed": {
       state.lastClaim = { name: character };
+      state.stampAt = state.selected ? { ...state.selected } : null;
       const next =
         result.match.status === "in-progress"
           ? toMoveLine(result.match)
@@ -294,7 +297,15 @@ function renderGrid() {
   const byPos = {};
   for (const cell of grid.cells) byPos[`${cell.row},${cell.column}`] = cell;
 
+  // Purely cosmetic: the server decides the winner; this only finds which Line
+  // to light up on the finished board.
+  const winLine = state.match.status === "won" ? winningLine(byPos, state.match.winner) : null;
+  const onWinLine = new Set(winLine || []);
+  const stampAt = state.stampAt;
+  state.stampAt = null;
+
   els.grid.replaceChildren();
+  els.grid.classList.toggle("finished", !inProgress);
   els.grid.appendChild(corner());
   for (const cat of grid.column_categories) {
     els.grid.appendChild(categoryTag(cat, "col"));
@@ -302,9 +313,29 @@ function renderGrid() {
   for (let r = 0; r < 3; r++) {
     els.grid.appendChild(categoryTag(grid.row_categories[r], "row"));
     for (let c = 0; c < 3; c++) {
-      els.grid.appendChild(cellButton(byPos[`${r},${c}`], inProgress));
+      const btn = cellButton(byPos[`${r},${c}`], inProgress);
+      if (onWinLine.has(`${r},${c}`)) btn.classList.add("win-line");
+      if (stampAt && stampAt.row === r && stampAt.column === c) {
+        btn.classList.add("just-claimed");
+      }
+      els.grid.appendChild(btn);
     }
   }
+}
+
+const LINES = [
+  ...[0, 1, 2].map((r) => [[r, 0], [r, 1], [r, 2]]),
+  ...[0, 1, 2].map((c) => [[0, c], [1, c], [2, c]]),
+  [[0, 0], [1, 1], [2, 2]],
+  [[0, 2], [1, 1], [2, 0]],
+];
+
+function winningLine(byPos, player) {
+  for (const line of LINES) {
+    const keys = line.map(([r, c]) => `${r},${c}`);
+    if (keys.every((k) => byPos[k] && byPos[k].claimed_by === player)) return keys;
+  }
+  return null;
 }
 
 function corner() {

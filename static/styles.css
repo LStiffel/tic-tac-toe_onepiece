@@ -1,14 +1,34 @@
-/* Frontend styling for issues #9 and #10. Plain CSS, no build step (ADR 0001). */
+/* Frontend styling. Plain CSS, no build step (ADR 0001).
+
+   The Grid is a bounty board laid on a night-sea chart: empty Cells are blank
+   parchment, a claimed Cell becomes a small wanted poster and the claiming
+   Player's mark lands on it as an ink stamp. That stamp is the one loud moment;
+   everything around it stays quiet. */
 
 :root {
-  --sea: #0b3d5c;
-  --sea-deep: #082a3f;
-  --sail: #f7f3e8;
-  --ink: #14202b;
-  --gold: #e8b13a;
-  --p1: #d64545;
-  --p2: #2f8f7f;
-  --line: #b9c9d3;
+  --abyss: #0b2136;
+  --chart: #14385a;
+  --chart-line: rgba(234, 214, 168, 0.06);
+  --parchment: #ead6a8;
+  --parchment-hi: #f4e7c6;
+  --parchment-lo: #d6bd86;
+  --ink: #3a2412;
+  --ink-soft: #6b4d2e;
+  --foam: #e9eef2;
+  --foam-dim: #9fb3c4;
+  --gold: #e3b043;
+  --p1: #c3352b; /* straw-hat red */
+  --p2: #1d5a9c; /* Marine blue */
+  --p1-on-sea: #ef6a5c;
+  --p2-on-sea: #6fa8e6;
+  --ok: #2f7d4a;
+  --warn: #a8700a;
+
+  --display: "Rye", "Rockwell Extra Bold", Georgia, serif;
+  --text: "Alegreya Sans", "Segoe UI", system-ui, sans-serif;
+
+  --radius-cell: 4px;
+  --radius-panel: 10px;
 }
 
 * {
@@ -23,174 +43,438 @@
 
 body {
   margin: 0;
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  color: var(--ink);
-  background: var(--sea);
   min-height: 100vh;
+  font-family: var(--text);
+  font-size: 1.0625rem;
+  line-height: 1.45;
+  color: var(--foam);
+  background-color: var(--abyss);
+  /* Sea-chart graticule: faint latitude/longitude lines over a deep gradient. */
+  background-image:
+    linear-gradient(var(--chart-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--chart-line) 1px, transparent 1px),
+    radial-gradient(ellipse at 30% 0%, var(--chart) 0%, var(--abyss) 70%);
+  background-size: 64px 64px, 64px 64px, 100% 100%;
+  background-attachment: fixed;
 }
+
+button,
+input {
+  font: inherit;
+}
+
+:focus-visible {
+  outline: 3px solid var(--gold);
+  outline-offset: 2px;
+}
+
+/* --- Header ------------------------------------------------------------- */
 
 .topbar {
-  background: var(--sea-deep);
-  color: var(--sail);
-  padding: 1rem 1.5rem;
-  border-bottom: 3px solid var(--gold);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem 2rem;
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 1.25rem;
 }
 
-.topbar h1 {
+.title {
   margin: 0;
-  font-size: 1.25rem;
-  letter-spacing: 0.02em;
+  display: flex;
+  flex-direction: column;
+  line-height: 1;
 }
 
+.title-sub {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--gold);
+  letter-spacing: 0.04em;
+  margin-bottom: 0.35rem;
+}
+
+.title-main {
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: clamp(2.2rem, 6vw, 3.4rem);
+  color: var(--parchment);
+  text-shadow: 0 3px 0 rgba(0, 0, 0, 0.35);
+}
+
+/* The turn indicator is a flag in the active Player's colour. */
 .turn {
-  margin: 0.4rem 0 0;
-  font-weight: 600;
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.45rem 1rem 0.45rem 0.8rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(234, 214, 168, 0.2);
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: var(--foam);
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.turn::before {
+  content: "";
+  width: 0.7rem;
+  height: 0.7rem;
+  border-radius: 50%;
+  background: var(--foam-dim);
 }
 
 .turn.p1 {
-  color: var(--p1);
+  border-color: var(--p1-on-sea);
+  background: rgba(195, 53, 43, 0.18);
+}
+
+.turn.p1::before {
+  background: var(--p1-on-sea);
 }
 
 .turn.p2 {
-  color: var(--p2);
+  border-color: var(--p2-on-sea);
+  background: rgba(29, 90, 156, 0.25);
+}
+
+.turn.p2::before {
+  background: var(--p2-on-sea);
 }
 
 .turn.over {
+  border-color: var(--gold);
   color: var(--gold);
 }
 
+.turn.over::before {
+  background: var(--gold);
+}
+
+/* --- Layout ------------------------------------------------------------- */
+
 .layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 340px;
+  gap: 2rem;
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0.5rem 1.5rem 3rem;
+  align-items: start;
+}
+
+.side {
   display: flex;
-  flex-wrap: wrap;
-  gap: 1.5rem;
-  padding: 1.5rem;
-  align-items: flex-start;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.panel {
+  background: rgba(8, 26, 43, 0.72);
+  border: 1px solid rgba(234, 214, 168, 0.16);
+  border-radius: var(--radius-panel);
+  padding: 1.25rem;
+}
+
+@media (max-width: 880px) {
+  .layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 520px) {
+  .topbar,
+  .layout {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
 }
 
 /* --- Grid --------------------------------------------------------------- */
 
 .grid {
   display: grid;
-  grid-template-columns: 1.15fr repeat(3, minmax(96px, 1fr));
-  grid-auto-rows: minmax(96px, auto);
-  gap: 6px;
-  background: var(--sea-deep);
-  padding: 6px;
-  border-radius: 10px;
-  max-width: 560px;
+  grid-template-columns: minmax(0, 0.9fr) repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  max-width: 680px;
 }
 
 .corner {
   background: transparent;
 }
 
+/* Category headers sit on the sea, not on paper: column headers above a gold
+   rule, row headers right-aligned against the board. */
 .category {
-  background: var(--gold);
-  color: var(--ink);
-  border-radius: 6px;
-  padding: 0.5rem;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  gap: 0.15rem;
+  justify-content: flex-end;
+  gap: 0.2rem;
+  padding: 0.5rem 0.35rem 0.6rem;
+  color: var(--parchment);
+  border-bottom: 2px solid var(--gold);
   text-align: center;
 }
 
+.category.row {
+  justify-content: center;
+  text-align: right;
+  border-bottom: none;
+  border-right: 2px solid var(--gold);
+  padding: 0.4rem 0.75rem 0.4rem 0.2rem;
+}
+
 .cat-label {
-  font-weight: 700;
-  font-size: 0.82rem;
+  font-weight: 800;
+  font-size: 0.98rem;
   line-height: 1.15;
+  overflow-wrap: break-word;
 }
 
 .cat-group {
-  font-size: 0.68rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  opacity: 0.75;
+  font-size: 0.82rem;
+  color: var(--foam-dim);
 }
 
 .cell {
-  background: var(--sail);
-  border: 2px solid transparent;
-  border-radius: 6px;
-  font: inherit;
-  cursor: pointer;
+  position: relative;
+  aspect-ratio: 1 / 1;
+  min-width: 0;
+  padding: 0.4rem;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 0.25rem;
-  padding: 0.4rem;
-  transition: border-color 0.12s ease, background 0.12s ease;
+  gap: 0.3rem;
+  border: none;
+  border-radius: var(--radius-cell);
+  color: var(--ink);
+  cursor: pointer;
+  /* Aged paper: a lighter centre fading to a toasted edge. */
+  background:
+    radial-gradient(ellipse at center, var(--parchment-hi) 0%, var(--parchment) 55%, var(--parchment-lo) 100%);
+  box-shadow:
+    inset 0 0 0 1px rgba(58, 36, 18, 0.25),
+    0 6px 14px rgba(0, 0, 0, 0.35);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
 .cell:hover:not(:disabled) {
-  background: #fff;
-  border-color: var(--gold);
+  transform: translateY(-3px) rotate(-0.6deg);
+  box-shadow:
+    inset 0 0 0 1px rgba(58, 36, 18, 0.25),
+    0 12px 22px rgba(0, 0, 0, 0.45);
 }
 
 .cell:disabled {
   cursor: default;
 }
 
-.cell.selected {
-  border-color: var(--gold);
-  background: #fff8e8;
+.cell:not(.claimed):disabled {
+  opacity: 0.55;
 }
 
-.cell.claimed .mark {
-  font-size: 1.6rem;
-  font-weight: 800;
-  line-height: 1;
+.cell.selected {
+  box-shadow:
+    inset 0 0 0 3px var(--gold),
+    0 0 0 3px rgba(227, 176, 67, 0.35),
+    0 12px 22px rgba(0, 0, 0, 0.45);
+}
+
+.cell.selected::after {
+  content: "?";
+  font-family: var(--display);
+  font-size: 2.4rem;
+  color: rgba(58, 36, 18, 0.35);
+}
+
+/* A claimed Cell is a wanted poster: portrait framed in ink, the name set
+   bold beneath it, and the Player's mark stamped across the corner. */
+.cell.claimed .portrait {
+  width: 56%;
+  height: auto;
+  aspect-ratio: 1 / 1;
+  border-radius: 2px;
+  box-shadow: 0 0 0 2px var(--ink);
 }
 
 .cell.claimed .cell-name {
-  font-size: 0.72rem;
-  text-align: center;
+  font-weight: 800;
+  font-size: 0.86rem;
   line-height: 1.1;
+  text-align: center;
+  color: var(--ink);
+  overflow-wrap: anywhere;
 }
 
-.cell.claimed.p1 {
-  background: #fbe6e6;
+.cell.claimed .mark {
+  position: absolute;
+  top: 6%;
+  right: 6%;
+  display: grid;
+  place-items: center;
+  width: 2.6rem;
+  height: 2.6rem;
+  border: 3px solid currentColor;
+  border-radius: 50%;
+  font-family: var(--display);
+  font-size: 1.6rem;
+  line-height: 1;
+  transform: rotate(-12deg);
+  opacity: 0.88;
+  mix-blend-mode: multiply;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+/* The claiming Player's colour carries onto the poster: name and frame. */
+.cell.claimed.p1 .cell-name {
+  color: var(--p1);
+}
+
+.cell.claimed.p1 .portrait {
+  box-shadow: 0 0 0 3px var(--p1);
+}
+
+.cell.claimed.p2 .cell-name {
+  color: var(--p2);
+}
+
+.cell.claimed.p2 .portrait {
+  box-shadow: 0 0 0 3px var(--p2);
 }
 
 .cell.claimed.p1 .mark {
   color: var(--p1);
 }
 
-.cell.claimed.p2 {
-  background: #e2f1ee;
-}
-
 .cell.claimed.p2 .mark {
   color: var(--p2);
+  transform: rotate(9deg);
 }
 
-/* --- Guess panel ------------------------------------------------------ */
-
-.guess {
-  background: var(--sail);
-  border-radius: 10px;
-  padding: 1rem 1.25rem;
-  min-width: 280px;
-  flex: 1 1 280px;
-  max-width: 420px;
+.cell.just-claimed .mark {
+  animation: stamp 0.38s cubic-bezier(0.2, 0.9, 0.3, 1.3) both;
 }
+
+.cell.just-claimed.p2 .mark {
+  animation-name: stamp-p2;
+}
+
+@keyframes stamp {
+  from {
+    transform: scale(2.4) rotate(-24deg);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1) rotate(-12deg);
+    opacity: 0.88;
+  }
+}
+
+@keyframes stamp-p2 {
+  from {
+    transform: scale(2.4) rotate(24deg);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1) rotate(9deg);
+    opacity: 0.88;
+  }
+}
+
+/* End of Match: the winning Line keeps its colour, the rest of the board
+   recedes. */
+.grid.finished .cell:not(.win-line) {
+  filter: saturate(0.4) brightness(0.75);
+}
+
+.cell.win-line {
+  box-shadow:
+    inset 0 0 0 3px var(--gold),
+    0 0 26px rgba(227, 176, 67, 0.55);
+}
+
+@media (max-width: 520px) {
+  .grid {
+    grid-template-columns: minmax(0, 1.1fr) repeat(3, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  .cell.claimed .portrait {
+    width: 46%;
+  }
+
+  .cat-label {
+    font-size: 0.8rem;
+  }
+
+  .cat-group {
+    font-size: 0.72rem;
+  }
+
+  .category.row {
+    padding-right: 0.45rem;
+  }
+
+  .cell.claimed .cell-name {
+    font-size: 0.72rem;
+  }
+
+  .cell.claimed .mark {
+    width: 1.8rem;
+    height: 1.8rem;
+    font-size: 1.05rem;
+    border-width: 2px;
+  }
+}
+
+/* --- End-of-Match banner ----------------------------------------------- */
+
+.banner {
+  margin: 0 0 1.25rem;
+  padding: 0.9rem 1.25rem;
+  border-radius: var(--radius-cell);
+  font-family: var(--display);
+  font-size: clamp(1.4rem, 4vw, 2rem);
+  line-height: 1.15;
+  text-align: center;
+  max-width: 680px;
+}
+
+.banner-win {
+  background: var(--parchment);
+  color: var(--ink);
+  box-shadow: inset 0 0 0 3px var(--gold), 0 8px 20px rgba(0, 0, 0, 0.4);
+}
+
+.banner-draw {
+  background: transparent;
+  color: var(--parchment);
+  border: 2px dashed rgba(234, 214, 168, 0.5);
+}
+
+/* --- Guess panel ------------------------------------------------------- */
 
 .selected-cell {
-  margin-top: 0;
-  font-size: 0.9rem;
+  margin: 0 0 0.9rem;
   min-height: 2.4rem;
+  color: var(--foam-dim);
+  line-height: 1.9;
 }
 
 .axis-chip {
   display: inline-block;
-  background: var(--sea);
-  color: var(--sail);
-  border-radius: 4px;
-  padding: 0.1rem 0.4rem;
-  font-size: 0.78rem;
-  margin: 0.1rem 0;
+  background: var(--parchment);
+  color: var(--ink);
+  border-radius: 3px;
+  padding: 0 0.45rem;
+  font-size: 0.88rem;
+  font-weight: 700;
+  line-height: 1.6;
 }
 
 .guess-row {
@@ -200,116 +484,119 @@ body {
 
 #guess-input {
   flex: 1;
-  padding: 0.5rem 0.6rem;
-  border: 1px solid var(--line);
+  min-width: 0;
+  padding: 0.65rem 0.8rem;
+  border: 2px solid transparent;
   border-radius: 6px;
-  font: inherit;
+  background: var(--parchment-hi);
+  color: var(--ink);
+}
+
+#guess-input::placeholder {
+  color: var(--ink-soft);
+  opacity: 0.8;
+}
+
+#guess-input:focus {
+  outline: none;
+  border-color: var(--gold);
 }
 
 #guess-submit {
-  padding: 0.5rem 1rem;
+  padding: 0.65rem 1.2rem;
   border: none;
   border-radius: 6px;
-  background: var(--sea-deep);
-  color: var(--sail);
-  font: inherit;
-  font-weight: 600;
+  background: var(--gold);
+  color: var(--ink);
+  font-weight: 800;
   cursor: pointer;
 }
 
+#guess-submit:hover:not(:disabled) {
+  background: #f0c25a;
+}
+
 #guess-submit:disabled {
-  opacity: 0.5;
+  background: rgba(227, 176, 67, 0.3);
+  color: rgba(58, 36, 18, 0.7);
   cursor: default;
 }
 
 .feedback {
-  margin-bottom: 0;
-  min-height: 2.6rem;
-  font-size: 0.9rem;
+  margin: 0.9rem 0 0;
+  min-height: 2.8rem;
+  padding-left: 0.75rem;
+  border-left: 3px solid transparent;
+  font-size: 0.98rem;
   font-weight: 500;
 }
 
+.feedback:empty {
+  border-left-color: transparent;
+}
+
 .feedback.ok {
-  color: #1c7a3d;
+  color: #9fdcb0;
+  border-left-color: #58b178;
 }
 
 .feedback.warn {
-  color: #9a6a00;
+  color: #f2cd7a;
+  border-left-color: var(--gold);
 }
 
 .feedback.error {
-  color: var(--p1);
+  color: #f6a397;
+  border-left-color: var(--p1-on-sea);
 }
 
 .feedback.info {
-  color: var(--ink);
+  color: var(--foam);
+  border-left-color: rgba(234, 214, 168, 0.35);
 }
 
-/* --- End-of-Match banner (issue #10) --------------------------------- */
-
-.banner {
-  margin: 0 0 0.75rem;
-  padding: 0.6rem 0.9rem;
-  border-radius: 8px;
-  border: 2px solid transparent;
-  font-weight: 700;
-  text-align: center;
-}
-
-.banner-win {
-  background: #fff3d6;
-  border-color: var(--gold);
-  color: #7a5200;
-}
-
-.banner-draw {
-  background: #e7eef2;
-  border-color: var(--line);
-  color: var(--sea-deep);
-}
-
-/* --- Pass / Rematch actions (issue #10) ----------------------------- */
+/* --- Pass / Rematch actions ------------------------------------------- */
 
 .actions {
   display: flex;
   gap: 0.5rem;
-  margin-top: 0.75rem;
+  margin-top: 0.9rem;
 }
 
 .actions button {
   flex: 1;
-  padding: 0.5rem 1rem;
-  border: 1px solid var(--sea-deep);
+  padding: 0.55rem 1rem;
+  border: 1px solid rgba(234, 214, 168, 0.45);
   border-radius: 6px;
-  background: var(--sail);
-  color: var(--sea-deep);
-  font: inherit;
-  font-weight: 600;
+  background: transparent;
+  color: var(--parchment);
+  font-weight: 700;
   cursor: pointer;
 }
 
 .actions button:hover:not(:disabled) {
-  background: #fff;
+  background: rgba(234, 214, 168, 0.1);
+  border-color: var(--parchment);
 }
 
 .actions button:disabled {
-  opacity: 0.5;
+  opacity: 0.4;
   cursor: default;
 }
 
-/* --- Character art / portraits (issue #10) ------------------------- */
+/* --- Character art / portraits ---------------------------------------- */
 
-/* An <img> for a known /images/...webp path, or a hatched placeholder with a
-   glyph when the path is unknown or the file 404s — so text-only v1 still
-   looks deliberate. */
+/* An <img> for a known /images/...webp path, or an inked placeholder with a
+   Jolly Roger when the path is unknown or the file 404s — so text-only v1
+   still looks deliberate. */
 .portrait {
   display: inline-flex;
   flex: none;
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  border-radius: 6px;
-  background: var(--sea-deep);
+  border-radius: 4px;
+  background: var(--ink);
 }
 
 .portrait img {
@@ -325,40 +612,42 @@ body {
 }
 
 .portrait-lg {
-  width: 96px;
-  height: 96px;
-  border-radius: 8px;
+  width: 88px;
+  height: 88px;
+  border-radius: 4px;
+  box-shadow: 0 0 0 3px var(--parchment);
 }
 
 .portrait-missing {
-  background: repeating-linear-gradient(
-    45deg,
-    var(--sea-deep),
-    var(--sea-deep) 6px,
-    #0a3450 6px,
-    #0a3450 12px
-  );
+  background:
+    radial-gradient(circle at center, #5a3a1e 0%, var(--ink) 75%);
 }
 
 .portrait-glyph {
-  color: var(--gold);
-  opacity: 0.85;
+  color: var(--parchment);
+  opacity: 0.8;
   line-height: 1;
 }
 
 .portrait-sm .portrait-glyph {
-  font-size: 1rem;
+  font-size: 1.1rem;
+}
+
+.cell.claimed .portrait-glyph {
+  font-size: clamp(1.1rem, 3.5vw, 2rem);
 }
 
 .portrait-lg .portrait-glyph {
-  font-size: 2.4rem;
+  font-size: 2.6rem;
 }
 
 .art {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  margin: 0.9rem 0 0;
+  gap: 1rem;
+  margin: 1.25rem 0 0;
+  padding-top: 1.1rem;
+  border-top: 1px solid rgba(234, 214, 168, 0.16);
 }
 
 .art-portrait {
@@ -366,30 +655,34 @@ body {
 }
 
 .art figcaption {
-  font-size: 0.85rem;
-  font-weight: 600;
+  font-weight: 700;
+  color: var(--parchment);
 }
 
-/* --- Used-pool view (issue #10) ---------------------------------- */
-
-.used-pool {
-  background: var(--sail);
-  border-radius: 10px;
-  padding: 1rem 1.25rem;
-  min-width: 220px;
-  flex: 1 1 220px;
-  max-width: 320px;
-}
+/* --- Used-pool view --------------------------------------------------- */
 
 .used-pool-title {
-  margin: 0 0 0.6rem;
-  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0 0 0.8rem;
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--parchment);
+}
+
+.used-count {
+  min-width: 1.6rem;
+  padding: 0 0.45rem;
+  border-radius: 999px;
+  background: rgba(234, 214, 168, 0.15);
+  font-size: 0.85rem;
+  text-align: center;
 }
 
 .used-pool-empty {
   margin: 0;
-  font-size: 0.88rem;
-  opacity: 0.7;
+  color: var(--foam-dim);
 }
 
 .used-pool-list {
@@ -398,15 +691,26 @@ body {
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
+  gap: 0.5rem;
+  max-height: 360px;
+  overflow-y: auto;
 }
 
 .used-entry {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.65rem;
 }
 
 .used-name {
-  font-size: 0.9rem;
+  font-size: 0.98rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
 }
