@@ -991,7 +991,7 @@
       {"location":"Egghead","chapter":"Chapter 1062"}
     ],
     "relationships": [
-        {"name": "Vegapunk","relationship": "Creator"},
+        {"name": "Vegapunk [Stella]","relationship": "Creator"},
         {"name": "Shaka","relationship": "Satellite Comrade"},
         {"name": "Lilith","relationship": "Satellite Comrade"},
         {"name": "Edison","relationship": "Satellite Comrade"},
@@ -1554,7 +1554,7 @@
         {"name": "Bulldog","relationship": "King Successor, Advisor"},
         {"name": "Hanafuda","relationship": "Warlord Predecessor"},
         {"name": "Clapp","relationship": "Father"},
-        {"name": "Vegapunk","relationship": "Turned cyborg and mentally killed by"},
+        {"name": "Vegapunk [Stella]","relationship": "Turned cyborg and mentally killed by"},
         {"name": "Monkey D. Luffy","relationship": "Separated from his crew"},
         {"name": "Roronoa Zoro","relationship": "Separated from his crew"},
         {"name": "Nami","relationship": "Separated from his crew"},
@@ -2195,6 +2195,14 @@
     ]
   },
   {
+    "name": "Billy the Yabuki",
+    "image": "/images/characters/Billy_the_Yabuki.webp",
+    "first_appearance_arc": "SBS Volume 114",
+    "race": "Human",
+    "status": "Alive",
+    "description": "Mysterious figure who tears wanted posters when revealing the bounty amount would be inconvinient for the story"
+  },
+  {
     "name": "Bimine",
     "image": "/images/characters/Bimine.webp",
     "affiliation": "Pucci",
@@ -2474,7 +2482,6 @@
   {
     "name": "Blakey",
     "image": "/images/characters/Blakey.webp",
-    "affiliation": "Ryugu Kingdom",
     "origin": "Grand Line",
     "first_appearance_arc": "Chapter 649",
     "race": "Fish-man",
@@ -3021,7 +3028,7 @@
         {"name": "Sakazuki [Akainu]","relationship": "Superior"},
         {"name": "Issho [Fujitora]","relationship": "Colleague"},
         {"name": "Aramaki [Ryokugyu]","relationship": "Colleague"},
-        {"name": "Vegapunk","relationship": "Friend"},
+        {"name": "Vegapunk [Stella]","relationship": "Friend"},
         {"name": "Sentomaru","relationship": "Friend"},
         {"name": "Monkey D. Luffy","relationship": "Enemy"},
         {"name": "Jewelry Bonney","relationship": "Friend"},
@@ -3341,7 +3348,7 @@
         {"name": "Edward Newgate [Whitebeard]","relationship": "Unrequited love"},
         {"name": "Davy D. Xebec [Rocks]","relationship": "Former Captain"},
         {"name": "Edward Weevil","relationship": "Son"},
-        {"name": "Vegapunk","relationship": "Former Leader"},
+        {"name": "Vegapunk [Stella]","relationship": "Former Leader"},
         {"name": "Caesar Clown","relationship": "Former Colleague"},
         {"name": "Vinsmoke Judge","relationship": "Former Colleague"},
         {"name": "Scien [Queen]","relationship": "Former Colleague"},
@@ -3632,7 +3639,7 @@
       {"location":"Germa Kingdom","chapter":"Chapter 1066"}
     ],
     "relationships": [
-        {"name": "Vegapunk","relationship": "Rival, Former Leader"},
+        {"name": "Vegapunk [Stella]","relationship": "Rival, Former Leader"},
         {"name": "Buckingham Stussy","relationship": "Former Colleague"},
         {"name": "Vinsmoke Judge","relationship": "NEO MADS Co-Founder, Former Colleague"},
         {"name": "Scien [Queen]","relationship": "Former Colleague"},
@@ -5191,7 +5198,6 @@
         {"name": "Charlotte Chiffon","relationship": "Twin Sister"},
         {"name": "Gotti","relationship": "Husband"},
         {"name": "Capone Bege","relationship": "Brother-in-law"},
-        {"name": "Risky Brothers","relationship": "Subordinate"},
         {"name": "Gecko Moria [Kouzuki Moria]","relationship": "Shadow stolen by"},
         {"name": "Monkey D. Luffy","relationship": "Ally"},
         {"name": "Nami","relationship": "Friend"},
@@ -6380,6 +6386,17 @@
     ]
   },
   {
+    "name": "Clara",
+    "image": "/images/characters/Clara.webp",
+    "first_appearance_arc": "Chapter 1196",
+    "race": "Human",
+    "status": "Alive",
+    "description": "Okama from Momoiro Island and one of the 99 Newkama Kenpo masters. He lost a duel to Sanji at some point during his training",
+    "journey": [
+      {"location":"Momoiro Island","chapter":"Chapter 1196"}
+    ]
+  },
+  {
     "name": "Clione",
     "image": "/images/characters/Clione.webp",
     "affiliation": "Heart Pirates",
@@ -6415,7 +6432,7 @@
     "relationships": [
         {"name": "Nico Olvia","relationship": "Colleague"},
         {"name": "Nico Robin","relationship": "Mentor"},
-        {"name": "Vegapunk","relationship": "Friend"},
+        {"name": "Vegapunk [Stella]","relationship": "Friend"},
         {"name": "Monkey D. Dragon","relationship": "Friend"},
         {"name": "Spandine","relationship": "Enemy, Killed by"}
     ]
@@ -7370,21 +7387,6 @@
     ]
   },
   {
-    "name": "Decalvan Brothers",
-    "image": "/images/characters/Decalvan_Brothers.webp",
-    "affiliation": "Whitebeard Pirates",
-    "first_appearance_arc": "Chapter 551",
-    "race": "Human",
-    "status": "Alive",
-    "description": "Two New World pirates who allied with Whitebeard Pirates",
-    "journey": [
-      {"location":"Marineford","chapter":"Chapter 551"}
-    ],
-    "relationships": [
-        {"name": "Edward Newgate [Whitebeard]","relationship": "Served"}
-    ]
-  },
-  {
     "name": "Deigoro",
     "image": "/images/characters/Deigoro.webp",
     "first_appearance_arc": "Chapter 958",
@@ -7905,6 +7907,20 @@
     ]
   },
   {
+    "name": "Domo-kun",
+    "image": "/images/characters/Domo.webp",
+    "first_appearance_arc": "Chapter 9",
+    "race": "Extraterrestrial",
+    "status": "Alive",
+    "description": "Alien planning to conquer the Blue Planet alongside his partner Nnke-kun",
+    "journey": [
+      {"location":"Organ Islands","chapter":"Chapter 9"}
+    ],
+    "relationships": [
+        {"name": "Nnke-kun","relationship": "Partner"}
+    ]
+  },
+  {
     "name": "Donannoyo",
     "image": "/images/characters/Donannoyo.webp",
     "affiliation": "Beasts Pirates",
@@ -8200,22 +8216,6 @@
     ]
   },
   {
-    "name": "Doubt Brothers",
-    "image": "/images/characters/Doubt_Brothers.webp",
-    "affiliation": "Beasts Pirates",
-    "devil_fruit": "Owl SMILE",
-    "first_appearance_arc": "Chapter 980",
-    "race": "Human",
-    "status": "Alive",
-    "description": "Shinuchi who fought Luffy and Zoro on the Live Floor during the Oniganshima raid",
-    "journey": [
-      {"location":"Wano Country's Island","chapter":"Chapter 980"}
-    ],
-    "relationships": [
-        {"name": "Kaidou","relationship": "Former Captain"}
-    ]
-  },
-  {
     "name": "Douzan",
     "image": "/images/characters/Douzan.webp",
     "first_appearance_arc": "Chapter 1183 (mentioned)",
@@ -8231,7 +8231,7 @@
     "image": "/images/characters/Dracule_Mihawk.webp",
     "epithet": "Strongest Swordsman in the World",
     "affiliation": "Cross Guild",
-    "haki": ["Observation","Armament"],
+    "haki": ["Conquerors","Observation","Armament"],
     "bounty": 3590000000,
     "height": 198,
     "age": 43,
@@ -8252,7 +8252,7 @@
     "relationships": [
         {"name": "Crocodile","relationship": "De Facto Captain Comrade"},
         {"name": "Buggy","relationship": "Captain (figurehead)"},
-        {"name": "Roronoa Zoro","relationship": "Rival"},
+        {"name": "Roronoa Zoro","relationship": "Rival, Former Student"},
         {"name": "Shanks","relationship": "Rival"},
         {"name": "Vista","relationship": "Rival"},
         {"name": "Perona","relationship": "Friend"},
@@ -8270,7 +8270,7 @@
       {"location":"Punk Hazard","chapter":"Chapter 655"}
     ],
     "relationships": [
-        {"name": "Vegapunk","relationship": "Created by"},
+        {"name": "Vegapunk [Stella]","relationship": "Created by"},
         {"name": "Roronoa Zoro","relationship": "Killed by"},
         {"name": "Caesar Clown","relationship": "Served"}
     ]
@@ -8287,7 +8287,7 @@
       {"location":"Punk Hazard","chapter":"Chapter 675"}
     ],
     "relationships": [
-        {"name": "Vegapunk","relationship": "Created by"},
+        {"name": "Vegapunk [Stella]","relationship": "Created by"},
         {"name": "Caesar Clown","relationship": "Served"}
     ]
   },
@@ -8458,7 +8458,7 @@
       {"location":"Egghead","chapter":"Chapter 1065"}
     ],
     "relationships": [
-        {"name": "Vegapunk","relationship": "Creator"},
+        {"name": "Vegapunk [Stella]","relationship": "Creator"},
         {"name": "Shaka","relationship": "Satellite Comrade"},
         {"name": "Lilith","relationship": "Satellite Comrade"},
         {"name": "Atlas","relationship": "Satellite Comrade"},
@@ -8528,7 +8528,8 @@
         {"name": "Neptune","relationship": "Friend"},
         {"name": "Kaidou","relationship": "Former Crewmate"},
         {"name": "Buckingham Stussy","relationship": "Lover"},
-        {"name": "Edward Weevil","relationship": "Son (supposedly)"}
+        {"name": "Edward Weevil","relationship": "Son (supposedly)"},
+        {"name": "Stefan","relationship": "Pet"}
     ]
   },
   {
@@ -8687,7 +8688,7 @@
     "relationships": [
         {"name": "Joy Boy","relationship": "Friend"},
         {"name": "Monkey D. Luffy","relationship": "Ally, Awakened by"},
-        {"name": "Vegapunk","relationship": "Hid broadcast"}
+        {"name": "Vegapunk [Stella]","relationship": "Hid broadcast"}
     ]
   },
   {
@@ -8774,6 +8775,7 @@
         {"name": "Morley","relationship": "Comrade"},
         {"name": "Belo Betty","relationship": "Comrade"},
         {"name": "Lindbergh","relationship": "Comrade"},
+        {"name": "Sanji","relationship": "Former Student"},
         {"name": "Ginny","relationship": "Childhood Friend, Founding Member Comrade"},
         {"name": "Bartholomew Kuma","relationship": "Childhood Friend, Founding Member Comrade"},
         {"name": "Bentham (Bon Clay) [Mr. 2]","relationship": "Friend, Admired by"}
@@ -8999,7 +9001,7 @@
         {"name": "Jaygarcia Saturn","relationship": "Former Fellow Elder"},
         {"name": "Nerona Imu","relationship": "Supreme Ruler"},
         {"name": "Monkey D. Luffy","relationship": "Enemy"},
-        {"name": "Vegapunk","relationship": "Enemy"}
+        {"name": "Vegapunk [Stella]","relationship": "Enemy"}
     ]
   },
   {
@@ -13907,7 +13909,7 @@
         {"name": "Ethanbaron V. Nusjuro","relationship": "Former Former Fellow Elder"},
         {"name": "Nerona Imu","relationship": "Former Supreme Ruler, Killed by"},
         {"name": "Monkey D. Luffy","relationship": "Enemy, Defeated by"},
-        {"name": "Vegapunk","relationship": "Enemy"},
+        {"name": "Vegapunk [Stella]","relationship": "Enemy"},
         {"name": "Jewelry Bonney","relationship": "Enemy, Defeated by"},
         {"name": "Bartholomew Kuma","relationship": "Enemy"}
     ]
@@ -14123,7 +14125,7 @@
         {"name": "Monkey D. Luffy","relationship": "Ally"},
         {"name": "Conney","relationship": "Friend"},
         {"name": "Bulldog","relationship": "Friend"},
-        {"name": "Vegapunk","relationship": "Friend"},
+        {"name": "Vegapunk [Stella]","relationship": "Friend"},
         {"name": "Sentomaru","relationship": "Friend"},
         {"name": "Bartholomew Kuma","relationship": "Adoptive Father"},
         {"name": "Marshall D. Teach [Blackbeard]","relationship": "Captured by"},
@@ -14504,7 +14506,7 @@
     "name": "Joy Boy",
     "image": "/images/characters/Joy_Boy.webp",
     "devil_fruit": "Hito Hito no Mi, Model: Nika (Awakened)",
-    "origin": "Great Kingdom",
+    "origin": "Unknown (Great Kingdom)",
     "age": "At least 100",
     "haki": ["Conquerors"],
     "first_appearance_arc": "Chapter 1115",
@@ -17441,7 +17443,7 @@
       {"location":"Elbaph Island", "chapter":"Chapter 1126"}
     ],
     "relationships": [
-        {"name": "Vegapunk","relationship": "Creator"},
+        {"name": "Vegapunk [Stella]","relationship": "Creator"},
         {"name": "Shaka","relationship": "Satellite Comrade"},
         {"name": "Edison","relationship": "Satellite Comrade"},
         {"name": "Atlas","relationship": "Satellite Comrade"},
@@ -17722,7 +17724,7 @@
       {"location":"Totto Land","chapter":"Chapter 860"}
     ],
     "relationships": [
-        {"name": "Vegapunk","relationship": "Financed"},
+        {"name": "Vegapunk [Stella]","relationship": "Financed"},
         {"name": "Giberson","relationship": "Fellow Underworld Emperor"},
         {"name": "Morgans","relationship": "Fellow Underworld Emperor"},
         {"name": "Umit","relationship": "Fellow Underworld Emperor"},
@@ -18204,7 +18206,7 @@
         {"name": "Jaygarcia Saturn","relationship": "Former Fellow Elder"},
         {"name": "Nerona Imu","relationship": "Supreme Ruler"},
         {"name": "Monkey D. Luffy","relationship": "Enemy"},
-        {"name": "Vegapunk","relationship": "Enemy"}
+        {"name": "Vegapunk [Stella]","relationship": "Enemy"}
     ]
   },
   {
@@ -18264,7 +18266,6 @@
   {
     "name": "Maria Napole",
     "image": "/images/characters/Maria_Napole.webp",
-    "affiliation": "Ryugu Kingdom",
     "origin": "Grand Line (Ryugu Kingdom)",
     "first_appearance_arc": "Chapter 649",
     "race": "Merfolk",
@@ -18794,7 +18795,7 @@
   {
     "name": "Mecha-Shark",
     "image": "/images/characters/Mecha-shark.webp",
-    "affiliation": "Vegapunk",
+    "affiliation": "Vegapunk [Stella]",
     "first_appearance_arc": "Chapter 1061",
     "race": "Robot",
     "status": "Unknown",
@@ -18803,13 +18804,13 @@
       {"location":"Egghead","chapter":"Chapter 1061"}
     ],
     "relationships": [
-        {"name": "Vegapunk","relationship": "Creator"}
+        {"name": "Vegapunk [Stella]","relationship": "Creator"}
     ]
   },
   {
     "name": "Megalo",
     "image": "/images/characters/Megalo.webp",
-    "affiliation": "Ryugu Kingdom",
+    "affiliation": "Shirahoshi",
     "first_appearance_arc": "Chapter 605",
     "race": "Animal",
     "status": "Alive",
@@ -18936,6 +18937,16 @@
     ]
   },
   {
+    "name": "Mikio Itoo",
+    "image": "/images/characters/Mikio_Itoo.webp",
+    "origin": "East Blue",
+    "bounty":"1,000,000¥",
+    "first_appearance_arc": "Chapter 1",
+    "race": "Human",
+    "status": "Alive",
+    "description": "Background joke character and the first Easter Egg to appear in the story"
+  },
+  {
     "name": "Mikita [Miss Valentine]",
     "image": "/images/characters/Mikita.webp",
     "epithet": "Courier",
@@ -18972,7 +18983,6 @@
   {
     "name": "Miles",
     "image": "/images/characters/Miles.webp",
-    "affiliation": "Ryugu Kingdom",
     "origin": "Grand Line (Ryugu Kingdom)",
     "first_appearance_arc": "Chapter 649",
     "race": "Merfolk",
@@ -19049,7 +19059,23 @@
       {"location":"Wano Country's Island","chapter":"Chapter 909"}
     ],
     "relationships": [
-        {"name": "Cutty Flam [Franky]","relationship": "Former Employee"}
+        {"name": "Cutty Flam [Franky]","relationship": "Former Employee"},
+        {"name": "Minatomo ","relationship": "Related by blood"}
+    ]
+  },
+  {
+    "name": "Minatomo ",
+    "image": "/images/characters/Minatomo_(eastblue).webp",
+    "first_appearance_arc": "SBS Volume 7",
+    "race": "Human",
+    "status": "Alive",
+    "description": "Traveling carpenter obsessed with repairing any broken door he sees. Native of Wano Country, he left with Kouzaburou and Furiko 55 years ago and resettled in the East Blue",
+    "journey": [
+      {"location":"Wano Country's Island"},
+      {"location":"Dawn Island","chapter":"SBS Volume 7"}
+    ],
+    "relationships": [
+        {"name": "Minatomo","relationship": "Related by blood"}
     ]
   },
   {
@@ -19763,7 +19789,7 @@
         {"name": "Bartholomew Kuma","relationship": "Subordinate"},
         {"name": "Ginny","relationship": "Former Subordinate"},
         {"name": "Nico Robin","relationship": "Friend"},
-        {"name": "Vegapunk","relationship": "Friend"},
+        {"name": "Vegapunk [Stella]","relationship": "Friend"},
         {"name": "Clou D. Clover","relationship": "Friend"},
         {"name": "Nerona Imu","relationship": "Enemy"}
     ]
@@ -20008,7 +20034,7 @@
         {"name": "Duval","relationship": "Ally"},
         {"name": "Emporio Ivankov","relationship": "Ally"},
         {"name": "Inazuma","relationship": "Ally"},
-        {"name": "Vegapunk","relationship": "Ally"},
+        {"name": "Vegapunk [Stella]","relationship": "Ally"},
         {"name": "Lilith","relationship": "Ally"},
         {"name": "Nerona Imu","relationship": "Enemy"},
         {"name": "Loki","relationship": "Ally"},
@@ -21107,10 +21133,10 @@
     "status": "Deceased",
     "description": "Queen of Arabasta during the Void Century, being one of the 20 monarchs that founded the World Government. She was the only one that didn't move to Mary Geoise and decided to return to her kingdom but mysteriously vanished",
     "journey": [
-      {"location":"Sandy Island","chapter":"Chapter 1084"}
+      {"location":"Sandy Island"},
+      {"location":"Elbaph Island","chapter":"Chapter 1195"}
     ],
     "relationships": [
-      {"name": "Nefertari Cobra","relationship": "Descendant"},
       {"name": "Nefertari Vivi","relationship": "Descendant"}
     ]
   },
@@ -21160,6 +21186,7 @@
         {"name": "Igaram","relationship": "Friend, Former Partner, Subordinate"},
         {"name": "Crocodile","relationship": "Enemy, Former Boss"},
         {"name": "Nefertari Titi","relationship": "Mother"},
+        {"name": "Nefertari D. Lili","relationship": "Ancestor"},
         {"name": "Karoo","relationship": "Pet"},
         {"name": "Pell","relationship": "Friend"},
         {"name": "Chaka","relationship": "Friend"},
@@ -21638,6 +21665,17 @@
         {"name": "Charlotte Linlin [Big Mom]","relationship": "Creator, Captain"},
         {"name": "Charlotte Pudding","relationship": "Friend"},
         {"name": "Rabiyan","relationship": "Partner"}
+    ]
+  },
+  {
+    "name": "Nnke-kun",
+    "image": "/images/characters/Nnke.webp",
+    "first_appearance_arc": "Volume 52 inside cover",
+    "race": "Extraterrestrial",
+    "status": "Alive",
+    "description": "Alien planning to conquer the Blue Planet alongside his partner Domo-kun",
+    "relationships": [
+        {"name": "Domo-kun","relationship": "Partner"}
     ]
   },
   {
@@ -22390,10 +22428,84 @@
     ]
   },
   {
+    "name": "Pandaman",
+    "image": "/images/characters/Pandaman.webp",
+    "first_appearance_arc": "Chapter 44",
+    "height": 200,
+    "race": "Human",
+    "status": "Alive",
+    "description": "One of the most prominent easter eggs in the story, making cameo appearances in many manga chapters and anime episodes",
+    "journey": [
+      {"location":"Unknown island - abandoned in a bamboo thicket", "region": "Paradise"},
+      {"location":"Panda Island"},
+      {"location":"Jaya"},
+      {"location":"Elbaph Island"},
+      {"location":"Wano Country's Island"},
+      {"location":"Unknown island - saw Morgans", "region":"Paradise"},
+      {"location":"Ohara"},
+      {"location":"Unknown island - being raided", "region":"North Blue"},
+      {"location":"Unknown island - saw Doflamingo", "region":"North Blue"},
+      {"location":"Fish-Man Island"},
+      {"location":"Dawn Island"},
+      {"location":"Baratie"},
+      {"location":"Conomi Islands"},
+      {"location":"Polestar Islands"},
+      {"location":"Cactus Island"},
+      {"location":"Kyuka Island"},
+      {"location":"Drum Island"},
+      {"location":"Sandy Island"},
+      {"location":"Jaya"},
+      {"location":"Skypiea"},
+      {"location":"Unknown island - saw Wapol", "region":"Paradise"},
+      {"location":"Lulusia's Kingdom Island"},
+      {"location":"Skypiea"},
+      {"location":"Long Ring Long Land"},
+      {"location":"Shipbuilding Island"},
+      {"location":"Enies Lobby"},
+      {"location":"Shipbuilding Island"},
+      {"location":"Banaro Island"},
+      {"location":"Thriller Bark"},
+      {"location":"Sabaody Archipelago"},
+      {"location":"Impel Down"},
+      {"location":"Marineford"},
+      {"location":"Sabaody Archipelago"},
+      {"location":"Fish-Man Island"},
+      {"location":"Punk Hazard"},
+      {"location":"Zou"},
+      {"location":"Dressrosa"},
+      {"location":"Karai Bari Island"},
+      {"location":"Zou"},
+      {"location":"Fish-Man Island"},
+      {"location":"Totto Land"},
+      {"location":"Wano Country's Island"},
+      {"location":"Egghead"},
+      {"location":"Polestar Islands"},
+      {"location":"Egghead"},
+      {"location":"Marine GS General Hospital's Island"}
+    ],
+    "relationships": [
+        {"name": "Pandawomanmi","relationship": "In Love With"},
+        {"name": "Tomato Gang","relationship": "Enemy"},
+        {"name": "Unforgivable Mask","relationship": "Rival"}
+    ]
+  },
+  {
+    "name": "Pandawomanmi",
+    "image": "/images/characters/Pandawomanmi.webp",
+    "origin": "Calm Belt (Amazon Lily)",
+    "first_appearance_arc": "Chapter 517",
+    "race": "Human",
+    "status": "Alive",
+    "description": "Female version of Pandaman",
+    "journey": [
+      {"location":"Island of Women","chapter":"Chapter 517"}
+    ]
+  },
+  {
     "name": "Pandora",
     "image": "/images/characters/Pandora.webp",
     "affiliation": "Carmel",
-    "first_appearance_arc": "Chapter 867,Episode 837",
+    "first_appearance_arc": "Chapter 867",
     "race": "Object",
     "status": "Unknown",
     "description": "Sun homie created by Carmel, who placed a portion of her soul into a fire on Elbaph",
@@ -22859,7 +22971,8 @@
       {"name": "Gecko Moria [Kouzuki Moria]","relationship": "Captain"},
       {"name": "Hogback","relationship": "Crewmate"},
       {"name": "Absalom","relationship": "Former Crewmate"},
-      {"name": "Usopp","relationship": "Defeated by"}
+      {"name": "Usopp","relationship": "Defeated by"},
+      {"name": "Dracule Mihawk","relationship": "Friend"}
   ]
   },
   {
@@ -23544,7 +23657,7 @@
       {"location":"Egghead","chapter":"Chapter 1065"}
     ],
     "relationships": [
-        {"name": "Vegapunk","relationship": "Creator"},
+        {"name": "Vegapunk [Stella]","relationship": "Creator"},
         {"name": "Shaka","relationship": "Satellite Comrade"},
         {"name": "Lilith","relationship": "Satellite Comrade"},
         {"name": "Atlas","relationship": "Satellite Comrade"},
@@ -23972,7 +24085,7 @@
   {
     "name": "Recycle-Wan",
     "image": "/images/characters/Recycle-wan.webp",
-    "affiliation": "Vegapunk",
+    "affiliation": "Vegapunk [Stella]",
     "first_appearance_arc": "Chapter 1063",
     "race": "Robot",
     "status": "Alive",
@@ -23981,7 +24094,7 @@
       {"location":"Egghead","chapter":"Chapter 1063"}
     ],
     "relationships": [
-        {"name": "Vegapunk","relationship": "Creator"}
+        {"name": "Vegapunk [Stella]","relationship": "Creator"}
     ]
   },
   {
@@ -24154,6 +24267,7 @@
     "image": "/images/characters/Rimoshifu_Killingham.webp",
     "affiliation": "Knights of God",
     "devil_fruit": "Ryu Ryu no Mi, Model: Qilin (Awakened)",
+    "haki": ["Observation"],
     "first_appearance_arc": "Chapter 1140",
     "race": "Human",
     "status": "Alive",
@@ -24276,25 +24390,6 @@
     ],
     "relationships": [
         {"name": "Rika","relationship": "Daughter"}
-    ]
-  },
-  {
-    "name": "Risky Brothers",
-    "image": "/images/characters/Risky_Brothers.webp",
-    "affiliation": "Rolling Pirates",
-    "first_appearance_arc": "Chapter 475",
-    "race": "Human",
-    "status": "Alive",
-    "description": "Two brothers members of the Rolling Pirates under their captain Lola",
-    "journey": [
-      {"location":"Thriller Bark"},
-      {"location":"Shipbuilding Island"},
-      {"location":"Dressrosa"},
-      {"location":"Unknown island - attending Lola's wedding","chapter":"Chapter 993", "region":"New World"}
-    ],
-    "relationships": [
-        {"name": "Charlotte Lola","relationship": "Captain"},
-        {"name": "Gecko Moria [Kouzuki Moria]","relationship": "Enemy, Shadow stolen by"}
     ]
   },
   {
@@ -24696,7 +24791,7 @@
         {"name": "Usopp","relationship": "Crewmate"},
         {"name": "Shimotsuki Kuina","relationship": "Friend"},
         {"name": "Perona","relationship": "Friend"},
-        {"name": "Dracule Mihawk","relationship": "Rival, Teacher"},
+        {"name": "Dracule Mihawk","relationship": "Rival, Former Master"},
         {"name": "Johnny","relationship": "Former Partner, Friend"},
         {"name": "Yosaku","relationship": "Former Partner, Friend"},
         {"name": "Kouzuki Hiyori","relationship": "Friend"},
@@ -25299,7 +25394,7 @@
     "image_pre": "/images/characters/Sanji_Pre.webp",
     "epithet": "Black Leg",
     "affiliation": "Straw Hat Pirates",
-    "haki": ["Observation","Armament"],
+    "haki": ["Conquerors","Observation","Armament"],
     "bounty": 1032000000,
     "origin": "North Blue",
     "height": 180,
@@ -25344,8 +25439,8 @@
         {"name": "Vinsmoke Ichiji","relationship": "Brother"},
         {"name": "Vinsmoke Judge","relationship": "Father"},
         {"name": "Vinsmoke Niji","relationship": "Brother"},
-        {"name": "Vinsmoke Reiju","relationship": "Brother"},
-        {"name": "Vinsmoke Sora","relationship": "Brother"},
+        {"name": "Vinsmoke Yonji","relationship": "Brother"},
+        {"name": "Vinsmoke Reiju","relationship": "Sister"},
         {"name": "Monkey D. Luffy","relationship": "Captain"},
         {"name": "Brook","relationship": "Crewmate"},
         {"name": "Jinbe","relationship": "Crewmate"},
@@ -25355,6 +25450,7 @@
         {"name": "Roronoa Zoro","relationship": "Crewmate"},
         {"name": "Tony Tony Chopper","relationship": "Crewmate"},
         {"name": "Usopp","relationship": "Crewmate"},
+        {"name": "Emporio Ivankov","relationship": "Former Master"},
         {"name": "Zeff","relationship": "Adoptive Father, Former Boss"},
         {"name": "Carne","relationship": "Friend, Former Coworker"},
         {"name": "Patty","relationship": "Friend, Former Coworker"},
@@ -25730,7 +25826,7 @@
         {"name": "Black Maria","relationship": "Former Subordinate"},
         {"name": "Sasaki","relationship": "Former Subordinate"},
         {"name": "X Drake","relationship": "Former Subordinate (undercover)"},
-        {"name": "Vegapunk","relationship": "Rival, Former Leader"},
+        {"name": "Vegapunk [Stella]","relationship": "Rival, Former Leader"},
         {"name": "Buckingham Stussy","relationship": "Former Colleague"},
         {"name": "Vinsmoke Judge","relationship": "Former Colleague"},
         {"name": "Caesar Clown","relationship": "Former Colleague"},
@@ -26045,7 +26141,8 @@
       {"location":"Unknown island - raiding", "region":"North Blue"},
       {"location":"Minion Island"},
       {"location":"Unknown island - met Russian and had a son", "region":"North Blue"},
-      {"location":"Dressrosa","chapter":"Chapter 728"}
+      {"location":"Dressrosa"},
+      {"location":"Impel Down","chapter":"Chapter 792"}
     ],
     "relationships": [
         {"name": "Donquixote Doflamingo","relationship": "Captain"},
@@ -26079,7 +26176,7 @@
     ],
     "relationships": [
         {"name": "Borsalino [Kizaru]","relationship": "Friend"},
-        {"name": "Vegapunk","relationship": "Friend, Former Boss"},
+        {"name": "Vegapunk [Stella]","relationship": "Friend, Former Boss"},
         {"name": "Monkey D. Luffy","relationship": "Respects"},
         {"name": "Jewelry Bonney","relationship": "Friend"},
         {"name": "Bartholomew Kuma","relationship": "Friend"}
@@ -26153,7 +26250,7 @@
       {"location":"Egghead","chapter":"Chapter 1065"}
     ],
     "relationships": [
-        {"name": "Vegapunk","relationship": "Creator"},
+        {"name": "Vegapunk [Stella]","relationship": "Creator"},
         {"name": "Pythagoras","relationship": "Satellite Comrade"},
         {"name": "Lilith","relationship": "Satellite Comrade"},
         {"name": "Atlas","relationship": "Satellite Comrade"},
@@ -26397,7 +26494,7 @@
         {"name": "Jaygarcia Saturn","relationship": "Former Fellow Elder"},
         {"name": "Nerona Imu","relationship": "Supreme Ruler"},
         {"name": "Monkey D. Luffy","relationship": "Enemy"},
-        {"name": "Vegapunk","relationship": "Enemy"}
+        {"name": "Vegapunk [Stella]","relationship": "Enemy"}
     ]
   },
   {
@@ -26432,6 +26529,7 @@
     "epithet": "the Golden Lion",
     "affiliation": "Golden Lion Pirates",
     "devil_fruit": "Fuwa Fuwa no Mi",
+    "origin": "Unknown (Yano Country)",
     "age": 73,
     "first_appearance_arc": "Strong World: Chap. 0",
     "race": "Human",
@@ -26919,6 +27017,7 @@
       {"location":"Esperia's Kingdom Island"},
       {"location":"Mary Geoise"},
       {"location":"God Valley"},
+      {"location":"Mary Geoise"},
       {"location":"Elbaph Island","chapter":"Chapter 1134"}
     ],
     "relationships": [
@@ -27552,8 +27651,7 @@
     ],
     "relationships": [
       {"name": "Monkey D. Luffy","relationship": "Ally"},
-      {"name": "Charlotte Lola","relationship": "Former Comrade"},
-      {"name": "Risky Brothers","relationship": "Former Comrade"}
+      {"name": "Charlotte Lola","relationship": "Former Comrade"}
     ]
   },
   {
@@ -27645,6 +27743,18 @@
     "description": "Fictional character member of Germa 66 portrayed in the comic strip Sora, Warrior of the Sea",
     "relationships": [
       {"name": "Sora ","relationship": "Enemy"}
+  ]
+  },
+  {
+    "name": "Stefan",
+    "image": "/images/characters/Stefan.webp",
+    "affiliation": "Whitebeard Pirates",
+    "first_appearance_arc": "SBS Volume 58",
+    "race": "Animal",
+    "status": "Alive",
+    "description": "Whitebeard's dog",
+    "relationships": [
+      {"name": "Edward Newgate [Whitebeard]","relationship": "Former Owner"}
   ]
   },
   {
@@ -27803,7 +27913,7 @@
     "name": "Stussy",
     "image": "/images/characters/Stussy.webp",
     "epithet": "Queen of the Pleasure District",
-    "affiliation": "Vegapunk",
+    "affiliation": "Vegapunk [Stella]",
     "devil_fruit": "Batto Batto no Mi",
     "haki": ["Observation","Armament"],
     "origin": "Grand Line (MADS Research Ship)",
@@ -27821,7 +27931,7 @@
       {"location":"Egghead","chapter":"Chapter 1067"}
     ],
     "relationships": [
-      {"name": "Vegapunk","relationship": "Ally, Created by"},
+      {"name": "Vegapunk [Stella]","relationship": "Ally, Created by"},
       {"name": "Monkey D. Luffy","relationship": "Ally"},
       {"name": "Buckingham Stussy","relationship": "Model"},
       {"name": "Drug Peclo","relationship": "Fellow Underworld Emperor"},
@@ -28622,7 +28732,6 @@
   {
     "name": "Tibany",
     "image": "/images/characters/Tibany.webp",
-    "affiliation": "Kamabakka Kingdom",
     "first_appearance_arc": "Chapter 543 (cover)",
     "race": "Human",
     "status": "Alive",
@@ -28633,7 +28742,7 @@
       {"location":"Momoiro Island","chapter":"Chapter 827"}
     ],
     "relationships": [
-      {"name": "Sanji","relationship": "Ally"}
+      {"name": "Emporio Ivankov","relationship": "Queen"}
     ]
   },
   {
@@ -28763,6 +28872,31 @@
     "description": "Musician who lives in Dressrosa",
     "journey": [
       {"location":"Dressrosa","chapter":"Chapter 956"}
+    ]
+  },
+  {
+    "name": "Tomato Gang",
+    "image": "/images/characters/Tomato_Gang.webp",
+    "age": 40,
+    "first_appearance_arc": "Chapter 179",
+    "race": "Human",
+    "status": "Alive",
+    "description": "Debt collector who is after Pandaman. He hired Unforgivable Mask to help track him down",
+    "journey": [
+      {"location":"Jaya"},
+      {"location":"Lvneel's Kingdom Island"},
+      {"location":"Sandy Island"},
+      {"location":"Jaya"},
+      {"location":"Skypiea"},
+      {"location":"Lulusia's Kingdom Island"},
+      {"location":"Long Ring Long Land"},
+      {"location":"Shipbuilding Island"},
+      {"location":"Sabaody Archipelago"},
+      {"location":"Impel Down"}
+    ],
+    "relationships": [
+      {"name": "Unforgivable Mask","relationship": "Employee"},
+      {"name": "Pandaman","relationship": "Enemy"}
     ]
   },
   {
@@ -28927,7 +29061,7 @@
         {"name": "Jaygarcia Saturn","relationship": "Former Fellow Elder"},
         {"name": "Nerona Imu","relationship": "Supreme Ruler"},
         {"name": "Monkey D. Luffy","relationship": "Enemy"},
-        {"name": "Vegapunk","relationship": "Enemy"}
+        {"name": "Vegapunk [Stella]","relationship": "Enemy"}
     ]
   },
   {
@@ -29571,6 +29705,19 @@
     ]
   },
   {
+    "name": "Unforgivable Mask",
+    "image": "/images/characters/Unforgivable_Mask.webp",
+    "affiliation": "Tomato Gang",
+    "first_appearance_arc": "One Piece Color Walk 2",
+    "race": "Human",
+    "status": "Alive",
+    "description": "Pandaman's rival. He was hired by Tomato Gang to track him down",
+    "relationships": [
+        {"name": "Pandaman","relationship": "Rival"},
+        {"name": "Tomato Gang","relationship": "Boss"}
+    ]
+  },
+  {
     "name": "Uni",
     "image": "/images/characters/Uni.webp",
     "affiliation": "Heart Pirates",
@@ -30041,7 +30188,7 @@
   {
     "name": "Vegaforce-01",
     "image": "/images/characters/Vegaforce01.webp",
-    "affiliation": "Vegapunk",
+    "affiliation": "Vegapunk [Stella]",
     "first_appearance_arc": "Chapter 1061",
     "race": "Robot",
     "status": "Deceased",
@@ -30050,7 +30197,7 @@
       {"location":"Egghead", "chapter":"Chapter 1061"}
     ],
     "relationships": [
-        {"name": "Vegapunk","relationship": "Creator"},
+        {"name": "Vegapunk [Stella]","relationship": "Creator"},
         {"name": "Borsalino [Kizaru]","relationship": "Destroyed by"}
     ]
   },
@@ -30065,14 +30212,14 @@
       {"location":"Pants Hazard", "chapter":"SBS Volume 112"}
     ],
     "relationships": [
-        {"name": "Vegapunk","relationship": "Cousin"}
+        {"name": "Vegapunk [Stella]","relationship": "Cousin"}
     ]
   },
   {
-    "name": "Vegapunk",
+    "name": "Vegapunk [Stella]",
     "image": "/images/characters/Vegapunk.webp",
     "epithet": "The Man With the Best Brain in the World",
-    "affiliation": "MADS (former)",
+    "affiliation": "Marines (SSG) (former)",
     "devil_fruit": "Nomi Nomi no Mi",
     "origin": "Grand Line (Karakuri Island)",
     "height": 314,
@@ -30275,7 +30422,7 @@
         {"name": "Vinsmoke Sora","relationship": "Wife"},
         {"name": "Vinsmoke Reiju","relationship": "Daughter"},
         {"name": "Charlotte Linlin [Big Mom]","relationship": "Enemy"},
-        {"name": "Vegapunk","relationship": "Former Leader"},
+        {"name": "Vegapunk [Stella]","relationship": "Former Leader"},
         {"name": "Buckingham Stussy","relationship": "Former Colleague"},
         {"name": "Caesar Clown","relationship": "NEO MADS Co-Founder, Former Colleague"},
         {"name": "Scien [Queen]","relationship": "Former Colleague"}
@@ -31368,7 +31515,7 @@
       {"location":"Mary Geoise","chapter":"Chapter 1179"}
     ],
     "relationships": [
-        {"name": "Vegapunk","relationship": "Betrayed, Creator"},
+        {"name": "Vegapunk [Stella]","relationship": "Betrayed, Creator"},
         {"name": "Pythagoras","relationship": "Betrayed, Satellite Comrade"},
         {"name": "Lilith","relationship": "Betrayed, Satellite Comrade"},
         {"name": "Atlas","relationship": "Betrayed, Satellite Comrade"},
